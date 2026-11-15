@@ -451,6 +451,11 @@ code.url{font-size:12px;word-break:break-all;background:var(--sunk);padding:1px 
 img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-align:middle;margin-right:8px}
 .tabbar button{font-size:10.5px}
 @media (max-width:420px){.howadd{grid-template-columns:1fr}}
+
+.resetbox{margin-top:22px;padding-top:14px;border-top:1px dashed var(--line);display:grid;gap:6px;justify-items:start}
+.resetbox small{color:var(--muted);font-size:12.5px}
+.btn.danger{border-color:var(--anar);color:var(--anar);background:var(--surface);min-height:42px}
+.btn.danger.sure{background:var(--anar);color:var(--surface)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -662,7 +667,7 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
     </div>
   </section>
 
-  <footer><b style="color:var(--ink)">Version 13 · 15 Nov 2026</b> · My products: your exact Lidl items.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
+  <footer><b style="color:var(--ink)">Version 14 · 15 Nov 2026</b> · Clear a day or reset a meal.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Sections"><div class="in">
@@ -1331,8 +1336,19 @@ function summaryView(meals,T){
   if(extras.length){const key=cur+'-extras';h+=`<li><label><input type="checkbox" data-have="${key}" ${S.have[key]?'checked':''}><span>Fresh veg, herbs & flavour<span class="d">${extras.join(' · ')}</span></span><span class="q"></span></label></li>`}
   if(!keys.length&&!extras.length) h+='<li class="plain muted">Nothing to buy for today.</li>';
   h+='</ul></details>';
+  h+=`<div class="resetbox"><button class="btn danger" type="button" data-clear="day">Clear this day</button>
+    <small>Starts ${cur===todayIdx()?'today':'this day'} again from zero: ticks, skips, amounts you logged, extras, watch calories and workouts. Your plan, products and usual amounts stay.</small></div>`;
   return h;
 }
+function mealReset(m){
+  const k=cur+'-'+m.si, any=S.done[k]||S.skip[k]||S.actual[k]||S.swaps[k];
+  if(!any) return '';
+  return `<div class="resetbox"><button class="btn danger" type="button" data-clear="${m.si}">Reset ${m.slot.toLowerCase()}</button>
+    <small>Back to the planned dish, not eaten yet.</small></div>`;
+}
+function clearMeal(i,si){const k=i+'-'+si;['done','skip','actual','swaps','custom'].forEach(x=>{if(S[x])delete S[x][k]})}
+function clearDay(i){for(let si=0;si<4;si++)clearMeal(i,si);['extras','ex','gymskip','watch'].forEach(x=>{if(S[x])delete S[x][i]});
+  Object.keys(S.have||{}).forEach(k=>{if(k.startsWith(i+'-'))delete S.have[k]})}
 function mealView(m){
   const role=lunchRole(cur);
   const change=`<button class="lnk" data-pick="${m.si}" type="button">${SVGI.swap}Change dish</button>${m.changed?`<button class="lnk" data-unswap="${m.si}" type="button">Back to plan</button>`:''}`;
@@ -1345,11 +1361,11 @@ function mealView(m){
     h+=`<div class="status ${m.skipped?'no':'yes'}"><b>${m.skipped?`You skipped ${m.slot.toLowerCase()}.`:`You ate ${m.slot.toLowerCase()}: ${m.free?'free meal':Math.round(m.t.p)+'g protein, '+Math.round(m.t.k)+' kcal'}.`}</b>
       <span>${m.done&&!m.free?shortList(m,-1):''}</span>
       <div class="sbtns">${m.done&&!m.free?`<button class="btn" data-log="${m.si}" type="button">Change amounts</button>`:''}<button class="btn" data-undo="${m.si}" type="button">Undo</button></div></div>`;
-    return h;
+    return h+mealReset(m);
   }
   if(m.free){
     return `<div class="meal"><div class="mhead">${icon('free')}<div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag free">Free meal</span></div><h3>Eat what you want</h3></div></div>
-      <div class="freebox">One plate, no counting. Kabab, pizza, your mum's tahdig, anything.</div>${acts}<div class="links">${change}</div></div>`;
+      <div class="freebox">One plate, no counting. Kabab, pizza, your mum's tahdig, anything.</div>${acts}<div class="links">${change}</div></div>`+mealReset(m);
   }
   let tag='';
   if(m.si===1&&role==='cook') tag='<span class="tag cook">Cook ×2 today</span>';
@@ -1371,7 +1387,7 @@ function mealView(m){
   }
   h+=acts+`<div class="links">${m.how?`<details><summary>How to make it</summary><div class="recipe">${m.how}${m.extra?`<div class="also">Also uses: ${m.extra}, plus spices.</div>`:''}</div></details>`:''}
     ${m.tip?`<div class="note">${m.tip}</div>`:''}${change}${m.mine&&!m.box?`<button class="lnk" data-edit="${m.si}" type="button">Edit recipe</button>`:''}${m.usual?`<button class="lnk" data-forget="${m.id}" type="button">Use the plan's amounts again</button>`:''}</div></div>`;
-  return h;
+  return h+mealReset(m);
 }
 function renderDay(){
   buildStrip();
@@ -1399,6 +1415,12 @@ function renderDay(){
   out.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const si=+b.dataset.edit,c=S.custom[cur+'-'+si];openBuilder({mode:'custom',si,init:c&&c.items,name:c&&c.n})});
   out.querySelectorAll('[data-delx]').forEach(b=>b.onclick=()=>{S.extras[cur].splice(+b.dataset.delx,1);save();renderDay()});
   out.querySelectorAll('[data-top]').forEach(b=>b.onclick=()=>{const [k,g]=b.dataset.top.split(':');(S.extras[cur]=S.extras[cur]||[]).push({n:b.dataset.label,items:[[k,+g]]});save();renderDay();toast(`Added: ${esc(b.dataset.label)}`)});
+  out.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>{
+    if(!b.classList.contains('sure')){b.classList.add('sure');b.dataset.label=b.textContent;b.textContent='Tap again to clear';clearTimeout(b._t);b._t=setTimeout(()=>{b.classList.remove('sure');b.textContent=b.dataset.label},3500);return}
+    const w=b.dataset.clear;
+    if(w==='day'){clearDay(cur);save();tab='sum';renderDay();window.scrollTo({top:0,behavior:'smooth'});toast('Day cleared. Starting from zero.')}
+    else{clearMeal(cur,+w);save();renderDay();toast(`${SLOTS[+w]} reset to the plan`)}
+  });
   const ax=document.getElementById('addExtra'); if(ax) ax.onclick=()=>openBuilder({mode:'extra'});
   const ae=document.getElementById('addEx'); if(ae) ae.onclick=openExercise;
   const aw=document.getElementById('addWatch'); if(aw) aw.onclick=openWatch;
