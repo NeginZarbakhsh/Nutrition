@@ -402,7 +402,7 @@ footer{margin-top:36px;font-size:12px;color:var(--muted)}
         <tbody>
           <tr><td>Protein</td><td><b>1½ palms</b> chicken, beef, lamb or mince · or 1 salmon fillet · or 3 eggs</td></tr>
           <tr><td>Rice or pasta</td><td><b>1 fist cooked</b> (¼ mug raw rice · ½ mug dry penne)</td></tr>
-          <tr><td>Or bread / potato</td><td><b>1 pitta</b> · 2 slices bread · 1 fist-size potato</td></tr>
+          <tr><td>Or bread / potato</td><td><b>1 wrap</b> (Lidl high-protein, 10g protein) · 1 fist-size potato</td></tr>
           <tr><td>Fat</td><td><b>1 tsp oil</b> for cooking. Cheese: 1 small handful</td></tr>
           <tr><td>Vegetables</td><td>Half the plate. No limit.</td></tr>
           <tr><td>Sauce</td><td>3 heaped tbsp garlic yogurt (adds 9g protein)</td></tr>
@@ -415,7 +415,7 @@ footer{margin-top:36px;font-size:12px;color:var(--muted)}
         <div class="rule"><span class="n">1</span><div><h3>Split the pot, not the portion</h3><p>Cook for exactly 2 (or 4) portions with the amounts shown, then pour into 2 (or 4) equal boxes.</p></div></div>
         <div class="rule"><span class="n">2</span><div><h3>One mug of raw rice is 4 portions</h3><p>A 250ml mug holds about 200g raw rice. For 2 portions use half a mug. Dry penne: one mug is 2 portions.</p></div></div>
         <div class="rule"><span class="n">3</span><div><h3>Oil with a teaspoon only</h3><p>Never pour from the bottle. 1 teaspoon = 45 kcal. Four glugs into a pot is about 400 kcal you will not notice.</p></div></div>
-        <div class="rule"><span class="n">4</span><div><h3>Count what comes in units</h3><p>Eggs, pittas, slices, salmon fillets, dates, walnut halves, pistachios. Counting is as accurate as weighing.</p></div></div>
+        <div class="rule"><span class="n">4</span><div><h3>Count what comes in units</h3><p>Eggs, wraps, slices, salmon fillets, dates, walnut halves, pistachios. Counting is as accurate as weighing.</p></div></div>
         <div class="rule"><span class="n">5</span><div><h3>Eating out or at family dinners</h3><p>Half the plate salad or sabzi, 1–2 palms of kabab or chicken, one fist of rice, and the tahdig is a treat, not a portion.</p></div></div>
       </div>
     </div>
@@ -540,7 +540,7 @@ const F={
  beans:{n:'Kidney beans, tinned',k:110,p:7.5,show:g=>[`${FR(g/240)} tin`,'drained'],shop:'tins',pack:[240,'tin (400g)']},
  broad:{n:'Broad beans, frozen',k:80,p:7.5,show:g=>[PL(g/100,'fist','fists'),''],shop:'frozen',pack:[750,'bag']},
  barley:{n:'Pearl barley',k:350,p:10,show:g=>[`${Math.max(1,Math.round(g/15))} heaped tbsp raw`,''],shop:'pantry',pack:[500,'bag (500g)']},
- pitta:{n:'Wholemeal pitta',k:250,p:10,show:g=>[HALF(g/60,'pitta','pittas'),''],shop:'bakery',pack:[360,'pack of 6']},
+ pitta:{n:'High-protein wrap (Lidl)',k:293,p:16,show:g=>[HALF(g/61,'wrap','wraps'),'9.8g protein each'],shop:'bakery',pack:[366,'pack of 6 wraps']},
  bread:{n:'Wholemeal bread',k:240,p:10,show:g=>[CNT(g/40,'slice','slices'),''],shop:'bakery',pack:[800,'loaf']},
  flour:{n:'Plain flour',k:350,p:10,show:g=>[`${Math.max(1,Math.round(g/15))} heaped tbsp`,''],shop:'pantry',pack:[1000,'bag (1kg)']},
  noodle:{n:'Reshteh noodles (or linguine)',k:350,p:12,show:g=>[`a small bundle, ${FR(g/30)} fist`,'dry'],shop:'pantry',pack:[500,'pack']},
@@ -573,10 +573,10 @@ const M={
  b_oatseggs:['Protein oats + 2 eggs','جو دوسر و تخم‌مرغ',[['oats',45],['almond',200],['chia',12],['yog',100],['egg',100]],'Soak oats, almond milk and chia overnight. In the morning stir the yogurt in cold. Boil or fry 2 eggs alongside.','cinnamon','Gym-day breakfast: carbs plus protein before you train.'],
  b_protoats:['Protein oats','جو دوسر پروتئینی',[['oats',50],['almond',200],['chia',12],['yog',150],['fruit',100]],'Soak oats, almond milk and chia overnight. Stir the yogurt in cold in the morning, fruit on top, cinnamon.','cinnamon'],
  b_omelette:['Omlet-e gojeh with feta','املت گوجه',[['egg',150],['tomato',0],['feta',30],['veg',150],['oil',5],['pitta',30]],'Fry chopped onion and 2 tomatoes in 1 tsp oil with turmeric until soft. Pour in 3 beaten eggs, stir gently, crumble feta over.','tomatoes, onion'],
- b_nan:['Nan-o-panir-o-sabzi + eggs','نان و پنیر و سبزی',[['pitta',60],['feta',40],['egg',100],['veg',80],['walnut',10]],'No cooking. Pitta, feta, a big pile of herbs, 2 boiled eggs from the Sunday batch, 2 walnuts.','mint, basil, tarragon, radish, spring onion'],
+ b_nan:['Nan-o-panir-o-sabzi + eggs','نان و پنیر و سبزی',[['pitta',61],['feta',40],['egg',100],['veg',80],['walnut',10]],'No cooking. Wrap, feta, a big pile of herbs, 2 boiled eggs from the Sunday batch, 2 walnuts.','mint, basil, tarragon, radish, spring onion'],
  b_kuku:['Kuku sabzi slice + cottage cheese','کوکو سبزی',[['egg',100],['veg',120],['oil',5],['cottage',100],['pitta',30]],'Cut from a kuku made the night before (see Kuku sabzi dinner). Cottage cheese on the side.','parsley, coriander, dill'],
  b_haleem:['Quick haleem','حلیم',[['oats',45],['chicken',75],['milk',200]],'Shred cooked chicken (from the Sunday batch) very fine. Simmer with oats and milk 5 min, mash with a fork until stretchy. Cinnamon on top, a tiny bit of sugar or honey if you want.','cinnamon','The Persian breakfast that happens to be high protein.'],
- b_mast:['Mast-o-khiar breakfast','ماست و خیار',[['yog',200],['veg',100],['walnut',10],['pitta',30],['egg',50]],'Grated cucumber, dried mint, walnuts and a pinch of salt into the yogurt. 1 boiled egg and half a pitta.','cucumbers, dried mint'],
+ b_mast:['Mast-o-khiar breakfast','ماست و خیار',[['yog',200],['veg',100],['walnut',10],['pitta',30],['egg',50]],'Grated cucumber, dried mint, walnuts and a pinch of salt into the yogurt. 1 boiled egg and half a wrap.','cucumbers, dried mint'],
  b_pancake:['Cottage cheese pancakes','پنکیک پنیری',[['egg',50],['flour',30],['cottage',100],['yog',80],['fruit',100]],'Blend egg, flour, cottage cheese and a pinch of baking powder. Fry 4 small pancakes on medium. Yogurt and fruit on top.','baking powder'],
  b_turkish:['Eggs on garlic yogurt','نیمرو با ماست',[['yog',150],['egg',100],['oil',5],['pitta',30],['veg',50]],'Yogurt with crushed garlic, lemon and salt on the plate. Chilli flakes or chilli crisp over it. 2 fried eggs on top.','garlic, chilli flakes'],
 
@@ -626,9 +626,9 @@ const M={
  s_eggs:['2 boiled eggs & cucumber','دو تخم‌مرغ آب‌پز',[['egg',100],['veg',100]],'From the Sunday batch. Salt, pepper, cucumber.',''],
 /* breakfast extras */
  b_adasi:['Adasi breakfast','عدسی صبحانه',[['lentils',40],['egg',100],['veg',80],['pitta',30],['oil',3]],'Warm a bowl of lentils from the batch with cumin and lemon. 2 fried or boiled eggs on top.','cumin, lemon','The Tehran street breakfast.'],
- b_toast:['Cottage cheese & tomato toast','نان تست و پنیر',[['bread',80],['cottage',150],['veg',100]],'2 slices of toast, cottage cheese spread thick, sliced tomato, black pepper, dried mint or za\'atar.','tomatoes'],
+ b_toast:['Cottage cheese & tomato wrap','لقمه پنیر و گوجه',[['pitta',61],['cottage',150],['veg',100]],'Warm the wrap in a dry pan 10 seconds a side. Cottage cheese spread thick, sliced tomato, black pepper, dried mint or za\'atar.','tomatoes'],
  b_skyr:['Skyr bowl with walnuts & dates','ماست و گردو و خرما',[['yog',200],['walnut',10],['date',16],['oats',20]],'Yogurt in a bowl, oats sprinkled over, 2 chopped dates and 4 walnut halves on top. Cinnamon.','cinnamon'],
- b_eggsalad:['Egg & cottage cheese on toast','الویه تخم‌مرغ',[['egg',100],['cottage',100],['bread',40],['veg',60]],'Mash 2 boiled eggs with cottage cheese, salt, pepper and spring onion. On toast.','spring onion'],
+ b_eggsalad:['Egg & cottage cheese wrap','لقمه تخم‌مرغ',[['egg',100],['cottage',100],['pitta',30],['veg',60]],'Mash 2 boiled eggs with cottage cheese, salt, pepper and spring onion. Roll in half a wrap.','spring onion'],
 
 /* pasta */
  m_chickenpasta:['Chicken & tomato pasta','پاستا مرغ و گوجه',[['chicken',130],['pasta',60],['veg',150],['oil',5],['cheddar',15]],'Boil the pasta. Meanwhile fry chicken strips with garlic and onion in 1 tsp oil, add tinned tomatoes and spinach, simmer 8 min. Toss with the pasta, a little cheese on top.','garlic, onion, tinned tomatoes, spinach','Your usual, measured: 1½ palms of chicken to 1 fist of pasta.'],
@@ -655,7 +655,7 @@ const M={
 /* grill, pan, wraps */
  m_shami:['Shami','شامی',[['mince',110],['split',25],['egg',25],['veg',150],['oil',8],['pitta',30]],'Boil split peas soft, blitz with mince, onion, 1 egg and turmeric. Flat patties, 2 tsp oil in a non-stick pan. With pickles and tomato.','onion, khiar shoor (pickles), tomatoes'],
  m_kababtorsh:['Kabab torsh','کباب ترش',[['beef',140],['walnut',8],['molasses',10],['veg',200],['pitta',30]],'Marinate beef cubes in pomegranate molasses, ground walnuts, garlic and herbs. Skewers or a hot pan.','garlic, parsley, mint'],
- m_wrap:['Chicken loghmeh wrap','لقمه مرغ',[['chicken',130],['pitta',60],['yog',60],['veg',150]],'Pan-fried or Sunday-prep chicken in a pitta with garlic yogurt, lettuce, tomato and pickles.','lettuce, tomatoes, garlic','Good for taking to work.'],
+ m_wrap:['Chicken loghmeh wrap','لقمه مرغ',[['chicken',130],['pitta',61],['yog',60],['veg',150]],'Pan-fried or Sunday-prep chicken in a wrap with garlic yogurt, lettuce, tomato and pickles.','lettuce, tomatoes, garlic','Good for taking to work.'],
 
 /* eggs & kuku */
  m_kukuloobia:['Kuku loobia sabz','کوکو لوبیا سبز',[['egg',150],['veg',200],['cottage',80],['oil',5]],'Chopped green beans and onion fried soft with turmeric, 3 eggs poured over, lid on.','green beans, onion'],
@@ -789,7 +789,7 @@ const SVGI={
 /* ---------- meal resolution ---------- */
 const SLOTTYPE=['b','m','s','m'];
 const typeOf=id=>id.startsWith('b_')?'b':id.startsWith('s_')?'s':'m';
-const calc=items=>items.reduce((a,[k,g])=>{a.k+=F[k].k*g/100;a.p+=F[k].p*g/100;return a},{k:0,p:0});
+const calc=items=>items.reduce((a,[k,g])=>{if(!F[k])return a;a.k+=F[k].k*g/100;a.p+=F[k].p*g/100;return a},{k:0,p:0});
 const planId=(i,si)=>W[i][si]===FREE?'free':W[i][si];
 const chosenId=(i,si)=>S.swaps[i+'-'+si]||planId(i,si);
 function mealAt(i,si){
@@ -1092,7 +1092,7 @@ function openPicker(si){
 
 /* builder: every food steps by a hand-sized amount */
 const STEP={chicken:50,beef:50,mince:50,lamb:50,salmon:60,egg:50,yog:30,cottage:30,feta:15,cheddar:12.5,whey:15,chickpea:60,beans:60,lentils:25,split:15,
- rice:12.5,pasta:13.75,pitta:30,bread:40,potato:75,noodle:15,oats:22.5,flour:15,barley:15,fruit:55,date:8,plum:8,pineapple:50,avocado:35,
+ rice:12.5,pasta:13.75,pitta:30.5,bread:40,potato:75,noodle:15,oats:22.5,flour:15,barley:15,fruit:55,date:8,plum:8,pineapple:50,avocado:35,
  oil:5,butter:5,sesame:5,walnut:2.5,pist:6,chia:12,molasses:10,milk:62.5,almond:62.5,pea:50,edamame:50,broad:50,veg:50};
 const BU=[
  ['Protein',['chicken','beef','mince','lamb','salmon','egg','yog','cottage','feta','cheddar','whey','chickpea','lentils']],
