@@ -504,6 +504,13 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
 .gin input#gMin{flex:0 0 72px}
 ul.chg{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 ul.chg li{display:grid;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px}
+
+.safety{background:var(--saffron-soft);border-radius:12px;padding:10px 12px;font-size:13px}
+.pform{grid-template-columns:minmax(0,1fr)}
+.pform label,.pf2>*{min-width:0}
+.pf2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.pform .field,.pform select{width:100%;max-width:100%;box-sizing:border-box}
+.sheet .sb{overflow-x:hidden}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -573,7 +580,7 @@ ul.chg li{display:grid;gap:2px;background:var(--surface);border:1px solid var(--
   <section id="prod" class="hide">
     <div class="section" style="margin-top:16px">
       <h2>My products</h2>
-      <p class="sub">The exact things you buy at Lidl Little Island. Each product replaces the typical values for that ingredient, so every meal, portion and shopping list uses your real product.</p>
+      <p class="sub">The exact things you buy. Each product replaces the typical values for that ingredient, so every meal, portion and shopping list uses your real product.</p>
       <div class="howadd">
         <div><b>Easiest: send Claude a photo</b><span>Photograph the nutrition table on the back of the pack and send it in your chat with Claude. Claude adds it here and tells you exactly how much makes one portion.</span></div>
         <div><b>Or add it yourself</b><span>Copy kcal and protein per 100g from the label.</span><button class="btn primary" id="addProd" type="button" style="margin-top:8px">+ Add a product</button></div>
@@ -686,7 +693,7 @@ ul.chg li{display:grid;gap:2px;background:var(--surface);border:1px solid var(--
       <h2>How you get the sporty, toned look</h2>
       <p class="sub">"Toned" is two things at once: enough muscle, and low enough body fat to see it. For most women visible definition starts around 20–24% body fat. The order below is the order of importance.</p>
       <div class="rules">
-        <div class="rule"><span class="n">1</span><div><h3>Lift, and lift a bit heavier over time</h3><p>Your FFS classes: Upper Body, Lower Body and Functional each week, with Metabolic swapped in at most once a week. In each class, log the main lifts in the app (weight × reps of your best set) and try to beat them. A strength class every time beats more cardio for the toned look. This is 70% of the result.</p></div></div>
+        <div class="rule"><span class="n">1</span><div><h3>Lift, and lift a bit heavier over time</h3><p>Your gym classes: Upper Body, Lower Body and Functional each week, with Metabolic swapped in at most once a week. In each class, log the main lifts in the app (weight × reps of your best set) and try to beat them. A strength class every time beats more cardio for the toned look. This is 70% of the result.</p></div></div>
         <div class="rule"><span class="n">2</span><div><h3>Protein: about ${'{'}2 g per kg{'}'} every day</h3><p>Around 110g for you, in 4 portions of 25–35g. A protein snack before bed (cottage cheese or skyr) helps overnight repair.</p></div></div>
         <div class="rule"><span class="n">3</span><div><h3>Lose fat slowly: 0.25–0.4 kg a week</h3><p>Faster than that and you lose muscle and strength, and you look flat, not toned. Plan 10–14 weeks of this, then 4–6 weeks at maintenance (eat about 250 kcal more) so your body settles. Then decide: another short cut, or a slow build.</p></div></div>
         <div class="rule"><span class="n">4</span><div><h3>Carbs are your training fuel</h3><p>Rice, oats, potato and fruit before or after lifting. Gym days get 100 kcal more. Do not cut carbs to zero: your lifts and your muscles look better with them.</p></div></div>
@@ -727,14 +734,14 @@ ul.chg li{display:grid;gap:2px;background:var(--surface);border:1px solid var(--
     </div>
     <div class="section">
       <h2>Garmin sync (iPhone)</h2>
-      <p class="sub">Garmin does not let small apps read your account, but your iPhone can pass the number along. Set this up once, about 5 minutes. It works with the app opened from neginzarbakhsh.github.io/Nutrition (or its Home Screen icon).</p>
+      <p class="sub">Garmin does not let small apps read your account, but your iPhone can pass the number along. Set this up once, about 5 minutes. It works with the app opened from its web address or Home Screen icon.</p>
       <div class="rules">
         <div class="rule"><span class="n">1</span><div><h3>Let Garmin write to Apple Health</h3><p>Garmin Connect app → More (☰) → Settings → Connected Apps → Apple Health → turn on <b>Active Calories</b>. Then in the Health app, allow Garmin Connect to write Active Energy.</p></div></div>
         <div class="rule"><span class="n">2</span><div><h3>Make the Shortcut</h3><p>Shortcuts app → + → add these 4 actions:<br>
           <b>Find Health Samples</b> where Type is <b>Active Energy</b>, Start Date is <b>Today</b> and Source is <b>Connect</b> (Garmin), so your iPhone's own step counting is left out<br>
           <b>Calculate Statistics</b>: <b>Sum</b> of Health Samples<br>
           <b>Round Number</b> (Ones place)<br>
-          <b>Open URLs</b>: <code class="url">https://neginzarbakhsh.github.io/Nutrition/?active=</code> then tap the blue Rounded Number to add it at the end<br><br>
+          <b>Open URLs</b>: <code class="url" id="shortcutUrl">this app's address + ?active=</code> then tap the blue Rounded Number to add it at the end<br><br>
           Name it <b>Sofreh calories</b>.</p></div></div>
         <div class="rule"><span class="n">3</span><div><h3>Run it after class</h3><p>After class, open Garmin Connect so the watch syncs, then tap the Shortcut.</p></div></div>
       </div>
@@ -746,6 +753,17 @@ ul.chg li{display:grid;gap:2px;background:var(--surface);border:1px solid var(--
         <thead><tr><th>Day</th><th>Session</th><th class="r">Steps</th></tr></thead>
         <tbody id="trainbody"></tbody>
       </table></div>
+    </div>
+    <div class="section">
+      <h2>Backup</h2>
+      <p class="sub">Your data lives only on this phone. Save a backup before changing phone or clearing Safari, then restore it on the new one.</p>
+      <div class="sbtns"><button class="btn primary" type="button" id="bkExport">Save backup</button>
+        <label class="btn" for="bkImport" style="cursor:pointer">Restore backup<input type="file" id="bkImport" accept="application/json,.json" hidden></label></div>
+    </div>
+    <div class="section">
+      <h2>Privacy & safety</h2>
+      <p class="sub">No account, no ads, no tracking. Everything you enter (weight, meals, photos) is stored only in this browser on this phone and is never sent anywhere.</p>
+      <p class="sub">Sofreh gives general nutrition and exercise guidance for healthy adults. It is not medical advice and does not replace a doctor or registered dietitian. Calories and portions are estimates. Do not use it to lose weight if you are pregnant or breastfeeding, under 18, have or had an eating disorder, or have a medical condition, without professional advice. Stop and seek help if you feel unwell, your period stops, or food starts to feel stressful.</p>
     </div>
     <div class="section">
       <h2>Start again</h2>
@@ -1017,7 +1035,9 @@ const SHOPCAT=[['meat','Meat & fish'],['dairy','Dairy & eggs'],['frozen','Frozen
 </script><script id="app">
 const LS='sofreh-v1';
 let S={};
-try{S=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){S={}}
+let FRESH=false;
+try{const raw=localStorage.getItem(LS);FRESH=!raw;S=JSON.parse(raw||'{}')||{}}catch(e){S={}}
+if(!FRESH&&!S.setupDone) S.setupDone=true;
 ['done','swaps','have','shop','custom','extras','actual','skip','ex','gymskip','watch','usual'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[]; S.batches=S.batches||[];
 S.weight=S.weight||54.5; S.height=S.height||155; S.age=S.age||30; S.sex=S.sex||'f'; S.act=S.act||1.5; S.goal=(S.goal===undefined)?0.15:S.goal;
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}};
@@ -1481,7 +1501,7 @@ function openWorkout(i,key){
   if(!P.ex.length){
     h+=`<div class="wex"><b>How to get the most from it</b><p class="wcue">Eat a carb + protein meal 2–3 hours before (or a banana and a yogurt 45 min before an early class). Have your next meal within 2 hours after. Today you get ${P.kcal} kcal more food.</p></div>`;
   }else{
-    h+=`<p class="small" style="margin:0 0 10px">What this class contains (from your FFS app). Nothing to type: picking the class is enough.</p><div class="wlist">`;
+    h+=`<p class="small" style="margin:0 0 10px">What this class usually contains. Nothing to type: picking the class is enough.</p><div class="wlist">`;
     P.ex.forEach(id=>{const e=EX[id];
       h+=`<div class="wex${id==='lateral'?' addon':''}"><div class="wh"><b>${e[0]}</b><span class="num">${e[3]}</span></div><p class="wcue">${e[4]}</p></div>`});
     h+='</div>';
@@ -1630,7 +1650,7 @@ function mealView(m){
   }
   if(m.free){
     return `<div class="meal"><div class="mhead">${icon('free')}<div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag free">Free meal</span></div><h3>Eat what you want</h3></div></div>
-      <div class="freebox">One plate, no counting. Kabab, pizza, your mum's tahdig, anything.</div>${acts}<div class="links">${change}</div></div>`+mealReset(m);
+      <div class="freebox">One plate, no counting. Kabab, pizza, a family dinner, anything.</div>${acts}<div class="links">${change}</div></div>`+mealReset(m);
   }
   let tag='';
   if(m.si===1&&role==='cook') tag='<span class="tag cook">Cook ×2 today</span>';
@@ -1944,6 +1964,7 @@ document.getElementById('saveMe').onclick=()=>{
   const ht=parseFloat(document.getElementById('hIn').value); if(ht>120&&ht<220) S.height=ht;
   const ag=parseInt(document.getElementById('aIn').value,10); if(ag>14&&ag<100) S.age=ag;
   S.sex=document.getElementById('sexIn').value; S.act=parseFloat(document.getElementById('actIn').value); S.goal=parseFloat(document.getElementById('goalIn').value);
+  if(S.weight/((S.height/100)**2)<18.5&&S.goal>0){S.goal=0;toast('Your weight is already low for your height, so the goal is set to maintain.')}
   const cm=parseInt(document.getElementById('coffeeIn').value,10); if(cm>=0&&cm<=500) S.coffeeMl=cm;
   const st=document.getElementById('startIn').value;
   if(st){const [y,m,d]=st.split('-').map(Number);S.anchor=iso(mondayOf(new Date(y,m-1,d)))}
@@ -1955,6 +1976,8 @@ document.getElementById('addLog').onclick=()=>{
   S.log.push({d:iso(new Date()),w:w||null,waist:wa||null,hips:hp||null}); if(w) S.weight=w;
   save();['logW','logWaist','logHips'].forEach(x=>document.getElementById(x).value='');renderTarget();renderMe();
 };
+document.getElementById('bkExport').onclick=exportBackup;
+document.getElementById('bkImport').onchange=e=>{const f=e.target.files&&e.target.files[0];if(f)importBackup(f)};
 document.getElementById('resetTicks').onclick=e=>{const b=e.currentTarget;
   if(!b.classList.contains('sure')){b.classList.add('sure');b.textContent='Tap again to clear every day';clearTimeout(b._t);b._t=setTimeout(()=>{b.classList.remove('sure');b.textContent='Start completely fresh'},3500);return}
   ['done','swaps','have','shop','custom','extras','actual','skip','ex','gymskip','watch','wdone','wprog'].forEach(k=>S[k]={});
@@ -2051,6 +2074,47 @@ function openAddProduct(){
   openSheet();
 }
 
+/* ---------- first-run setup ---------- */
+function openSetup(){
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">Welcome to Sofreh</h2></div>
+    <p class="small muted" style="margin:0">Persian meals, no kitchen scale. Tell us about you and every portion is sized for your body.</p>`;
+  sBody.innerHTML=`<div class="pform">
+    <div class="pf2"><label for="su-w">Weight (kg)<input id="su-w" class="field" type="number" inputmode="decimal" step="0.1" value="${S.weight}"></label>
+      <label for="su-h">Height (cm)<input id="su-h" class="field" type="number" inputmode="numeric" value="${S.height}"></label></div>
+    <div class="pf2"><label for="su-a">Age<input id="su-a" class="field" type="number" inputmode="numeric" value="${S.age}"></label>
+      <label for="su-s">Body<select id="su-s"><option value="f">Female</option><option value="m">Male</option></select></label></div>
+    <label for="su-act">How active are you?<select id="su-act"><option value="1.375">Light: desk job, gym 1–2×</option><option value="1.5" selected>Moderate: gym 3× a week + 7–10k steps</option><option value="1.65">Active: gym 4–5× or on your feet all day</option></select></label>
+    <label for="su-g">Your goal<select id="su-g"><option value="0.15">Look leaner and more toned (lose fat, keep muscle)</option><option value="0.08">Very slow change, mostly muscle</option><option value="0">Stay where I am</option></select></label>
+    <div class="safety"><b>Before you start.</b> Sofreh gives general guidance, not medical advice. Do not use it to lose weight if you are under 18, pregnant or breastfeeding, have or had an eating disorder, or have a medical condition, without asking your doctor first.</div>
+    <label class="small" for="su-ok" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="su-ok" style="width:20px;height:20px"> I understand</label>
+    <p class="small" id="su-msg" style="color:var(--anar)"></p>
+    <button class="btn primary" type="button" id="su-go" style="width:100%;justify-content:center;padding:13px">Start</button>
+    <p class="small muted">Everything you enter stays on this phone. No account, no tracking.</p></div>`;
+  document.getElementById('su-s').value=S.sex;
+  document.getElementById('su-go').onclick=()=>{
+    const w=parseFloat(document.getElementById('su-w').value), ht=parseFloat(document.getElementById('su-h').value), ag=parseInt(document.getElementById('su-a').value,10);
+    const msg=document.getElementById('su-msg');
+    if(!(w>30&&w<200)||!(ht>120&&ht<220)||!(ag>0&&ag<100)){msg.textContent='Please check weight, height and age.';return}
+    if(!document.getElementById('su-ok').checked){msg.textContent='Please tick "I understand" to continue.';return}
+    if(ag<18){msg.textContent='Sofreh is for adults. Please talk to your doctor or a dietitian about your food.';return}
+    S.weight=w;S.height=ht;S.age=ag;S.sex=document.getElementById('su-s').value;S.act=parseFloat(document.getElementById('su-act').value);S.goal=parseFloat(document.getElementById('su-g').value);
+    const bmi=w/((ht/100)**2); if(bmi<18.5&&S.goal>0){S.goal=0;toast('Your weight is already low for your height, so Sofreh sets you to maintain.')}
+    S.setupDone=true;S.anchor=iso(mondayOf(new Date()));save();closeSheet();renderTarget();cur=todayIdx();tab='sum';renderDay();
+  };
+  openSheet();
+}
+
+/* ---------- backup ---------- */
+function exportBackup(){
+  const data=JSON.stringify({app:'sofreh',v:1,saved:new Date().toISOString(),state:S});
+  try{const blob=new Blob([data],{type:'application/json'}), url=URL.createObjectURL(blob), el=document.createElement('a');
+    el.href=url;el.download=`sofreh-backup-${iso(new Date())}.json`;document.body.appendChild(el);el.click();el.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+    toast('Backup saved to your Files')}catch(e){toast('Could not save the backup on this browser')}
+}
+function importBackup(file){
+  const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.app!=='sofreh'||!d.state)throw 0;S=d.state;S.setupDone=true;save();location.reload()}catch(e){toast('That file is not a Sofreh backup')}};r.readAsText(file);
+}
+
 /* ---------- tabs ---------- */
 const TABS=['today','week','prod','lidl','hands','me'];
 function showTab(id){
@@ -2063,6 +2127,8 @@ function showTab(id){
 document.querySelectorAll('.tabbar button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
 applyProducts(); renderTarget(); renderHands(); renderDay(); readWatchParam();
+if(!S.setupDone) openSetup();
+try{document.getElementById('shortcutUrl').textContent=location.origin+location.pathname+'?active='}catch(e){}
 document.getElementById('addProd').onclick=openAddProduct;
 const h0=location.hash.slice(1); if(TABS.includes(h0)) showTab(h0);
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(TABS.includes(h))showTab(h)});

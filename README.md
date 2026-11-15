@@ -37,3 +37,9 @@ All the food data is at the top of `index.html`, in the `<script id="data">` blo
 - `W`: the 28 days, as `[breakfast, lunch, snack, dinner]`.
 
 Calories are estimates. This is general guidance, not medical advice.
+
+## Privacy
+
+No account, no tracking. Everything stays in the browser on your phone. Use **Me → Backup** before changing phone.
+
+See `LAUNCH-CHECKLIST.md` for what is needed to sell Sofreh.
