@@ -688,7 +688,7 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
     </div>
     <div class="section">
       <h2>Garmin sync (iPhone)</h2>
-      <p class="sub">Garmin does not let small apps read your account, but your iPhone can pass the number along. Set this up once, about 5 minutes. It works on the GitHub link of this app (neginzarbakhsh.github.io/Nutrition), added to your Home Screen.</p>
+      <p class="sub">Garmin does not let small apps read your account, but your iPhone can pass the number along. Set this up once, about 5 minutes. It works with the app opened from neginzarbakhsh.github.io/Nutrition (or its Home Screen icon).</p>
       <div class="rules">
         <div class="rule"><span class="n">1</span><div><h3>Let Garmin write to Apple Health</h3><p>Garmin Connect app → More (☰) → Settings → Connected Apps → Apple Health → turn on <b>Active Calories</b>. Then in the Health app, allow Garmin Connect to write Active Energy.</p></div></div>
         <div class="rule"><span class="n">2</span><div><h3>Make the Shortcut</h3><p>Shortcuts app → + → add these 4 actions:<br>
@@ -716,7 +716,7 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
     </div>
   </section>
 
-  <footer><b style="color:var(--ink)">Version 17 · 15 Nov 2026</b> · Expert update: training programme, fat floor, gym-day fuel.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
+  <footer>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Sections"><div class="in">
@@ -1934,7 +1934,16 @@ const h0=location.hash.slice(1); if(TABS.includes(h0)) showTab(h0);
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(TABS.includes(h))showTab(h)});
 
 if('serviceWorker' in navigator && /github\.io$|^localhost$/.test(location.hostname)){
-  try{navigator.serviceWorker.register('sw.js').then(r=>{try{r.update()}catch(e){}}).catch(()=>{})}catch(e){}
+  /* always the newest version: check on open and whenever the app comes back to the screen,
+     and reload once when a new version has been installed */
+  try{
+    let reloaded=false;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloaded)return;reloaded=true;location.reload()});
+    navigator.serviceWorker.register('sw.js').then(r=>{
+      const check=()=>{try{r.update()}catch(e){}};
+      check(); document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')check()});
+    }).catch(()=>{});
+  }catch(e){}
 }
 </script>
 
