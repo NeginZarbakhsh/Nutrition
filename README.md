@@ -2,7 +2,10 @@
 
 A 28-day Persian meal plan for gentle fat loss and muscle definition. No kitchen scale needed.
 
-- **Today**: the four meals for the day, with amounts in hand measures (palm, fist, matchbox, teaspoon, heaped tablespoon, mug) or pack fractions ("½ tin", "⅓ of the tub"). Tick meals as you eat them, swap any meal you don't fancy.
+- **Today**: a protein ring, then the four meals for the day with amounts in hand measures (palm, fist, matchbox, teaspoon, heaped tablespoon, mug) or pack fractions ("½ tin", "⅓ of the tub"). Tick meals as you eat them.
+- **Choose any meal**: tap *Change* on a meal to pick from 80 dishes (rice, pasta, khoresh, kabab, kuku, soups, light meals) with search and filters, or *Build my own* with palms, fists and spoons and see the protein straight away.
+- **Extras**: add anything else you ate (a latte, dates, a slice of cake) so the protein and calories stay honest.
+- **Week**: a protein chart of eaten vs planned vs target, and the week's meals at a glance.
 - **What you need today**: everything the day's meals need, so you can check the fridge and buy the rest at Lidl.
 - **Lidl list**: one weekly shop, worked out from the week's meals and rounded to Lidl pack sizes.
 - **No-scale guide**: how the hand measures work, and tricks like "cook 2 portions, split the pot into 2 boxes".
