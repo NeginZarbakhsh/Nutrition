@@ -635,7 +635,6 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
           <option value="0.15">Define: lose fat slowly, keep muscle</option>
           <option value="0.08">Recomp: very slow, mostly muscle</option>
           <option value="0">Maintain</option></select></label>
-        <label for="wbIn" class="wide">Normal Garmin "Active" kcal on a day you wear the watch<input id="wbIn" type="number" inputmode="numeric"></label>
         <label for="startIn">Cycle started<input id="startIn" type="date"></label>
         <button class="btn primary" id="saveMe" type="button" style="justify-content:center;border-radius:10px">Save</button>
       </div>
@@ -706,14 +705,14 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
       <div class="rules">
         <div class="rule"><span class="n">1</span><div><h3>Let Garmin write to Apple Health</h3><p>Garmin Connect app → More (☰) → Settings → Connected Apps → Apple Health → turn on <b>Active Calories</b>. Then in the Health app, allow Garmin Connect to write Active Energy.</p></div></div>
         <div class="rule"><span class="n">2</span><div><h3>Make the Shortcut</h3><p>Shortcuts app → + → add these 4 actions:<br>
-          <b>Find Health Samples</b> where Type is <b>Active Energy</b> and Start Date is <b>Today</b><br>
+          <b>Find Health Samples</b> where Type is <b>Active Energy</b>, Start Date is <b>Today</b> and Source is <b>Connect</b> (Garmin), so your iPhone's own step counting is left out<br>
           <b>Calculate Statistics</b>: <b>Sum</b> of Health Samples<br>
           <b>Round Number</b> (Ones place)<br>
           <b>Open URLs</b>: <code class="url">https://neginzarbakhsh.github.io/Nutrition/?active=</code> then tap the blue Rounded Number to add it at the end<br><br>
           Name it <b>Sofreh calories</b>.</p></div></div>
-        <div class="rule"><span class="n">3</span><div><h3>Run it in the evening</h3><p>Open Garmin Connect first so the watch syncs, then tap the Shortcut. Or let it run itself: Shortcuts → Automation → Time of Day → 7:30pm → Run Sofreh calories.</p></div></div>
+        <div class="rule"><span class="n">3</span><div><h3>Run it after class</h3><p>After class, open Garmin Connect so the watch syncs, then tap the Shortcut.</p></div></div>
       </div>
-      <p class="lead">Active calories are what you burn moving: steps, gym, everything. Your plan already counts a normal day (about the number shown in the Garmin box on Today). You eat back half of anything above that. A very quiet day lowers the target a little, but only after 6pm.</p>
+      <p class="lead">You wear the watch only for workouts, so the number is the workout's calories. You eat back about 45% of it; it replaces the class estimate for that day. Your steps the rest of the day are already counted in your plan.</p>
     </div>
     <div class="section">
       <h2>Your training week</h2>
@@ -1026,13 +1025,14 @@ const burnOf=x=>x.kcal>0?x.kcal:Math.round((exInfo(x.type)[2]-1)*S.weight*x.min/
    Your activity level already assumes a normal amount (TDEE - BMR - 10% for digestion);
    you eat back half of anything above it, or eat a bit less below it (only after 6pm, once the day is mostly done). */
 /* your normal Garmin 'Active' on a day you wear it. Default from your own data (Oct–Nov 2026: ~350 on worn days) */
-const watchBase=()=>S.wbase>0?S.wbase:350;
-function watchAdj(w){let v=Math.round((w.a-watchBase())*0.5/10)*10;const late=new Date(w.t).getHours()>=18;if(!late)v=Math.max(0,v);return Math.max(-250,Math.min(500,v))}
+/* the watch is worn only for the workout: its number is the workout's calories.
+   You eat back about 45% of it (watches run high), and it replaces the class estimate. Max +400. */
+function watchAdj(w){return Math.min(400,Math.round(w.a*0.45/10)*10)}
 const exAdj=i=>{if(S.watch[i])return watchAdj(S.watch[i]);let v=0;(S.ex[i]||[]).forEach(x=>v+=Math.round(burnOf(x)*0.5/10)*10);return v};
 /* more fuel on lifting days, a little less on rest days (weekly total stays the same) */
 /* class days get more food (strength +100, functional +120, metabolic +150), rest days a little less */
 const classKcal=i=>{const k=progOf(i);if(!k)return 0;const planned=TRAIN[i%7].gym&&!S.gymskip[i], extra=!TRAIN[i%7].gym&&trainedOn(i);return (planned||extra)?PROGRAM[k].kcal:0};
-const cycleAdj=i=>S.watch[i]?0:(classKcal(i)||(i%7===6?0:-75));
+const cycleAdj=i=>S.watch[i]?0:(classKcal(i)||(i%7===6?0:-75));  /* with a watch number, exAdj replaces the class estimate */
 const KTd=i=>KT()+exAdj(i)+cycleAdj(i);
 
 /* ---------- icons per dish type ---------- */
@@ -1244,10 +1244,8 @@ function exCard(i){
   const tr=TRAIN[i%7], list=S.ex[i]||[], adj=exAdj(i);
   let h=`<div class="excard"><div class="exh"><span class="lbl">Exercise today</span>${adj?`<span class="exadj num">${adj>0?'+':''}${adj} kcal to eat</span>`:''}</div>`;
   const w=S.watch[i];
-  if(w){const t=new Date(w.t), late=t.getHours()>=18;
-    h+=`<div class="exrow watch"><span><b>Garmin: ${w.a} active kcal</b><small class="num">Synced ${t.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})} · a normal day for you is about ${watchBase()} · ${adj>=0?'+':''}${adj} kcal${!late&&w.a<watchBase()?' (sync again after 6pm for the full day)':''}</small></span>
-      </div>`;
-    h+=`<p class="small muted" style="margin:6px 0 0">Your Garmin total already includes every workout and walk, so nothing else needs logging today.</p>`;
+  if(w){
+    h+=`<div class="exrow watch"><span><b>Watch: ${w.a} kcal workout</b><small class="num">+${adj} kcal food today (about 45% of what the watch says). This replaces the class estimate.</small></span></div>`;
     return h+'</div>';
   }
   /* one tap: pick the class you did; the app estimates the rest. Logging lifts is optional. */
@@ -1268,7 +1266,7 @@ function exCard(i){
   list.forEach((x,j)=>{const b=burnOf(x);
     h+=`<div class="exrow"><span><b>${exInfo(x.type)[1]} · ${x.min} min</b><small class="num">${x.kcal>0?'Your watch: ':'About '}${b} kcal burned · you eat back ${Math.round(b*0.5/10)*10}</small></span>
       <button class="lnk" type="button" data-exdel="${j}">Remove</button></div>`});
-  h+=`<button class="btn soft" type="button" id="addEx" style="margin-top:10px;width:100%;justify-content:center;min-height:44px">+ Log other exercise (run, class, swim…)</button><p class="small muted" style="margin:8px 0 0">Wearing your watch? Just type its active calories at the top instead.</p></div>`;
+  h+=`<button class="btn soft" type="button" id="addEx" style="margin-top:10px;width:100%;justify-content:center;min-height:44px">+ Log other exercise (run, class, swim…)</button><p class="small muted" style="margin:8px 0 0">Wore your watch? Type the workout calories at the top for a more exact number.</p></div>`;
   return h;
 }
 function openExercise(){
@@ -1301,8 +1299,8 @@ function openWatch(){
   const w=S.watch[cur];
   sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">Calories from your Garmin</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
   document.getElementById('sx').onclick=closeSheet;
-  sBody.innerHTML=`<p class="small" style="margin:0 0 10px">In the Garmin Connect app, open <b>Calories</b> for today and type the <b>Active</b> number (not Total, not Resting).</p>
-    <label class="brow" for="wk" style="display:grid"><span class="nm">Active calories today<small>A normal day for you is about ${watchBase()}</small></span>
+  sBody.innerHTML=`<p class="small" style="margin:0 0 10px">After your class, open the workout in Garmin Connect and type its <b>Calories</b>. Only the workout: you do not wear the watch the rest of the day, so steps are already counted in your plan.</p>
+    <label class="brow" for="wk" style="display:grid"><span class="nm">Workout calories<small>From the Garmin activity</small></span>
       <input id="wk" class="field" type="number" inputmode="numeric" placeholder="e.g. 620" value="${w?w.a:''}" style="max-width:130px;justify-self:end"></label>
     <div class="exsum" id="wsum">Type the number to see what it changes.</div>
     <button class="btn primary" type="button" id="wsave" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Save</button>
@@ -1310,7 +1308,7 @@ function openWatch(){
   const inp=document.getElementById('wk');
   const upd=()=>{const v=parseInt(inp.value,10);if(!(v>0)){document.getElementById('wsum').textContent='Type the number to see what it changes.';return}
     const adj=watchAdj({a:v,t:Date.now()});
-    document.getElementById('wsum').innerHTML=adj>0?`You moved more than usual. Eat <b class="num">${adj} kcal more</b> today (half the extra).`:adj<0?`A quieter day than usual. Eat <b class="num">${-adj} kcal less</b> today.`:`About a normal day. Your target stays the same.${new Date().getHours()<18?' Before 6pm the app never lowers it.':''}`};
+    document.getElementById('wsum').innerHTML=`Eat <b class="num">${adj} kcal more</b> today. That is about 45% of the workout: watches run high, and the rest is your fat loss.`};
   inp.oninput=upd; upd();
   document.getElementById('wsave').onclick=()=>{const v=parseInt(inp.value,10);if(v>0){S.watch[cur]={a:v,t:Date.now()};save()}closeSheet();renderDay()};
   openSheet(); setTimeout(()=>{try{inp.focus()}catch(e){}},300);
@@ -1325,7 +1323,7 @@ function readWatchParam(){
   const adj=exAdj(i);
   sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">Garmin synced</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
   document.getElementById('sx').onclick=closeSheet;
-  sBody.innerHTML=`<div class="exsum"><b class="num">${v} active kcal</b> today.<br>${adj>0?`You can eat <b>${adj} kcal more</b>. Rice, bread and fruit get a little bigger.`:adj<0?`A quieter day: <b>${-adj} kcal less</b> today.`:'About a normal day. Your target stays the same.'}</div>
+  sBody.innerHTML=`<div class="exsum"><b class="num">${v} kcal</b> workout.<br>You can eat <b>${adj} kcal more</b> today. Rice, bread and fruit get a little bigger.</div>
     <button class="btn primary" type="button" id="gotit" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Got it</button>`;
   document.getElementById('gotit').onclick=closeSheet; openSheet();
 }
@@ -1457,9 +1455,9 @@ function dayHeader(meals,T){
         <div class="hbar"><i style="width:${pct(T.p,PT())}%;background:rgba(255,255,255,.3)"></i><i style="width:${pct(T.ep,PT())}%;background:var(--saffron)"></i></div></div>
       <div class="tile"><span class="lbl">Calories</span><div class="tv num">${Math.round(T.ek)}<small>/${tgt.toLocaleString()}</small></div>
         <div class="hbar"><i style="width:${pct(T.k,tgt)}%;background:rgba(255,255,255,.3)"></i><i style="width:${pct(T.ek,tgt)}%;background:var(--saffron)"></i></div></div>
-      <label class="tile watch" for="watchIn"><span class="lbl">Watch active</span>
+      <label class="tile watch" for="watchIn"><span class="lbl">Watch workout</span>
         <span class="win"><input id="watchIn" type="number" inputmode="numeric" placeholder="kcal" value="${w?w.a:''}" aria-label="Active calories from your watch"><button type="button" id="watchSave" aria-label="Save watch calories">OK</button></span>
-        <small class="wnote num">${w?(adj>0?`+${adj} kcal to eat`:adj<0?`${adj} kcal today`:'normal day'):`normal ≈ ${watchBase()}`}</small></label>
+        <small class="wnote num">${w?`+${adj} kcal to eat`:'after class, optional'}</small></label>
     </div>
   </div>`;
 }
@@ -1827,7 +1825,7 @@ function renderBatches(){
 function renderMe(){
   document.getElementById('wIn').value=S.weight; document.getElementById('hIn').value=S.height; document.getElementById('aIn').value=S.age;
   document.getElementById('sexIn').value=S.sex; document.getElementById('actIn').value=String(S.act); document.getElementById('goalIn').value=String(S.goal);
-  document.getElementById('startIn').value=iso(dateOf(0)); document.getElementById('wbIn').value=watchBase();
+  document.getElementById('startIn').value=iso(dateOf(0));
   const def=Math.round(TDEE()-KT()), wk=(def*7/7700);
   const fmin=FATMIN(), carbs=Math.round((KT()-PT()*4-Math.round(S.weight*0.95)*9)/4);
   document.getElementById('mytargets').innerHTML=`<div class="calc">
@@ -1852,7 +1850,6 @@ document.getElementById('saveMe').onclick=()=>{
   const ht=parseFloat(document.getElementById('hIn').value); if(ht>120&&ht<220) S.height=ht;
   const ag=parseInt(document.getElementById('aIn').value,10); if(ag>14&&ag<100) S.age=ag;
   S.sex=document.getElementById('sexIn').value; S.act=parseFloat(document.getElementById('actIn').value); S.goal=parseFloat(document.getElementById('goalIn').value);
-  const wb=parseInt(document.getElementById('wbIn').value,10); if(wb>=100&&wb<=1500) S.wbase=wb;
   const st=document.getElementById('startIn').value;
   if(st){const [y,m,d]=st.split('-').map(Number);S.anchor=iso(mondayOf(new Date(y,m-1,d)))}
   save();renderTarget();cur=todayIdx();renderMe();
