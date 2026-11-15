@@ -460,6 +460,23 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
 .pillcol{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .resettop{border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);color:var(--on-hero);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700;min-height:34px}
 .resettop.sure{background:var(--anar);border-color:var(--anar);color:#fff}
+
+.wcard{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;padding:12px;border-radius:14px;background:var(--saffron-soft)}
+.wcard.done{background:var(--firooze-soft)}
+.wcard .btn{white-space:nowrap;flex:0 0 auto}
+.wcard small{display:block;color:var(--muted);font-size:12px}
+.wswap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.wlist{display:grid;gap:10px}
+.wex{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.wh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.wh span{font-size:12.5px;color:var(--firooze);font-weight:700}
+.wcue{margin:6px 0 0;font-size:13px}
+.wcue .muted{display:block;font-size:12px;margin-top:2px}
+.wlast{margin:6px 0 0;font-size:13px;background:var(--sunk);padding:6px 8px;border-radius:8px}
+.win2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.win2 label{display:grid;gap:3px;font-size:11.5px;color:var(--muted);font-weight:600}
+.win2 input{padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:16px;width:100%}
+.form:not(.form2){grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -612,10 +629,11 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
     </div>
     <div class="section">
       <h2>Saturday check-in</h2>
-      <p class="sub">Morning, after the bathroom, before breakfast. Compare week to week, never day to day.</p>
+      <p class="sub">Morning, after the bathroom, before breakfast. Waist at the belly button, hips at the widest point. Take front and side photos every 4 weeks, same light. Compare week to week, never day to day.</p>
       <div class="form">
         <label for="logW">Weight (kg)<input id="logW" type="number" step="0.1" inputmode="decimal"></label>
         <label for="logWaist">Waist (cm)<input id="logWaist" type="number" step="0.5" inputmode="decimal"></label>
+        <label for="logHips">Hips (cm)<input id="logHips" type="number" step="0.5" inputmode="decimal"></label>
         <button class="btn primary" id="addLog" type="button" style="justify-content:center;border-radius:10px">Add</button>
       </div>
       <div id="logout" style="margin-top:12px"></div>
@@ -630,18 +648,43 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
           <tr><td>Weight and waist flat for 3 weeks</td><td>Add 1,500 steps a day first.</td></tr>
           <tr><td>Losing 0.7 kg+ a week, lifts getting weaker</td><td>Add ¾ cup cooked rice or 1 potato a day.</td></tr>
           <tr><td>Weight up, lifts up</td><td>Nothing. Muscle and water.</td></tr>
+          <tr><td>Weight up 1–2 kg the week before your period</td><td>Nothing. Water. Compare with the same week of last month.</td></tr>
+          <tr><td>Lifts stuck for 3 weeks, always tired</td><td>Take an easy week (half the sets), sleep more, check calories are not too low.</td></tr>
+          <tr><td>Period late, missing or very light</td><td>Eat 200 kcal more right away and see your GP. This is the body saying the deficit is too hard.</td></tr>
         </tbody>
       </table></div>
     </div>
     <div class="section">
-      <h2>What builds the shape</h2>
+      <h2>How you get the sporty, toned look</h2>
+      <p class="sub">"Toned" is two things at once: enough muscle, and low enough body fat to see it. For most women visible definition starts around 20–24% body fat. The order below is the order of importance.</p>
       <div class="rules">
-        <div class="rule"><span class="n">1</span><div><h3>Lift heavier over time</h3><p>Write down weight and reps. Beat one number each session.</p></div></div>
-        <div class="rule"><span class="n">2</span><div><h3>Protein at every meal</h3><p>25–45g each time. The ring on the Today screen shows how you are doing.</p></div></div>
-        <div class="rule"><span class="n">3</span><div><h3>A small deficit, not a crash</h3><p>Your target from the calculator above. Eating 1,200 would take muscle with the fat.</p></div></div>
-        <div class="rule"><span class="n">4</span><div><h3>Sleep 7–8 hours</h3><p>Short sleep makes you lose more muscle on the same food.</p></div></div>
-        <div class="rule"><span class="n">5</span><div><h3>Creatine, 3–5g daily</h3><p>Cheap and well studied. Expect 1–2 kg of water weight in the first two weeks. That is inside the muscle, not fat.</p></div></div>
+        <div class="rule"><span class="n">1</span><div><h3>Lift, and lift a bit heavier over time</h3><p>Follow the 3 workouts in the app. Each set ends with 1–2 reps left in the tank. When you reach the top of the rep range on every set, add weight. Write it down: the app tells you what to beat. This is 70% of the result.</p></div></div>
+        <div class="rule"><span class="n">2</span><div><h3>Protein: about ${'{'}2 g per kg{'}'} every day</h3><p>Around 110g for you, in 4 portions of 25–35g. A protein snack before bed (cottage cheese or skyr) helps overnight repair.</p></div></div>
+        <div class="rule"><span class="n">3</span><div><h3>Lose fat slowly: 0.25–0.4 kg a week</h3><p>Faster than that and you lose muscle and strength, and you look flat, not toned. Plan 10–14 weeks of this, then 4–6 weeks at maintenance (eat about 250 kcal more) so your body settles. Then decide: another short cut, or a slow build.</p></div></div>
+        <div class="rule"><span class="n">4</span><div><h3>Carbs are your training fuel</h3><p>Rice, oats, potato and fruit before or after lifting. Gym days get 100 kcal more. Do not cut carbs to zero: your lifts and your muscles look better with them.</p></div></div>
+        <div class="rule"><span class="n">5</span><div><h3>Keep healthy fat above 0.8 g per kg</h3><p>About 44g a day. Olive oil, nuts, eggs, salmon twice a week. The app never shrinks these when it resizes your meals.</p></div></div>
+        <div class="rule"><span class="n">6</span><div><h3>Walk 7–10k steps, sleep 7–9 hours</h3><p>Steps burn more than extra cardio and do not hurt recovery. Short sleep makes you lose muscle instead of fat on the same food, and increases hunger.</p></div></div>
+        <div class="rule"><span class="n">7</span><div><h3>An easy week every 6–8 weeks</h3><p>Same exercises, half the sets, lighter weights. You come back stronger. Skipping it is how most plans stall.</p></div></div>
       </div>
+    </div>
+    <div class="section">
+      <h2>Supplements worth it (and only these)</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>What</th><th>How much</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><b>Creatine monohydrate</b></td><td>3–5 g daily, any time</td><td>Best-studied for strength and muscle. +1 kg water in the muscle at the start.</td></tr>
+          <tr><td><b>Vitamin D</b></td><td>10–25 µg (400–1,000 IU), Oct–Mar</td><td>Almost everyone in Ireland is low in winter. Muscle, bones, mood.</td></tr>
+          <tr><td><b>Whey</b></td><td>When food falls short</td><td>Just convenient protein. Food first.</td></tr>
+          <tr><td><b>Omega-3</b></td><td>Only if you eat fish less than twice a week</td><td>Salmon twice a week covers it.</td></tr>
+          <tr><td><b>Iron</b></td><td>Only if a blood test says so</td><td>Often low with periods. If you are tired and pale, ask your GP to check ferritin. Red meat, lentils + lemon help.</td></tr>
+          <tr><td>Caffeine (optional)</td><td>1 coffee 30–60 min before gym</td><td>A little more strength and focus. Not after 2pm.</td></tr>
+        </tbody>
+      </table></div>
+      <p class="lead">Water: about 2–2.5 litres a day, more on gym days. Fibre: 25g+, which the vegetables, lentils and oats in the plan give you. Alcohol slows fat loss and recovery: keep it to the free meal, if at all.</p>
+    </div>
+    <div class="section">
+      <h2>Your cycle</h2>
+      <p class="sub">In the week before your period you may hold 1–2 kg of water, feel hungrier and weaker. That is normal. Keep lifting, use the free snack options, and judge progress by the same week last month. If your period becomes irregular or stops, eat more and see your GP: that is the body saying the deficit is too hard.</p>
     </div>
     <div class="section">
       <h2>Garmin sync (iPhone)</h2>
@@ -673,7 +716,7 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
     </div>
   </section>
 
-  <footer><b style="color:var(--ink)">Version 16 · 15 Nov 2026</b> · English only.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
+  <footer><b style="color:var(--ink)">Version 17 · 15 Nov 2026</b> · Expert update: training programme, fat floor, gym-day fuel.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Sections"><div class="in">
@@ -762,13 +805,13 @@ pasta:{n:'Pasta (penne, fusilli)',k:355,p:12.5,show:g=>[`${CUP(g/95)} cup dry`,`
 const M={
 /* breakfast */
  b_oatseggs:['Protein oats + 2 eggs','جو دوسر و تخم‌مرغ',[['oats',45],['almond',200],['chia',12],['yog',100],['egg',100]],'Soak oats, almond milk and chia overnight. In the morning stir the yogurt in cold. Boil or fry 2 eggs alongside.','cinnamon','Gym-day breakfast: carbs plus protein before you train.'],
- b_protoats:['Protein oats','جو دوسر پروتئینی',[['oats',50],['almond',200],['chia',12],['yog',150],['fruit',100]],'Soak oats, almond milk and chia overnight. Stir the yogurt in cold in the morning, fruit on top, cinnamon.','cinnamon'],
+ b_protoats:['Protein oats','جو دوسر پروتئینی',[['oats',50],['almond',200],['chia',12],['yog',150],['fruit',100],['walnut',10]],'Soak oats, almond milk and chia overnight. Stir the yogurt in cold in the morning, fruit and 4 walnut halves on top, cinnamon.','cinnamon'],
  b_omelette:['Omlet-e gojeh with feta','املت گوجه',[['egg',150],['tomato',0],['feta',30],['veg',150],['oil',5],['pitta',30]],'Fry chopped onion and 2 tomatoes in 1 tsp oil with turmeric until soft. Pour in 3 beaten eggs, stir gently, crumble feta over.','tomatoes, onion'],
  b_nan:['Nan-o-panir-o-sabzi + eggs','نان و پنیر و سبزی',[['pitta',61],['feta',40],['egg',100],['veg',80],['walnut',10]],'No cooking. Wrap, feta, a big pile of herbs, 2 boiled eggs from the Sunday batch, 2 walnuts.','mint, basil, tarragon, radish, spring onion'],
  b_kuku:['Kuku sabzi slice + cottage cheese','کوکو سبزی',[['egg',100],['veg',120],['oil',5],['cottage',100],['pitta',30]],'Cut from a kuku made the night before (see Kuku sabzi dinner). Cottage cheese on the side.','parsley, coriander, dill'],
  b_haleem:['Quick haleem','حلیم',[['oats',45],['chicken',75],['milk',200]],'Shred cooked chicken (from the Sunday batch) very fine. Simmer with oats and milk 5 min, mash with a fork until stretchy. Cinnamon on top, a tiny bit of sugar or honey if you want.','cinnamon','The Persian breakfast that happens to be high protein.'],
  b_mast:['Mast-o-khiar breakfast','ماست و خیار',[['yog',200],['veg',100],['walnut',10],['pitta',30],['egg',50]],'Grated cucumber, dried mint, walnuts and a pinch of salt into the yogurt. 1 boiled egg and half a wrap.','cucumbers, dried mint'],
- b_pancake:['Cottage cheese pancakes','پنکیک پنیری',[['egg',50],['flour',30],['cottage',100],['yog',80],['fruit',100]],'Blend egg, flour, cottage cheese and a pinch of baking powder. Fry 4 small pancakes on medium. Yogurt and fruit on top.','baking powder'],
+ b_pancake:['Cottage cheese pancakes','پنکیک پنیری',[['egg',50],['flour',30],['cottage',100],['yog',80],['fruit',100],['walnut',10]],'Blend egg, flour, cottage cheese and a pinch of baking powder. Fry 4 small pancakes on medium. Yogurt, fruit and 4 chopped walnut halves on top.','baking powder'],
  b_turkish:['Eggs on garlic yogurt','نیمرو با ماست',[['yog',150],['egg',100],['oil',5],['pitta',30],['veg',50]],'Yogurt with crushed garlic, lemon and salt on the plate. Chilli flakes or chilli crisp over it. 2 fried eggs on top.','garlic, chilli flakes'],
 
 /* lunch: cooked for 2 portions */
@@ -784,7 +827,7 @@ const M={
  l_abgoosht:['Abgoosht','آبگوشت',[['lamb',110],['chickpea',100],['potato',100],['veg',100],['pitta',30]],'Everything in one pot with water, turmeric, dried limes and tomato paste. Simmer 2.5 hours. Let it cool a little and skim the fat off the top. Strain the broth, mash the rest.','onions, dried limes, tomato paste'],
  l_bademjan:['Khoresh bademjan','خورش بادمجان',[['beef',120],['veg',250],['rice',45],['oil',5]],'Bake the aubergine slices at 200°C instead of frying (saves about 200 kcal). Brown beef with onion, add tomato and dried limes, simmer 1 hour. Aubergine on top for the last 20 min.','aubergines x2, tomatoes, onions, dried limes'],
  l_fesenjan:['Fesenjan','فسنجان',[['chicken',160],['walnut',20],['molasses',20],['rice',50],['veg',50],['oil',3]],'Toast and blitz the walnuts. Simmer with pomegranate molasses and water 45 min until dark. Add the chicken for the last 25 min. Half the usual walnuts, still tastes right.','onion, cinnamon'],
- l_baghali:['Baghali polo ba morgh','باقالی پلو با مرغ',[['chicken',150],['rice',50],['broad',100],['veg',80],['oil',5]],'Chicken braised with onion, turmeric and saffron. Rice steamed in layers with lots of dill and broad beans.','dill (big bunch), saffron, onion'],
+ l_baghali:['Baghali polo ba morgh','باقالی پلو با مرغ',[['chicken',150],['rice',50],['broad',100],['veg',80],['oil',5],['butter',5]],'Chicken braised with onion, turmeric and saffron. Rice steamed in layers with lots of dill and broad beans.','dill (big bunch), saffron, onion'],
  l_alu:['Khoresh alu esfenaj','خورش آلو اسفناج',[['lamb',120],['veg',250],['plum',30],['rice',50],['oil',5]],'Brown lamb and onion with turmeric. Add the dried plums and water, simmer 1 hour. Spinach in for the last 15 min, lemon at the end.','spinach (big bag), onions, lemon'],
  l_soupjo:['Soup-e jo with chicken','سوپ جو',[['chicken',140],['barley',40],['veg',200],['milk',100],['pitta',30]],'Barley, carrot, celery and onion simmered 45 min. Shredded chicken in, then a splash of milk and lemon juice at the end.','carrots, celery, onion, parsley, lemon'],
  l_dolmeh:['Dolmeh barg','دلمه برگ',[['mince',120],['lentils',25],['rice',30],['veg',200],['oil',5],['yog',60]],'Mix raw mince, lentils, rice and chopped herbs. Roll in vine leaves, pack tight in a pot, cover with water, lemon and a little sugar. Simmer 1 hour. Yogurt on the side.','vine leaves, parsley, mint, tarragon, onion, lemon'],
@@ -801,19 +844,19 @@ const M={
  d_kukusib:['Kuku sibzamini','کوکو سیب‌زمینی',[['potato',150],['egg',150],['veg',100],['yog',100],['oil',5]],'Grate potato and onion, squeeze the water out. Mix with 3 eggs and turmeric. Fry thick, covered, both sides. Garlic yogurt on top.','onion, garlic'],
  d_potatoegg:['Potato & egg pan','سیب‌زمینی و تخم‌مرغ',[['potato',150],['egg',150],['veg',150],['cheddar',25],['oil',5]],'Cube the potato and fry with turmeric until soft (12 min, lid on). Crack 3 eggs over, cheese on top, lid on 4 min.','spring onion, peppers'],
  d_adasi:['Adasi bowl with eggs','عدسی با تخم‌مرغ',[['lentils',50],['egg',100],['yog',100],['veg',150],['oil',5]],'Lentils cooked with onion, garlic and cumin (make a double pot, it keeps 3 days). 2 fried eggs on top, garlic yogurt.','onion, garlic, cumin'],
- d_nokhod:['Chicken & chickpea khoresh','خوراک مرغ و نخود',[['chicken',140],['chickpea',120],['veg',200],['oil',5]],'Fry onion, garlic and turmeric. Add chicken, half a tin of chickpeas, chopped tomatoes and cinnamon. Simmer 15 min.','onion, tinned tomatoes'],
+ d_nokhod:['Chicken & chickpea khoresh','خوراک مرغ و نخود',[['chicken',140],['chickpea',120],['veg',200],['oil',10]],'Fry onion, garlic and turmeric in 2 tsp olive oil. Add chicken, half a tin of chickpeas, chopped tomatoes and cinnamon. Simmer 15 min.','onion, tinned tomatoes'],
  d_sabzipolo:['Sabzi polo ba mahi','سبزی پلو با ماهی',[['salmon',120],['rice',45],['veg',150],['oil',3],['yog',60]],'Cook the rice with a big handful of chopped dill, parsley and coriander. Salmon skin-side down in a hot pan 4 min, flip 2 min. Lemon and garlic yogurt.','dill, parsley, coriander, lemon'],
  d_salmonpotato:['Salmon with roast potatoes','ماهی و سیب‌زمینی',[['salmon',120],['potato',200],['veg',200],['yog',60],['oil',5]],'Potato wedges with 1 tsp oil at 200°C for 30 min. Add salmon for the last 12 min. Garlic yogurt with dill.','dill, lemon, green beans or broccoli'],
  d_olivieh:['Salad olivieh, light','سالاد الویه',[['chicken',120],['potato',100],['egg',50],['yog',80],['veg',100],['pitta',30]],'Boiled chicken, potato and egg chopped small with pickles, peas and carrot. Greek yogurt with a little mustard and lemon instead of mayo. Keeps 2 days.','khiar shoor (pickles), carrots, mustard'],
- d_shirazi:['Chicken with salad shirazi','مرغ و سالاد شیرازی',[['chicken',150],['veg',250],['yog',60],['pitta',30]],'Pan-fry the chicken with turmeric and pepper (or use the Sunday batch). Big salad shirazi: cucumber, tomato, red onion, lemon, dried mint. Garlic yogurt.','cucumbers, tomatoes, red onion, lemons'],
+ d_shirazi:['Chicken with salad shirazi','مرغ و سالاد شیرازی',[['chicken',150],['veg',250],['yog',60],['pitta',30],['oil',5]],'Pan-fry the chicken with turmeric and pepper (or use the Sunday batch). Big salad shirazi: cucumber, tomato, red onion, lemon, dried mint and 1 tsp olive oil. Garlic yogurt.','cucumbers, tomatoes, red onion, lemons'],
  d_poke:['Chicken poke bowl','پوکه مرغ',[['chicken',130],['rice',40],['pineapple',60],['edamame',60],['veg',100],['avocado',30],['yog',40],['sesame',3]],'Marinate chicken in soy, garlic and chopped pineapple 20 min, sear hard 6 min. Rice served cool. Spicy yogurt sauce (yogurt, sriracha, lime).','soy sauce, sriracha, lime, spring onion','Your non-Persian favourite, once a week.'],
- d_peapolo:['Chicken & pea polo, quick','نخودفرنگی پلو با مرغ',[['chicken',140],['pea',120],['rice',45],['oil',5]],'Fry chicken with turmeric and garlic. Frozen peas straight in for the last 3 min. Over rice with lemon.','garlic, lemon'],
+ d_peapolo:['Chicken & pea polo, quick','نخودفرنگی پلو با مرغ',[['chicken',140],['pea',120],['rice',45],['oil',10]],'Fry chicken with turmeric and garlic in 1 tsp oil. Frozen peas straight in for the last 3 min. Rice with 1 tsp oil in the pot for a thin tahdig, lemon over.','garlic, lemon'],
 
 /* snacks */
  s_whey:['Whey shake + fruit','شیک پروتئین',[['whey',30],['fruit',100]],'One scoop in water or almond milk, any time on a gym day.','','Only on gym days. On rest days your food already covers it.'],
  s_yog:['Mast with fruit','ماست و میوه',[['yog',170],['fruit',100]],'Cinnamon, or a teaspoon of honey if you want it.',''],
  s_yogpist:['Yogurt, pistachio & fruit','ماست و پسته',[['yog',150],['pist',10],['fruit',110]],'',''],
- s_cottage:['Cottage cheese & fruit','پنیر کاتیج و میوه',[['cottage',150],['fruit',100]],'Black pepper with apple, or cinnamon with berries.',''],
+ s_cottage:['Cottage cheese, fruit & walnuts','پنیر کاتیج و میوه',[['cottage',150],['fruit',100],['walnut',7.5]],'Black pepper with apple, or cinnamon with berries.',''],
  s_eggs:['2 boiled eggs & cucumber','دو تخم‌مرغ آب‌پز',[['egg',100],['veg',100]],'From the Sunday batch. Salt, pepper, cucumber.',''],
 /* breakfast extras */
  b_adasi:['Adasi breakfast','عدسی صبحانه',[['lentils',40],['egg',100],['veg',80],['pitta',30],['oil',3]],'Warm a bowl of lentils from the batch with cumin and lemon. 2 fried or boiled eggs on top.','cumin, lemon','The Tehran street breakfast.'],
@@ -863,6 +906,9 @@ const M={
  s_mastkhiar:['Small mast-o-khiar','ماست و خیار',[['yog',150],['veg',100],['walnut',5]],'Grated cucumber, dried mint, salt, 2 walnut halves.','cucumbers'],
  s_dates:['Dates, walnuts & tea','خرما و گردو',[['date',16],['walnut',10],['cottage',90]],'2 dates and 4 walnut halves with your tea. The cottage cheese is the protein.','']
 };
+/* fat per 100g, for the healthy-fat floor */
+const FAT={chicken:1.5,beef:5,mince:5,lamb:8,salmon:13,egg:10,yog:0.5,cottage:2,feta:14,cheddar:22,rice:0.8,lentils:1.5,split:1.5,chickpea:2.5,beans:0.5,broad:0.6,barley:1.2,pitta:3.8,bread:3,flour:1.2,noodle:1.5,oats:7,milk:1.7,almond:1.1,chia:31,whey:6,oil:100,sesame:100,walnut:65,pist:46,plum:0.4,molasses:0,potato:0.1,pea:0.4,edamame:5,pineapple:0.1,avocado:15,fruit:0.2,pasta:1.5,date:0.4,butter:82,veg:0.3};
+Object.keys(FAT).forEach(k=>{if(F[k])F[k].f=FAT[k]});
 // drop placeholder rows (grams 0) and unknown foods
 Object.values(M).forEach(m=>{m[2]=m[2].filter(([k,g])=>F[k]&&g>0)});
 
@@ -950,8 +996,12 @@ const dateOf=i=>{const d=anchor();d.setDate(d.getDate()+daysSince()-todayIdx()+i
 /* targets: Mifflin-St Jeor BMR x activity, minus the goal deficit. Protein 1.9 g per kg. */
 const BMR=()=>10*S.weight+6.25*S.height-5*S.age+(S.sex==='m'?5:-161);
 const TDEE=()=>BMR()*S.act;
-const KT=()=>Math.max(S.sex==='m'?1500:1250,Math.round(TDEE()*(1-S.goal)/10)*10);
-const PT=()=>Math.round(S.weight*1.9);
+/* never below ~1,400 kcal (women): lower than that risks hormones, your period and muscle */
+const KT=()=>Math.max(S.sex==='m'?1600:1400,Math.round(TDEE()*(1-S.goal)/10)*10);
+/* protein: 2.0 g/kg while losing fat keeps muscle best; 1.8 g/kg at maintenance */
+const PFAC=()=>S.goal>0?2.0:1.8;
+const PT=()=>Math.round(S.weight*PFAC());
+const FATMIN=()=>Math.round(S.weight*0.8);
 /* exercise: your 3 planned gym sessions are already in the activity level.
    Extra sessions add back half of what they burn (watches and estimates run high).
    A planned gym day you skip takes 150 kcal off. */
@@ -963,8 +1013,11 @@ const burnOf=x=>x.kcal>0?x.kcal:Math.round((exInfo(x.type)[2]-1)*S.weight*x.min/
    you eat back half of anything above it, or eat a bit less below it (only after 6pm, once the day is mostly done). */
 const watchBase=()=>Math.round((TDEE()-BMR()*1.1)/10)*10;
 function watchAdj(w){let v=Math.round((w.a-watchBase())*0.5/10)*10;const late=new Date(w.t).getHours()>=18;if(!late)v=Math.max(0,v);return Math.max(-250,Math.min(500,v))}
-const exAdj=i=>{if(S.watch[i])return watchAdj(S.watch[i]);let v=0;(S.ex[i]||[]).forEach(x=>v+=Math.round(burnOf(x)*0.5/10)*10);if(S.gymskip[i])v-=150;return v};
-const KTd=i=>KT()+exAdj(i);
+const exAdj=i=>{if(S.watch[i])return watchAdj(S.watch[i]);let v=0;(S.ex[i]||[]).forEach(x=>v+=Math.round(burnOf(x)*0.5/10)*10);return v};
+/* more fuel on lifting days, a little less on rest days (weekly total stays the same) */
+const lifts=i=>(TRAIN[i%7].gym&&!S.gymskip[i])||(!TRAIN[i%7].gym&&S.wdone&&S.wdone[i]);
+const cycleAdj=i=>S.watch[i]?0:lifts(i)?100:(i%7===6?0:-75);
+const KTd=i=>KT()+exAdj(i)+cycleAdj(i);
 
 /* ---------- icons per dish type ---------- */
 const IC={
@@ -993,7 +1046,7 @@ const SVGI={
 /* ---------- meal resolution ---------- */
 const SLOTTYPE=['b','m','s','m'];
 const typeOf=id=>id.startsWith('b_')?'b':id.startsWith('s_')?'s':'m';
-const calc=items=>items.reduce((a,[k,g])=>{if(!F[k])return a;a.k+=F[k].k*g/100;a.p+=F[k].p*g/100;return a},{k:0,p:0});
+const calc=items=>items.reduce((a,[k,g])=>{if(!F[k])return a;a.k+=F[k].k*g/100;a.p+=F[k].p*g/100;a.f+=(F[k].f||0)*g/100;return a},{k:0,p:0,f:0});
 const planId=(i,si)=>W[i][si]===FREE?'free':W[i][si];
 const chosenId=(i,si)=>S.swaps[i+'-'+si]||planId(i,si);
 function mealAt(i,si){
@@ -1009,6 +1062,8 @@ const extrasOf=i=>S.extras[i]||[];
 /* Portions that are not eaten yet resize so the day lands on target:
    protein foods scale by a, rice/bread/fat/fruit by b. Protein never drops below plan. */
 const PRO=new Set(['chicken','beef','mince','lamb','salmon','egg','yog','cottage','whey','feta','cheddar','lentils','split','chickpea','beans']);
+/* healthy fats are never cut when portions resize: hormones need them */
+const FATK=new Set(['oil','butter','sesame','walnut','pist','avocado','chia']);
 const cl=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
 function dayPlan(i){
   const base=dayMeals(i), role=lunchRole(i);
@@ -1026,7 +1081,7 @@ function dayPlan(i){
   out.mode=freeOpen?'free':adj.length?'tuned':'done';
   if(out.mode!=='tuned') return out;
   let Pp=0,Pe=0,Kp=0,Ke=0,Pv=0,Kv=0;
-  adj.forEach(r=>r.items.forEach(([k,g])=>{const f=F[k],kk=f.k*g/100,pp=f.p*g/100;if(f.free){Kv+=kk;Pv+=pp}else if(PRO.has(k)){Kp+=kk;Pp+=pp}else{Ke+=kk;Pe+=pp}}));
+  adj.forEach(r=>r.items.forEach(([k,g])=>{const f=F[k],kk=f.k*g/100,pp=f.p*g/100;if(f.free||FATK.has(k)){Kv+=kk;Pv+=pp}else if(PRO.has(k)){Kp+=kk;Pp+=pp}else{Ke+=kk;Pe+=pp}}));
   const Pn=PT()-fp-Pv, Kn=KTd(i)-fk-Kv;
   /* keep protein portions as planned and absorb calories with rice/bread/fat;
      if that would cut them under 60%, trim protein portions too (never below target) */
@@ -1045,16 +1100,16 @@ function dayPlan(i){
   }
   out.a=a; out.b=b;
   adj.forEach(r=>{
-    r.items=snap(r.items.map(([k,g])=>{if(F[k].free)return [k,g];const s=PRO.has(k)?a:b;return [k,Math.round(g*s)]}));
+    r.items=snap(r.items.map(([k,g])=>{if(F[k].free||FATK.has(k))return [k,g];const s=PRO.has(k)?a:b;return [k,Math.round(g*s)]}));
     r.t=calc(r.items);
     r.adjusted=r.items.some(([k,g],j)=>F[k].show(g)[0]!==F[k].show(r.orig[j][1])[0]);
   });
   return out;
 }
 function dayTotals(i){
-  const r={k:0,p:0,ek:0,ep:0};
-  dayPlan(i).forEach(m=>{if(m.free||m.skipped)return;r.k+=m.t.k;r.p+=m.t.p;if(m.done){r.ek+=m.t.k;r.ep+=m.t.p}});
-  extrasOf(i).forEach(x=>{const t=calc(x.items);r.k+=t.k;r.p+=t.p;r.ek+=t.k;r.ep+=t.p});
+  const r={k:0,p:0,f:0,ek:0,ep:0};
+  dayPlan(i).forEach(m=>{if(m.free||m.skipped)return;r.k+=m.t.k;r.p+=m.t.p;r.f+=m.t.f||0;if(m.done){r.ek+=m.t.k;r.ep+=m.t.p}});
+  extrasOf(i).forEach(x=>{const t=calc(x.items);r.k+=t.k;r.p+=t.p;r.f+=t.f;r.ek+=t.k;r.ep+=t.p});
   return r;
 }
 function lunchRole(i){
@@ -1179,15 +1234,20 @@ function exCard(i){
     h+=`<p class="small muted" style="margin:6px 0 0">Your Garmin total already includes every workout and walk, so nothing else needs logging today.</p>`;
     return h+'</div>';
   }
-  if(tr.gym){
-    h+=`<div class="exrow${S.gymskip[i]?' off':''}"><span><b>Planned: gym · ${tr.name}</b><small>${S.gymskip[i]?'Not done today: 150 kcal less to eat':'Already counted in your daily target'}</small></span>
+  const pk=progOf(i);
+  if(pk){const P=PROGRAM[pk], done=trainedOn(i);
+    h+=`<div class="wcard${done?' done':''}"><div><b>${done?'✓ ':''}${P.n}</b><small>${P.ex.length} exercises · about ${P.min} min${tr.gym?' · +100 kcal today for the session':''}</small></div>
+      <button class="btn ${done?'':'primary'}" type="button" data-wopen="${pk}">${done?'See / edit':'Open workout'}</button></div>`;
+    if(tr.gym&&!done) h+=`<div class="exrow${S.gymskip[i]?' off':''}"><span><small>${S.gymskip[i]?'Not trained today: target set to a rest day':'Missed the gym today?'}</small></span>
       <button class="lnk" type="button" data-gymskip="1">${S.gymskip[i]?'I went after all':'I didn’t go'}</button></div>`;
+  }else{
+    h+=`<p class="small" style="margin:6px 0 0">Rest day: walk ${tr.steps} steps. Muscle is built on rest days, so eat normally.</p>
+      <div class="wswap"><span class="small muted">Training today instead?</span>${Object.keys(PROGRAM).map(k=>`<button class="btn" type="button" data-wopen="${k}">${PROGRAM[k].n}</button>`).join('')}</div>`;
   }
   list.forEach((x,j)=>{const b=burnOf(x);
     h+=`<div class="exrow"><span><b>${exInfo(x.type)[1]} · ${x.min} min</b><small class="num">${x.kcal>0?'Your watch: ':'About '}${b} kcal burned · you eat back ${Math.round(b*0.5/10)*10}</small></span>
       <button class="lnk" type="button" data-exdel="${j}">Remove</button></div>`});
-  if(!tr.gym&&!list.length) h+=`<p class="small muted" style="margin:6px 0 0">Rest day. Did you train or walk a lot after all? Log it and you can eat a bit more.</p>`;
-  h+=`<button class="btn soft" type="button" id="addEx" style="margin-top:10px;width:100%;justify-content:center;min-height:44px">+ Log a workout</button><p class="small muted" style="margin:8px 0 0">Wearing your watch? Just type its active calories at the top instead.</p></div>`;
+  h+=`<button class="btn soft" type="button" id="addEx" style="margin-top:10px;width:100%;justify-content:center;min-height:44px">+ Log other exercise (run, class, swim…)</button><p class="small muted" style="margin:8px 0 0">Wearing your watch? Just type its active calories at the top instead.</p></div>`;
   return h;
 }
 function openExercise(){
@@ -1249,6 +1309,68 @@ function readWatchParam(){
   document.getElementById('gotit').onclick=closeSheet; openSheet();
 }
 
+/* ---------- TRAINING PROGRAMME ----------
+   3 full sessions a week. Every muscle trained twice, ~10–16 hard sets per muscle per week.
+   Double progression: when you hit the top of the rep range on every set, add weight. */
+const EX={
+ pulldown:['Lat pulldown',3,[8,12],'2 min','Chest up, pull the bar to your upper chest, elbows down towards your back pockets. Builds the back that makes your waist look smaller.','Assisted pull-up machine',2.5],
+ dbpress:['Dumbbell bench press',3,[8,12],'2 min','Squeeze shoulder blades together, lower slowly for 2–3 seconds to chest level, press up.','Push-ups (knees if needed)',1],
+ row:['Seated cable row',3,[10,12],'90 s','Pull to your belly button, pause 1 second and squeeze between the shoulder blades.','One-arm dumbbell row',2.5],
+ ohp:['Seated dumbbell shoulder press',3,[8,12],'90 s','Press up and slightly in, stop just before your elbows lock. Ribs down.','Machine shoulder press',1],
+ lateral:['Lateral raise',3,[12,20],'60 s','Light weight, lead with your elbows, raise to shoulder height. This builds the rounded shoulder "cap" of a sporty look.','Cable lateral raise',1],
+ arms:['Biceps curl + triceps pushdown',2,[10,15],'60 s','Superset: one set of each back to back, then rest. Slow on the way down.','Dumbbells for both',1],
+ squat:['Goblet squat or back squat',3,[6,10],'2–3 min','Sit down between your hips, knees follow your toes, chest up. As deep as you can with a flat back.','Leg press',2.5],
+ rdl:['Romanian deadlift',3,[8,10],'2 min','Push your hips back, weight close to your legs, flat back. Stop when you feel a strong hamstring stretch.','Dumbbell RDL',2.5],
+ thrust:['Hip thrust',3,[8,12],'2 min','Chin tucked, ribs down, push through heels. Squeeze your glutes hard for 1 second at the top.','Glute bridge machine',5],
+ split:['Bulgarian split squat',2,[8,12],'90 s','Reps per leg. Lean your chest slightly forward for more glutes.','Reverse lunge',1],
+ legcurl:['Leg curl (lying or seated)',2,[10,15],'60 s','Control the weight down for 2–3 seconds.','Swiss-ball leg curl',2.5],
+ calf:['Standing calf raise',3,[10,15],'60 s','Full stretch at the bottom, pause 1 second at the top.','Single-leg calf raise',2.5],
+ deadbug:['Dead bug',3,[8,12],'45 s','Reps per side. Lower back pressed into the floor the whole time. Slow.','Plank 30–45 s',0],
+ trapdl:['Trap-bar or dumbbell deadlift',3,[5,8],'2–3 min','Brace your belly, push the floor away, stand tall. Stop 2 reps before your form breaks.','Kettlebell deadlift',5],
+ incline:['Incline dumbbell press',3,[8,12],'2 min','Bench at 30°. Upper chest and front shoulders.','Incline machine press',1],
+ dbrow:['One-arm dumbbell row',3,[10,12],'90 s','Reps per arm. Pull the elbow back towards your hip.','Seated cable row',1],
+ legpress:['Leg press',3,[10,15],'2 min','Feet shoulder-width, lower until your knees reach 90°, do not lock out hard.','Goblet squat',5],
+ knee:['Hanging knee raise or cable crunch',3,[10,15],'60 s','Curl your pelvis up, do not swing. Visible abs come from low body fat plus this.','Reverse crunch on the floor',0]
+};
+const PROGRAM={
+ upper:{n:'Upper body',ex:['pulldown','dbpress','row','ohp','lateral','arms'],min:50},
+ lower:{n:'Lower body & glutes',ex:['squat','rdl','thrust','split','legcurl','calf','deadbug'],min:55},
+ full:{n:'Full body',ex:['trapdl','incline','dbrow','legpress','lateral','knee'],min:50}
+};
+const DAYPROG={0:'upper',2:'lower',4:'full'};
+const progOf=i=>(S.wprog&&S.wprog[i])||DAYPROG[i%7]||null;
+const trainedOn=i=>!!(S.wdone&&S.wdone[i]);
+function lastLift(id,beforeISO){const h=(S.lifts&&S.lifts[id])||[];const prev=h.filter(x=>x.d<beforeISO);return prev.length?prev[prev.length-1]:null}
+function nextTarget(id,last){
+  const e=EX[id]; if(!last||!(last.w>=0)) return 'First time: pick a weight you can lift for the top of the range with 2 reps to spare.';
+  const [lo,hi]=e[2];
+  if(last.r>=hi) return e[6]?`Go up to <b>${+(last.w+e[6]).toFixed(1)} kg</b> and aim for ${lo}+ reps.`:`Make it harder: slower, or add a pause. Aim for ${hi} again.`;
+  return `Stay at <b>${last.w} kg</b> and beat <b>${last.r} reps</b> (aim ${Math.min(hi,last.r+1)}).`;
+}
+function openWorkout(i,key){
+  key=key||progOf(i); const P=PROGRAM[key]; if(!P) return;
+  const d=iso(dateOf(i));
+  S.lifts=S.lifts||{};
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${P.n}</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>
+    <p class="small muted" style="margin:0">About ${P.min} min. Warm up 5 min (bike or brisk walk) and do 2 light sets of the first exercise. Every working set: stop with <b>1–2 reps left in the tank</b>.</p>`;
+  document.getElementById('sx').onclick=closeSheet;
+  let h='<div class="wlist">';
+  P.ex.forEach((id,j)=>{const e=EX[id], last=lastLift(id,d), today=(S.lifts[id]||[]).find(x=>x.d===d);
+    h+=`<div class="wex"><div class="wh"><b>${j+1}. ${e[0]}</b><span class="num">${e[1]} × ${e[2][0]}–${e[2][1]}${id==='split'||id==='dbrow'||id==='deadbug'?' each side':''} · rest ${e[3]}</span></div>
+      <p class="wcue">${e[4]} <span class="muted">Swap: ${e[5]}.</span></p>
+      <p class="wlast">${last?`Last time: <b class="num">${last.w} kg × ${last.r}</b>. `:''}${nextTarget(id,last)}</p>
+      <div class="win2"><label>kg<input type="number" inputmode="decimal" step="0.5" data-w="${id}" value="${today?today.w:''}" placeholder="${last?last.w:''}"></label>
+        <label>reps (best set)<input type="number" inputmode="numeric" data-r="${id}" value="${today?today.r:''}" placeholder="${last?last.r:''}"></label></div></div>`});
+  h+=`</div><button class="btn primary" type="button" id="wfinish" style="width:100%;justify-content:center;padding:13px;margin-top:14px">Finish workout</button>
+    <p class="small muted" style="margin-top:10px">Log the weight and reps of your best set. When every set reaches the top of the range, the app tells you to go heavier next time. That is what builds visible muscle.</p>`;
+  sBody.innerHTML=h;
+  const store=id=>{const w=parseFloat(sBody.querySelector(`[data-w="${id}"]`).value), r=parseInt(sBody.querySelector(`[data-r="${id}"]`).value,10);
+    const arr=S.lifts[id]=(S.lifts[id]||[]).filter(x=>x.d!==d); if(w>=0&&r>0){arr.push({d,w,r});arr.sort((a,b)=>a.d<b.d?-1:1)} save()};
+  sBody.querySelectorAll('[data-w],[data-r]').forEach(inp=>inp.onchange=()=>store(inp.dataset.w||inp.dataset.r));
+  document.getElementById('wfinish').onclick=()=>{P.ex.forEach(store);S.wdone=S.wdone||{};S.wdone[i]=true;S.wprog=S.wprog||{};S.wprog[i]=key;delete S.gymskip[i];save();closeSheet();renderDay();toast(`Workout saved: <b>${P.n}</b>`)};
+  openSheet();
+}
+
 /* ---------- TODAY: summary + one tab per meal ---------- */
 let tab='sum';
 const TABN=['Breakfast','Lunch','Snack','Dinner'];
@@ -1280,6 +1402,7 @@ function coach(meals,T){
   if(!left.length&&!meals.some(m=>m.free&&!m.done)){out.push(`<b>Done for today: ${Math.round(T.ep)}g protein.</b> Nothing else needed.`);return {lines:out,tone:'good'}}
   if(sk.length&&left.length) out.push(`${sk.map(m=>m.slot).join(' and ')} skipped, no problem. ${left.map(m=>m.slot).join(' and ')} ${left.length>1?'are':'is'} a bit bigger to make up the protein.`);
   if(left.length){const n=left[0];out.push(`Next: <b>${n.slot.toLowerCase()}</b>, ${esc(n.name)} (+${Math.round(n.t.p)}g). Eat what is planned below and you land on <b>${target}g protein</b>.`)}
+  if(T.f<FATMIN()-3&&left.length) out.push(`Healthy fat is low today (about ${Math.round(T.f)}g, aim ${FATMIN()}g+). Add 1 tsp olive oil to a salad or 4 walnut halves: your hormones and period need it.`);
   const spare=Math.round((KTd(cur)-T.k)/10)*10;
   if(spare>=150&&meals.mode!=='free') out.push(`You have about ${spare} kcal spare${exAdj(cur)>0?' from your activity':''}. Hungry? Add ¾ cup cooked rice, a wrap or a piece of fruit.`);
   return {lines:out,tone:sk.length?'info':'ok'};
@@ -1315,6 +1438,8 @@ function summaryView(meals,T){
   let h=`<div class="coach ${c.tone}">${c.lines.map(l=>`<p>${l}</p>`).join('')}`;
   if(c.tops){h+=`<div class="topbtns">${c.tops.map(t=>`<button type="button" class="topbtn" data-top="${t.k}:${t.g}" data-label="${esc(t.label)}"><span>${t.label}</span><small class="num">+${Math.round(t.p)}g · ${Math.round(t.kc)} kcal · I had it</small></button>`).join('')}</div>`}
   h+='</div>';
+  const gymTop=!!progOf(cur);
+  if(gymTop) h+=exCard(cur);
   h+='<div class="dayrows">';
   meals.forEach(m=>{
     let state, body;
@@ -1336,7 +1461,7 @@ function summaryView(meals,T){
   if(ex.length){h+='<ul>';ex.forEach((x,j)=>{const t=calc(x.items);h+=`<li><span>${esc(x.n)} <span class="muted num">· ${Math.round(t.p)}g · ${Math.round(t.k)} kcal</span></span><button class="lnk" data-delx="${j}" type="button">Remove</button></li>`});h+='</ul>'}
   else h+=`<p class="small muted" style="margin:4px 0 0">Coffee with milk, nuts, a biscuit at work: add it here.</p>`;
   h+='</div>';
-  h+=exCard(cur);
+  if(!gymTop) h+=exCard(cur);
   const L=meals[1];
   if(role==='cook') h+=L.skipped?`<div class="callout">${SVGI.pot}<div><span class="lbl">Still cook tonight</span><p>Tomorrow's lunch is <b>${esc(L.name)}</b>. Cook it for 2: box one for tomorrow, freeze the other.</p></div></div>`
     :`<div class="callout">${SVGI.pot}<div><span class="lbl">Cook today</span><p><b>${esc(L.name)}</b> for 2: double every amount. Eat one, box one for tomorrow.</p></div></div>`;
@@ -1359,9 +1484,9 @@ function mealReset(m){
     <small>Back to the planned dish, not eaten yet.</small></div>`;
 }
 function dayHasData(i){for(let si=0;si<4;si++){const k=i+'-'+si;if(S.done[k]||S.skip[k]||S.actual[k]||S.swaps[k])return true}
-  return !!((S.extras[i]||[]).length||(S.ex[i]||[]).length||S.gymskip[i]||S.watch[i])}
+  return !!((S.extras[i]||[]).length||(S.ex[i]||[]).length||S.gymskip[i]||S.watch[i]||(S.wdone&&S.wdone[i]))}
 function clearMeal(i,si){const k=i+'-'+si;['done','skip','actual','swaps','custom'].forEach(x=>{if(S[x])delete S[x][k]})}
-function clearDay(i){for(let si=0;si<4;si++)clearMeal(i,si);['extras','ex','gymskip','watch'].forEach(x=>{if(S[x])delete S[x][i]});
+function clearDay(i){for(let si=0;si<4;si++)clearMeal(i,si);['extras','ex','gymskip','watch','wdone','wprog'].forEach(x=>{if(S[x])delete S[x][i]});
   Object.keys(S.have||{}).forEach(k=>{if(k.startsWith(i+'-'))delete S.have[k]})}
 function mealView(m){
   const role=lunchRole(cur);
@@ -1441,6 +1566,7 @@ function renderDay(){
   const wd=document.getElementById('watchdel'); if(wd) wd.onclick=()=>{delete S.watch[cur];save();renderDay()};
   out.querySelectorAll('[data-exdel]').forEach(b=>b.onclick=()=>{S.ex[cur].splice(+b.dataset.exdel,1);save();renderDay()});
   const gs=out.querySelector('[data-gymskip]'); if(gs) gs.onclick=()=>{S.gymskip[cur]=!S.gymskip[cur];save();renderDay()};
+  out.querySelectorAll('[data-wopen]').forEach(b=>b.onclick=()=>openWorkout(cur,b.dataset.wopen));
   const wi=document.getElementById('watchIn'), ws=document.getElementById('watchSave');
   const saveWatch=()=>{const v=parseInt(wi.value,10);if(v>0){S.watch[cur]={a:v,t:Date.now()}}else delete S.watch[cur];save();renderDay();const a=exAdj(cur);if(v>0)toast(a>0?`Watch saved: you can eat <b>${a} kcal more</b> today`:a<0?`Watch saved: ${-a} kcal less today`:'Watch saved: a normal day')};
   ws.onclick=saveWatch; wi.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();saveWatch()}};
@@ -1662,19 +1788,21 @@ function renderMe(){
   document.getElementById('sexIn').value=S.sex; document.getElementById('actIn').value=String(S.act); document.getElementById('goalIn').value=String(S.goal);
   document.getElementById('startIn').value=iso(dateOf(0));
   const def=Math.round(TDEE()-KT()), wk=(def*7/7700);
+  const fmin=FATMIN(), carbs=Math.round((KT()-PT()*4-Math.round(S.weight*0.95)*9)/4);
   document.getElementById('mytargets').innerHTML=`<div class="calc">
-    <div class="row hl"><span>Protein every day<small>${S.weight} kg × 1.9 g. Enough to keep and build muscle while you lose fat.</small></span><b class="num">${PT()} g</b></div>
-    <div class="row hl"><span>Calories every day<small>${S.goal?`About ${def} kcal under what you burn: roughly ${wk.toFixed(2)} kg a week, mostly fat.`:'Same as you burn.'}</small></span><b class="num">${KT().toLocaleString()} kcal</b></div>
+    <div class="row hl"><span>Protein every day<small>${S.weight} kg × ${PFAC()} g. Keeps your muscle while fat comes off. Spread it: 25–35g at each meal.</small></span><b class="num">${PT()} g</b></div>
+    <div class="row hl"><span>Calories<small>${S.goal?`About ${def} kcal under what you burn: roughly ${wk.toFixed(2)} kg a week, mostly fat. `:''}Gym days +100, rest days −75, so you have fuel when you lift.</small></span><b class="num" style="font-size:16px">${(KT()+100).toLocaleString()} gym<br>${(KT()-75).toLocaleString()} rest</b></div>
+    <div class="row"><span>Healthy fat, at least<small>0.8 g per kg. Below this, hormones and your period can suffer. Olive oil, nuts, eggs, salmon.</small></span><b class="num">${fmin} g</b></div>
+    <div class="row"><span>Carbs, roughly<small>The rest of your calories. Most of them around training: rice, oats, potato, fruit.</small></span><b class="num">${carbs} g</b></div>
     <div class="row"><span>Your body at rest (BMR)<small>Mifflin-St Jeor: ${S.weight} kg, ${S.height} cm, ${S.age} years</small></span><b class="num">${Math.round(BMR()).toLocaleString()}</b></div>
     <div class="row"><span>What you burn in a day<small>BMR × ${S.act} for your activity</small></span><b class="num">${Math.round(TDEE()).toLocaleString()}</b></div>
-    <div class="row"><span>Per meal, roughly<small>Breakfast · lunch · snack · dinner</small></span><b class="num" style="font-size:15px">${[.27,.3,.13,.3].map(x=>Math.round(PT()*x)+'g').join(' · ')}</b></div>
-  </div><p class="lead">These are estimates. Your Saturday check-ins tell you the truth: if the waist does not move in 3 weeks, set Activity one step lower.</p>`;
-  document.getElementById('trainbody').innerHTML=TRAIN.map((t,i)=>`<tr><td>${DOW[i]}</td><td>${t.gym?'Gym · ':''}${t.name}</td><td class="r num">${t.steps}</td></tr>`).join('');
+  </div><p class="lead">These are estimates. Your Saturday check-ins tell you the truth. Calories never go below 1,400.</p>`;
+  document.getElementById('trainbody').innerHTML=TRAIN.map((t,i)=>{const pk=DAYPROG[i];return `<tr><td>${DOW[i]}</td><td>${pk?`<b>${PROGRAM[pk].n}</b><br><small class="muted">${PROGRAM[pk].ex.map(x=>EX[x][0]).join(', ')}</small>`:t.name}</td><td class="r num">${t.steps}</td></tr>`}).join('');
   const lo=document.getElementById('logout');
   if(!S.log.length){lo.innerHTML='<p class="small muted">No check-ins yet. Your first Saturday entry will show here, with the change from the week before.</p>';return}
-  let h='<div class="table-wrap"><table><thead><tr><th>Date</th><th class="r">Weight</th><th class="r">Waist</th><th class="r">Change</th><th></th></tr></thead><tbody>';
+  let h='<div class="table-wrap"><table><thead><tr><th>Date</th><th class="r">Weight</th><th class="r">Waist</th><th class="r">Hips</th><th class="r">Change</th><th></th></tr></thead><tbody>';
   S.log.forEach((e,j)=>{const p=S.log[j-1];const dw=p&&e.w&&p.w?(e.w-p.w):null;
-    h+=`<tr><td class="num">${e.d}</td><td class="r num">${e.w||'–'} kg</td><td class="r num">${e.waist||'–'} cm</td><td class="r num">${dw===null?'':(dw>0?'+':'')+dw.toFixed(1)+' kg'}</td><td class="r"><button class="btn" data-del="${j}" type="button">Delete</button></td></tr>`});
+    h+=`<tr><td class="num">${e.d}</td><td class="r num">${e.w||'–'} kg</td><td class="r num">${e.waist||'–'} cm</td><td class="r num">${e.hips||'–'} cm</td><td class="r num">${dw===null?'':(dw>0?'+':'')+dw.toFixed(1)+' kg'}</td><td class="r"><button class="btn" data-del="${j}" type="button">Delete</button></td></tr>`});
   lo.innerHTML=h+'</tbody></table></div>';
   lo.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{S.log.splice(+b.dataset.del,1);save();renderMe()});
 }
@@ -1688,14 +1816,14 @@ document.getElementById('saveMe').onclick=()=>{
   save();renderTarget();cur=todayIdx();renderMe();
 };
 document.getElementById('addLog').onclick=()=>{
-  const w=parseFloat(document.getElementById('logW').value), wa=parseFloat(document.getElementById('logWaist').value);
-  if(!w&&!wa) return;
-  S.log.push({d:iso(new Date()),w:w||null,waist:wa||null}); if(w) S.weight=w;
-  save();document.getElementById('logW').value='';document.getElementById('logWaist').value='';renderTarget();renderMe();
+  const w=parseFloat(document.getElementById('logW').value), wa=parseFloat(document.getElementById('logWaist').value), hp=parseFloat(document.getElementById('logHips').value);
+  if(!w&&!wa&&!hp) return;
+  S.log.push({d:iso(new Date()),w:w||null,waist:wa||null,hips:hp||null}); if(w) S.weight=w;
+  save();['logW','logWaist','logHips'].forEach(x=>document.getElementById(x).value='');renderTarget();renderMe();
 };
 document.getElementById('resetTicks').onclick=e=>{const b=e.currentTarget;
   if(!b.classList.contains('sure')){b.classList.add('sure');b.textContent='Tap again to clear every day';clearTimeout(b._t);b._t=setTimeout(()=>{b.classList.remove('sure');b.textContent='Start completely fresh'},3500);return}
-  ['done','swaps','have','shop','custom','extras','actual','skip','ex','gymskip','watch'].forEach(k=>S[k]={});
+  ['done','swaps','have','shop','custom','extras','actual','skip','ex','gymskip','watch','wdone','wprog'].forEach(k=>S[k]={});
   const forget=document.getElementById('forgetUsual'); if(forget&&forget.checked) S.usual={};
   save();b.classList.remove('sure');b.textContent='Start completely fresh';toast('Everything cleared. Every day starts from zero.')};
 
