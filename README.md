@@ -38,6 +38,12 @@ All the food data is at the top of `index.html`, in the `<script id="data">` blo
 
 Calories are estimates. This is general guidance, not medical advice.
 
+## Languages, shops and cuisines
+
+- **English / فارسی**: switch in the header, at setup, or in Me. Farsi turns the app right-to-left with Persian numbers and dish names. Translations live in `FA_EXACT` (whole sentences), `FA_TOK` (words inside changing text) and `FA_FOOD` in `index.html`.
+- **Any shop**: each product has a store (Lidl, Aldi, Tesco, SPAR, Dunnes, Persian shop…), shown in meals and the shopping list.
+- **Cuisines**: Persian now; the structure is ready for more.
+
 ## Privacy
 
 No account, no tracking. Everything stays in the browser on your phone. Use **Me → Backup** before changing phone.
