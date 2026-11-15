@@ -1157,7 +1157,10 @@ function dayPlan(i){
 function dayTotals(i){
   const r={k:0,p:0,f:0,ek:0,ep:0};
   dayPlan(i).forEach(m=>{if(m.free||m.skipped)return;r.k+=m.t.k;r.p+=m.t.p;r.f+=m.t.f||0;if(m.done){r.ek+=m.t.k;r.ep+=m.t.p}});
-  [...dailyItems(),...extrasOf(i)].forEach(x=>{const t=calc(x.items);r.k+=t.k;r.p+=t.p;r.f+=t.f;r.ek+=t.k;r.ep+=t.p});
+  /* daily coffee is planned every day, but only counted as eaten on today or past days */
+  const notFuture=dateOf(i)<=midnight(new Date());
+  dailyItems().forEach(x=>{const t=calc(x.items);r.k+=t.k;r.p+=t.p;r.f+=t.f;if(notFuture){r.ek+=t.k;r.ep+=t.p}});
+  extrasOf(i).forEach(x=>{const t=calc(x.items);r.k+=t.k;r.p+=t.p;r.f+=t.f;r.ek+=t.k;r.ep+=t.p});
   return r;
 }
 function lunchRole(i){
