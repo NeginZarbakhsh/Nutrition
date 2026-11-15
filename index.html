@@ -220,7 +220,7 @@ details[open]>summary::before{content:"− "}
 .brow .nm small{display:block;color:var(--muted);font-size:12px}
 .step{display:flex;align-items:center;gap:4px}
 .step button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:18px;font-weight:600;line-height:1}
-.step output{min-width:34px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.step output{max-width:120px;font-size:14.5px;line-height:1.2;min-width:34px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
 .brow.on .nm{font-weight:600}
 .btotal{position:sticky;bottom:0;background:var(--bg);padding-top:12px;margin-top:10px;border-top:1px solid var(--line);display:grid;gap:10px}
 .btotal .sum{display:flex;gap:8px;flex-wrap:wrap}
@@ -347,6 +347,23 @@ footer{margin-top:36px;font-size:12px;color:var(--muted)}
 .nextbar{background:var(--firooze);color:var(--surface);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px}
 .ings li.chg .how{color:var(--abi)}
 .was{text-decoration:line-through}
+
+/* exercise + batches */
+.excard{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.exh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.exadj{font-weight:700;color:var(--saffron);font-size:13px}
+.exrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.exh+.exrow{border-top:0}
+.exrow small{display:block;color:var(--muted);font-size:12px}
+.exrow.off b{text-decoration:line-through;color:var(--muted)}
+.extypes{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.extypes button,.plates button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:600;font-size:14px;min-height:42px}
+.extypes button[aria-pressed="true"],.plates button[aria-pressed="true"]{background:var(--firooze);border-color:var(--firooze);color:var(--surface)}
+.plates{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.plates small{opacity:.7;font-weight:500}
+.exsum{margin-top:12px;padding:12px;border-radius:12px;background:var(--saffron-soft);font-size:14px}
+.brow.boxes{background:var(--firooze-soft);border-radius:12px;padding:10px 12px;border-top:0;margin-top:10px}
+output small.gram{display:block;font-size:11px;color:var(--muted);font-weight:500}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -433,6 +450,17 @@ footer{margin-top:36px;font-size:12px;color:var(--muted)}
           <tr><td>Sauce</td><td>3 heaped tbsp garlic yogurt (adds 9g protein)</td></tr>
         </tbody>
       </table></div>
+    </div>
+    <div class="section">
+      <h2>Food you cooked in a big batch</h2>
+      <p class="sub">Pasta with chicken, a pot of khoresh, anything you eat from for several days.</p>
+      <div class="rules">
+        <div class="rule"><span class="n">1</span><div><h3>Note what goes in the pot</h3><p>Packs and tins, not grams: "1 pack chicken, ½ bag pasta, 1 tin tomatoes, 2 tsp oil". In the app: Change dish → I cooked a big batch.</p></div></div>
+        <div class="rule"><span class="n">2</span><div><h3>Split into equal boxes straight away</h3><p>Before it goes in the fridge or freezer. Write the number on the lid: "chicken pasta 1/5". Each box is then exactly one portion.</p></div></div>
+        <div class="rule"><span class="n">3</span><div><h3>Eat it: tap 1 box</h3><p>Change dish → your batch. The app knows the protein, and the rest of the day adjusts around it.</p></div></div>
+        <div class="rule"><span class="n">4</span><div><h3>Already frozen and never tracked?</h3><p>Pick the closest dish (e.g. Chicken & tomato pasta), tap Ate it → Different amount, and choose the plate size: small, big, very big. Close enough.</p></div></div>
+      </div>
+      <div id="batchlist" style="margin-top:12px"></div>
     </div>
     <div class="section">
       <h2>Tricks that replace weighing</h2>
@@ -767,7 +795,7 @@ const SHOPCAT=[['meat','Meat & fish'],['dairy','Dairy & eggs'],['frozen','Frozen
 const LS='sofreh-v1';
 let S={};
 try{S=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){S={}}
-['done','swaps','have','shop','custom','extras','actual','skip'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[];
+['done','swaps','have','shop','custom','extras','actual','skip','ex','gymskip'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[]; S.batches=S.batches||[];
 S.weight=S.weight||54.5; S.height=S.height||155; S.age=S.age||30; S.sex=S.sex||'f'; S.act=S.act||1.5; S.goal=(S.goal===undefined)?0.15:S.goal;
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -786,6 +814,14 @@ const BMR=()=>10*S.weight+6.25*S.height-5*S.age+(S.sex==='m'?5:-161);
 const TDEE=()=>BMR()*S.act;
 const KT=()=>Math.max(S.sex==='m'?1500:1250,Math.round(TDEE()*(1-S.goal)/10)*10);
 const PT=()=>Math.round(S.weight*1.9);
+/* exercise: your 3 planned gym sessions are already in the activity level.
+   Extra sessions add back half of what they burn (watches and estimates run high).
+   A planned gym day you skip takes 150 kcal off. */
+const EXT=[['gym','Weights / gym',5],['walk','Brisk walk',3.8],['run','Running',9],['cycle','Cycling',7],['swim','Swimming',7],['class','Class / HIIT',7.5],['yoga','Yoga / pilates',3],['sport','Sport / dance',6],['other','Something else',5]];
+const exInfo=t=>EXT.find(e=>e[0]===t)||EXT[EXT.length-1];
+const burnOf=x=>x.kcal>0?x.kcal:Math.round((exInfo(x.type)[2]-1)*S.weight*x.min/60);
+const exAdj=i=>{let v=0;(S.ex[i]||[]).forEach(x=>v+=Math.round(burnOf(x)*0.5/10)*10);if(S.gymskip[i])v-=150;return v};
+const KTd=i=>KT()+exAdj(i);
 
 /* ---------- icons per dish type ---------- */
 const IC={
@@ -820,7 +856,7 @@ const chosenId=(i,si)=>S.swaps[i+'-'+si]||planId(i,si);
 function mealAt(i,si){
   const id=chosenId(i,si), slot=SLOTS[si], changed=!!S.swaps[i+'-'+si];
   if(id==='free') return {slot,si,id,free:true,changed,t:{k:0,p:0}};
-  if(id==='custom'){const c=S.custom[i+'-'+si]||{n:'My meal',items:[]};return {slot,si,id,mine:true,changed,name:c.n,items:c.items,t:calc(c.items),kind:'mine'}}
+  if(id==='custom'){const c=S.custom[i+'-'+si]||{n:'My meal',items:[]};return {slot,si,id,mine:true,changed,name:c.n,items:c.items,t:calc(c.items),kind:c.batch?'khoresh':'mine',box:!!c.batch,how:c.batch?'From your batch. Reheat one box. Nothing to measure.':''}}
   const m=M[id]; if(!m) return {slot,si,id:'free',free:true,changed,t:{k:0,p:0}};
   return {slot,si,id,changed,name:m[0],fa:m[1],items:m[2],how:m[3],extra:m[4],tip:m[5],t:calc(m[2]),kind:kindOf(id),min:META[id]?META[id][1]:null};
 }
@@ -840,21 +876,21 @@ function dayPlan(i){
     if(S.skip[key]){r.skipped=true;r.items=[];r.t={k:0,p:0};return r}
     if(m.free){if(!done)freeOpen=true;return r}
     if(done){r.items=S.actual[key]||m.items;r.t=calc(r.items);fk+=r.t.k;fp+=r.t.p;return r}
-    if(m.si===1&&role!=='single'){fk+=m.t.k;fp+=m.t.p;r.fixed=true;return r}
+    if((m.si===1&&role!=='single')||m.box){fk+=m.t.k;fp+=m.t.p;r.fixed=true;return r}
     adj.push(r);return r;
   });
   out.mode=freeOpen?'free':adj.length?'tuned':'done';
   if(out.mode!=='tuned') return out;
   let Pp=0,Pe=0,Kp=0,Ke=0,Pv=0,Kv=0;
   adj.forEach(r=>r.items.forEach(([k,g])=>{const f=F[k],kk=f.k*g/100,pp=f.p*g/100;if(f.free){Kv+=kk;Pv+=pp}else if(PRO.has(k)){Kp+=kk;Pp+=pp}else{Ke+=kk;Pe+=pp}}));
-  const Pn=PT()-fp-Pv, Kn=KT()-fk-Kv;
+  const Pn=PT()-fp-Pv, Kn=KTd(i)-fk-Kv;
   /* keep protein portions as planned and absorb calories with rice/bread/fat;
      if that would cut them under 60%, trim protein portions too (never below target) */
   let a=1,b=1;
   if(Ke>0){
     b=(Kn-Kp*a)/Ke;
     if(b<0.6&&Pp>0){b=0.6;a=Math.max((Kn-Ke*b)/Kp,(Pn-Pe*b)/Pp,0.7);a=Math.min(a,1);b=cl((Kn-Kp*a)/Ke,0.3,1.6)}
-    else if(b>1.6){b=1.6;if(Pp>0)a=cl((Kn-Ke*b)/Kp,1,2.2)}
+    else if(b>1.6){b=1.6}
   }else if(Pp>0) a=cl(Kn/Kp,0.7,2.2);
   if(Pp>0&&Pp*a+Pe*b<Pn){a=cl((Pn-Pe*b)/Pp,0.7,2.6);if(Ke>0)b=cl((Kn-Kp*a)/Ke,0.3,1.8)}
   /* a skipped meal: win back the protein only, don't pile its calories onto dinner */
@@ -909,7 +945,7 @@ const fmtItem=(k,g)=>{const f=F[k];const [how,alt]=f.show(g);return {name:f.n,ho
 function needList(i){
   const need={}, role=lunchRole(i);
   dayPlan(i).forEach(m=>{
-    if(m.free) return;
+    if(m.free||m.box||m.skipped) return;
     if(m.si===1&&role==='left') return;
     const mult=(m.si===1&&role==='cook')?2:1;
     m.items.forEach(([k,g])=>{need[k]=(need[k]||0)+g*mult});
@@ -953,7 +989,7 @@ function restCard(meals,T){
   const gap=Math.round(target-T.p);
   let h=`<div class="rest"><div class="rhead"><div><span class="lbl">Rest of today</span>
     <div class="rbig num"><b>${eaten}g</b> eaten · <b class="go">${toGo}g</b> to go</div></div>
-    <div class="rk num">${Math.max(0,Math.round(KT()-T.ek))}<small>kcal left</small></div></div>
+    <div class="rk num">${Math.max(0,Math.round(KTd(cur)-T.ek))}<small>kcal left</small></div></div>
     <div class="rbar"><i style="width:${Math.min(100,eaten/target*100)}%"></i><i class="pl" style="width:${Math.min(100,Math.max(0,(T.p-T.ep))/target*100)}%"></i></div>`;
   if(meals.mode==='free'){h+=`<p class="rnote">Free meal tonight, so portions follow the plan. No counting.</p>`}
   const sk=meals.filter(m=>m.skipped);
@@ -970,6 +1006,8 @@ function restCard(meals,T){
     h+='</div></div>';
   }else if(!left.length&&meals.mode!=='free'){h+=`<p class="rnote good">You hit your protein today. Well done.</p>`}
   else if(left.length) h+=`<p class="rnote">Eat these and you land on <b>${target}g protein</b> and about <b>${Math.round(T.k).toLocaleString()} kcal</b>.</p>`;
+  const spare=Math.round((KTd(cur)-T.k)/10)*10;
+  if(spare>=150&&meals.mode!=='free') h+=`<p class="rnote" style="color:var(--saffron);font-weight:600">You have about ${spare} kcal spare today${exAdj(cur)>0?' thanks to your exercise':''}. If you are hungry: add a fist of rice, a wrap or a piece of fruit to dinner.</p>`;
   return h+'</div>';
 }
 function bindRest(root){
@@ -983,6 +1021,47 @@ function openRestSheet(si){
   sBody.innerHTML=restCard(meals,T)+`<button class="btn primary" type="button" id="gotit" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Got it</button>`;
   bindRest(sBody); document.getElementById('gotit').onclick=closeSheet;
   if(!sheet.classList.contains('open')) openSheet();
+}
+
+/* ---------- exercise ---------- */
+function exCard(i){
+  const tr=TRAIN[i%7], list=S.ex[i]||[], adj=exAdj(i);
+  let h=`<div class="excard"><div class="exh"><span class="lbl">Exercise today</span>${adj?`<span class="exadj num">${adj>0?'+':''}${adj} kcal to eat</span>`:''}</div>`;
+  if(tr.gym){
+    h+=`<div class="exrow${S.gymskip[i]?' off':''}"><span><b>Planned: gym · ${tr.name}</b><small>${S.gymskip[i]?'Not done today: 150 kcal less to eat':'Already counted in your daily target'}</small></span>
+      <button class="lnk" type="button" data-gymskip="1">${S.gymskip[i]?'I went after all':'I didn’t go'}</button></div>`;
+  }
+  list.forEach((x,j)=>{const b=burnOf(x);
+    h+=`<div class="exrow"><span><b>${exInfo(x.type)[1]} · ${x.min} min</b><small class="num">${x.kcal>0?'Your watch: ':'About '}${b} kcal burned · you eat back ${Math.round(b*0.5/10)*10}</small></span>
+      <button class="lnk" type="button" data-exdel="${j}">Remove</button></div>`});
+  if(!tr.gym&&!list.length) h+=`<p class="small muted" style="margin:6px 0 0">Rest day. Did you train or walk a lot after all? Log it and you can eat a bit more.</p>`;
+  h+=`<button class="btn soft" type="button" id="addEx" style="margin-top:10px;width:100%;justify-content:center;min-height:44px">+ Log exercise</button></div>`;
+  return h;
+}
+function openExercise(){
+  const x={type:'gym',min:45,kcal:0};
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">Log exercise</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
+  document.getElementById('sx').onclick=closeSheet;
+  sBody.innerHTML=`<span class="lbl">What did you do?</span>
+    <div class="extypes">${EXT.map(e=>`<button type="button" data-t="${e[0]}" aria-pressed="${e[0]===x.type}">${e[1]}</button>`).join('')}</div>
+    <div class="brow" style="margin-top:14px"><span class="nm">How long<small>minutes of actual exercise</small></span>
+      <span class="step"><button type="button" id="mmin" aria-label="Shorter">−</button><output id="omin" style="min-width:88px"></output><button type="button" id="pmin" aria-label="Longer">+</button></span></div>
+    <label class="brow" for="exk" style="display:grid"><span class="nm">Calories from your watch<small>Optional. Leave empty and the app estimates it.</small></span>
+      <input id="exk" class="field" type="number" inputmode="numeric" placeholder="e.g. 320" style="max-width:130px;justify-self:end"></label>
+    <div class="exsum" id="exsum"></div>
+    <button class="btn primary" type="button" id="exsave" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Save exercise</button>`;
+  const upd=()=>{
+    sBody.querySelectorAll('[data-t]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===x.type));
+    document.getElementById('omin').textContent=x.min+' min';
+    const b=burnOf(x), back=Math.round(b*0.5/10)*10;
+    document.getElementById('exsum').innerHTML=`<b class="num">${x.kcal>0?'':'About '}${b} kcal burned</b><br>You can eat <b class="num">${back} kcal more</b> today. That is half: watches and estimates usually run high. Protein stays ${PT()}g; the extra goes into rice, bread and fruit.`;
+  };
+  sBody.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{x.type=b.dataset.t;upd()});
+  document.getElementById('mmin').onclick=()=>{x.min=Math.max(10,x.min-5);upd()};
+  document.getElementById('pmin').onclick=()=>{x.min=Math.min(240,x.min+5);upd()};
+  document.getElementById('exk').oninput=e=>{x.kcal=Math.max(0,parseInt(e.target.value,10)||0);upd()};
+  document.getElementById('exsave').onclick=()=>{(S.ex[cur]=S.ex[cur]||[]).push({...x});save();closeSheet();renderDay()};
+  upd(); openSheet();
 }
 
 /* ---------- TODAY ---------- */
@@ -1001,13 +1080,13 @@ function renderDay(){
     <div class="rings">${ring(T.ep,T.p,PT())}
       <div class="stats">
         <div class="stat"><span class="lbl">Protein still to eat</span><div class="v num">${Math.max(0,Math.round(PT()-T.ep))}g <small>today's plan: ${Math.round(T.p)}g</small></div></div>
-        <div class="stat"><span class="lbl">Calories eaten</span><div class="v num">${Math.round(T.ek)} <small>of ${KT().toLocaleString()}${hasFree?' + free meal':''}</small></div>
-          <div class="hbar"><i style="width:${pct(T.k,KT())}%;background:rgba(255,255,255,.35)"></i><i style="width:${pct(T.ek,KT())}%;background:var(--saffron)"></i></div></div>
+        <div class="stat"><span class="lbl">Calories eaten</span><div class="v num">${Math.round(T.ek)} <small>of ${KTd(cur).toLocaleString()}${hasFree?' + free meal':''}</small></div>
+          <div class="hbar"><i style="width:${pct(T.k,KTd(cur))}%;background:rgba(255,255,255,.35)"></i><i style="width:${pct(T.ek,KTd(cur))}%;background:var(--saffron)"></i></div></div>
         <div class="stat"><span class="lbl">Steps</span><div class="v num">${tr.steps}</div></div>
       </div></div>
     <p class="note">${tr.note}</p>
   </div>`;
-  h+=restCard(meals,T);
+  h+=restCard(meals,T)+exCard(cur);
   if(meals.mode==='free') h+=`<div class="callout" style="background:var(--anar-soft)">${SVGI.scale}<div><span class="lbl" style="color:var(--anar)">Free meal day</span><p>Portions follow the plan today. No tuning, no counting tonight.</p></div></div>`;
   const L=meals[1];
   if(role==='cook') h+=L.skipped?`<div class="callout">${SVGI.pot}<div><span class="lbl">Still cook tonight</span><p>You skipped lunch, but tomorrow's lunch is <b>${esc(L.name)}</b>. Cook it for 2 tonight: box one for tomorrow, freeze the other.</p></div></div>`
@@ -1040,7 +1119,7 @@ function renderDay(){
     let tag='';
     if(m.si===1&&role==='cook') tag='<span class="tag cook">Cook ×2 today</span>';
     if(m.si===1&&role==='left') tag='<span class="tag left">Leftovers</span>';
-    if(m.mine) tag+='<span class="tag mine">Your meal</span>';
+    if(m.mine) tag+=m.box?'<span class="tag left">From your batch</span>':'<span class="tag mine">Your meal</span>';
     if(m.adjusted) tag+='<span class="tag adj">Resized for today</span>';
     h+=`<div class="meal${isNext?' next':''}" id="meal-${m.si}">${isNext?'<div class="nextbar">Up next</div>':''}<div class="mhead">${icon(m.kind)}<div class="t">
       <div class="slot"><span class="lbl">${m.slot}</span>${tag}</div>
@@ -1055,7 +1134,7 @@ function renderDay(){
       h+='</ul>';
     }
     h+=acts+`<div class="links">${m.how?`<details><summary>How to make it</summary><div class="recipe">${m.how}${m.extra?`<div class="also">Also uses: ${m.extra}, plus spices.</div>`:''}</div></details>`:''}
-      ${m.tip?`<div class="note">${m.tip}</div>`:''}${change}${m.mine?`<button class="lnk" data-edit="${m.si}" type="button">Edit recipe</button>`:''}</div></div>`;
+      ${m.tip?`<div class="note">${m.tip}</div>`:''}${change}${m.mine&&!m.box?`<button class="lnk" data-edit="${m.si}" type="button">Edit recipe</button>`:''}</div></div>`;
   });
   h+='</div>';
 
@@ -1087,6 +1166,9 @@ function renderDay(){
   out.querySelectorAll('[data-delx]').forEach(b=>b.onclick=()=>{S.extras[cur].splice(+b.dataset.delx,1);save();renderDay()});
   document.getElementById('addExtra').onclick=()=>openBuilder({mode:'extra'});
   bindRest(out);
+  document.getElementById('addEx').onclick=openExercise;
+  out.querySelectorAll('[data-exdel]').forEach(b=>b.onclick=()=>{S.ex[cur].splice(+b.dataset.exdel,1);save();renderDay()});
+  const gs=out.querySelector('[data-gymskip]'); if(gs) gs.onclick=()=>{S.gymskip[cur]=!S.gymskip[cur];save();renderDay()};
   const gt=document.getElementById('gotoday'); if(gt) gt.onclick=()=>{cur=todayIdx();renderDay();window.scrollTo({top:0})};
 }
 
@@ -1118,6 +1200,11 @@ function openPicker(si){
     let h='<div class="opts">';
     if(!pf.q&&pf.tag==='all'){
       h+=`<button type="button" class="opt special" data-custom="1">${icon('mine')}<span><b>Build my own</b><span class="small muted">Cooking something else? Add palms, fists and spoons, see the protein.</span></span><span></span></button>`;
+      if(type!=='s'){
+        S.batches.forEach(bt=>{const t=calc(boxItems(bt,1));
+          h+=`<button type="button" class="opt" data-batch="${bt.id}">${icon('khoresh')}<span style="min-width:0"><b>${esc(bt.n)}: 1 box</b><span class="small muted">Your batch, ${bt.boxes} boxes</span></span><span class="m num"><span class="pp">${Math.round(t.p)}g</span>${Math.round(t.k)} kcal</span></button>`});
+        h+=`<button type="button" class="opt special" data-newbatch="1">${icon('khoresh')}<span><b>I cooked a big batch</b><span class="small muted">Pasta, khoresh, anything for several days. Tell me what went in the pot once.</span></span><span></span></button>`;
+      }
       if(type==='m') h+=`<button type="button" class="opt${curId==='free'?' cur':''}" data-id="free">${icon('free')}<span><b>Free meal</b><span class="small muted">No counting. Best once a week.</span></span><span></span></button>`;
     }
     ids.forEach(id=>{const m=M[id],t=calc(m[2]);
@@ -1126,10 +1213,24 @@ function openPicker(si){
     h+='</div>';
     sBody.innerHTML=h; sBody.scrollTop=0;
     sBody.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id,k=cur+'-'+si;if(id===planId(cur,si))delete S.swaps[k];else S.swaps[k]=id;delete S.actual[k];save();closeSheet();renderDay()});
+    sBody.querySelectorAll('[data-batch]').forEach(b=>b.onclick=()=>{useBatch(+b.dataset.batch,si,1)});
+    const nb=sBody.querySelector('[data-newbatch]'); if(nb) nb.onclick=()=>openBuilder({mode:'batch',si});
     const c=sBody.querySelector('[data-custom]'); if(c) c.onclick=()=>{const x=S.custom[cur+'-'+si];openBuilder({mode:'custom',si,init:x&&x.items,name:x&&x.n})};
   }
   list(); openSheet();
 }
+
+/* batches: whole-pot amounts, split into equal boxes */
+const boxItems=(bt,n)=>bt.items.map(([k,g])=>[k,Math.round(g/bt.boxes*n*10)/10]);
+function useBatch(id,si,n){const bt=S.batches.find(b=>b.id===id);if(!bt)return;const key=cur+'-'+si;
+  S.custom[key]={n:`${bt.n} (${n===1?'1 box':FR(n)+' boxes'})`,items:boxItems(bt,n),batch:id};S.swaps[key]='custom';delete S.actual[key];save();closeSheet();renderDay()}
+const BSTEP={chicken:100,beef:100,mince:125,lamb:100,salmon:120,egg:50,lentils:50,split:50,chickpea:240,beans:240,pasta:125,rice:50,potato:150,noodle:50,barley:50,
+ oil:5,butter:5,cheddar:25,feta:50,yog:60,cottage:75,milk:125,walnut:10,pea:100,broad:100,molasses:20,plum:16,pitta:61};
+const BBU=[['Meat, fish, eggs, beans',['chicken','mince','beef','lamb','salmon','egg','lentils','split','chickpea','beans']],
+ ['Pasta, rice, potato',['pasta','rice','potato','noodle','barley']],
+ ['Oil, cheese, dairy',['oil','butter','cheddar','feta','yog','cottage','milk','walnut']],
+ ['Other',['pea','broad','molasses','plum']]];
+const bShow=(k,g)=>{const f=F[k];if(f.pack&&['meat','tins'].includes(f.shop)||k==='pasta')return `${f.show(g)[0]}<small class="gram">${Math.round(g)} g${f.pack?` · ${FR(g/f.pack[0])} ${f.pack[1].replace(/\s*\(.*\)/,'')}`:''}</small>`;return f.show(g)[0]};
 
 /* builder: every food steps by a hand-sized amount */
 const STEP={chicken:50,beef:50,mince:50,lamb:50,salmon:60,egg:50,yog:30,cottage:30,feta:15,cheddar:12.5,whey:15,chickpea:60,beans:60,lentils:25,split:15,
@@ -1146,36 +1247,45 @@ function openBuilder({mode,si=null,init=null,name=''}){
   const g={}; (init||[]).forEach(([k,v])=>g[k]=(g[k]||0)+v);
   const mine=Object.keys(g).filter(k=>!F[k].free);
   const keepFree=(init||[]).filter(([k])=>F[k].free);
-  const titles={log:`What did you eat for ${SLOTS[si]&&SLOTS[si].toLowerCase()}?`,custom:`Build my own ${SLOTS[si]&&SLOTS[si].toLowerCase()}`,extra:'Add something I ate'};
+  const titles={log:`What did you eat for ${SLOTS[si]&&SLOTS[si].toLowerCase()}?`,custom:`Build my own ${SLOTS[si]&&SLOTS[si].toLowerCase()}`,extra:'Add something I ate',batch:'What went in the pot?'};
+  const isB=mode==='batch', ST=isB?BSTEP:STEP, base={...g}; let boxes=4;
   sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${titles[mode]}</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>
-    ${mode==='log'?`<p class="small muted" style="margin:0">Set the amounts you really ate. Your meals for the rest of the day resize to keep you on ${PT()}g protein and ${KT().toLocaleString()} kcal.</p>`:
-    `<input class="field" id="bname" placeholder="${mode==='extra'?'e.g. Latte and a biscuit':'e.g. Pasta with chicken'}" value="${esc(name||'')}" aria-label="Name">`}`;
+    ${mode==='log'?`<p class="small muted" style="margin:0">Set the amounts you really ate. Your meals for the rest of the day resize to keep you on ${PT()}g protein and ${KTd(cur).toLocaleString()} kcal.</p>`:
+    `<input class="field" id="bname" placeholder="${mode==='extra'?'e.g. Latte and a biscuit':isB?'e.g. Chicken pasta, Sunday':'e.g. Pasta with chicken'}" value="${esc(name||'')}" aria-label="Name">
+     ${isB?`<p class="small muted" style="margin:0">Add the whole pot: packs, tins, spoons of oil. Then say how many equal boxes you split it into.</p>`:''}`}`;
   document.getElementById('sx').onclick=closeSheet;
   const groups=[]; if(mine.length) groups.push([mode==='log'?'In this meal':'Already added',mine]);
-  BU.forEach(([t,ks])=>{const rest=ks.filter(k=>!mine.includes(k));if(rest.length)groups.push([mine.length?'Add '+t.toLowerCase():t,rest])});
+  (isB?BBU:BU).forEach(([t,ks])=>{const rest=ks.filter(k=>!mine.includes(k));if(rest.length)groups.push([mine.length?'Add '+t.toLowerCase():t,rest])});
   let h='';
+  if(mode==='log') h+=`<span class="lbl">Quick: how big was your plate?</span><div class="plates">${[['Small',.75],['As shown',1],['Big',1.25],['Very big',1.5],['Double',2]].map(([l,f])=>`<button type="button" data-f="${f}">${l}${f!==1?` <small>×${f}</small>`:''}</button>`).join('')}</div><span class="lbl" style="display:block;margin-top:12px">Or set each thing</span>`;
+  if(isB) h+=`<div class="brow boxes"><span class="nm"><b>Split into how many boxes?</b><small>Equal boxes, straight after cooking</small></span><span class="step"><button type="button" id="bxm" aria-label="Fewer boxes">−</button><output id="bxo" style="min-width:88px"></output><button type="button" id="bxp" aria-label="More boxes">+</button></span></div>`;
   groups.forEach(([t,ks])=>{
     h+=`<div class="bgrp"><span class="lbl">${t}</span>`;
-    ks.forEach(k=>{const st=STEP[k]||10;h+=`<div class="brow" data-k="${k}"><span class="nm">${F[k].n}<small>+ adds ${(F[k].p*st/100).toFixed(1)}g protein · ${Math.round(F[k].k*st/100)} kcal</small></span>
+    ks.forEach(k=>{const st=ST[k]||STEP[k]||10;h+=`<div class="brow" data-k="${k}"><span class="nm">${F[k].n}<small>${isB?`+ adds ${st}g`:`+ adds ${(F[k].p*st/100).toFixed(1)}g protein · ${Math.round(F[k].k*st/100)} kcal`}</small></span>
       <span class="step"><button type="button" data-d="-1" aria-label="Less ${F[k].n}">−</button><output></output><button type="button" data-d="1" aria-label="More ${F[k].n}">+</button></span></div>`});
     h+='</div>';
   });
   h+=`<p class="small muted">Vegetables, salad, herbs and pickles are free, no need to add them.</p>
-   <div class="btotal"><div class="sum" id="bsum"></div><button class="btn primary" id="bsave" type="button" style="justify-content:center;padding:12px">${mode==='log'?'Save, I ate this':'Save'}</button></div>`;
+   <div class="btotal"><div class="sum" id="bsum"></div><button class="btn primary" id="bsave" type="button" style="justify-content:center;padding:12px">${mode==='log'?'Save, I ate this':isB?'Save batch and eat 1 box':'Save'}</button></div>`;
   sBody.innerHTML=h; sBody.scrollTop=0;
   const items=()=>Object.keys(g).filter(k=>g[k]>0&&!F[k].free).map(k=>[k,Math.round(g[k]*10)/10]);
   function upd(){
-    sBody.querySelectorAll('.brow').forEach(r=>{const k=r.dataset.k,v=g[k]||0;r.querySelector('output').textContent=v>0?F[k].show(v)[0]:'0';r.classList.toggle('on',v>0)});
+    sBody.querySelectorAll('.brow[data-k]').forEach(r=>{const k=r.dataset.k,v=g[k]||0;r.querySelector('output').innerHTML=v>0?(isB?bShow(k,v):F[k].show(v)[0]):'0';r.classList.toggle('on',v>0)});
     const t=calc(items());
-    document.getElementById('bsum').innerHTML=`<span class="badge p num">${Math.round(t.p)}g protein</span><span class="badge k num">${Math.round(t.k)} kcal</span>`;
+    if(isB){document.getElementById('bxo').textContent=boxes+' boxes';
+      document.getElementById('bsum').innerHTML=`<span class="lbl" style="flex-basis:100%">Each box</span><span class="badge p num">${Math.round(t.p/boxes)}g protein</span><span class="badge k num">${Math.round(t.k/boxes)} kcal</span><span class="badge t num">whole pot ${Math.round(t.p)}g · ${Math.round(t.k)} kcal</span>`}
+    else document.getElementById('bsum').innerHTML=`<span class="badge p num">${Math.round(t.p)}g protein</span><span class="badge k num">${Math.round(t.k)} kcal</span>`;
   }
-  sBody.querySelectorAll('.brow').forEach(r=>r.querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=r.dataset.k,st=STEP[k]||10;g[k]=Math.max(0,(g[k]||0)+st*+b.dataset.d);if(g[k]<st*0.3)g[k]=0;upd()}));
+  sBody.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{const f=+b.dataset.f;Object.keys(base).forEach(k=>g[k]=base[k]*f);sBody.querySelectorAll('[data-f]').forEach(x=>x.setAttribute('aria-pressed',x===b));upd()});
+  if(isB){document.getElementById('bxm').onclick=()=>{boxes=Math.max(1,boxes-1);upd()};document.getElementById('bxp').onclick=()=>{boxes=Math.min(12,boxes+1);upd()}}
+  sBody.querySelectorAll('.brow[data-k]').forEach(r=>r.querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=r.dataset.k,st=ST[k]||STEP[k]||10;g[k]=Math.max(0,(g[k]||0)+st*+b.dataset.d);if(g[k]<st*0.3)g[k]=0;upd()}));
   sBody.querySelectorAll('.brow output').forEach(o=>o.style.minWidth='88px');
   document.getElementById('bsave').onclick=()=>{
     const its=items(); const key=cur+'-'+si;
     if(mode==='log'){S.actual[key]=[...its,...keepFree];S.done[key]=true;delete S.skip[key];save();renderDay();openRestSheet(si);return}
     if(!its.length){closeSheet();return}
     const n=(document.getElementById('bname').value||'').trim()||(mode==='extra'?'Extra':'My '+SLOTS[si].toLowerCase());
+    if(isB){const bt={id:Date.now(),n:(document.getElementById('bname').value||'').trim()||'My batch',items:its,boxes,made:iso(new Date())};S.batches.push(bt);save();useBatch(bt.id,si,1);return}
     if(mode==='extra'){(S.extras[cur]=S.extras[cur]||[]).push({n,items:its})}
     else{S.custom[key]={n,items:its};S.swaps[key]='custom';delete S.actual[key]}
     save();closeSheet();renderDay();
@@ -1259,7 +1369,13 @@ const HANDS=[
  ['Heaped tablespoon',hsvg('<ellipse cx="17" cy="18" rx="10" ry="12" fill="var(--firooze-soft)"/><path d="M23 28l14 13"/>'),'A dinner spoon, heaped.','= 30g yogurt or cottage cheese (3g protein).'],
  ['Mug',hsvg('<path d="M10 12h24v22a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6z" fill="var(--firooze-soft)"/><path d="M34 18h3a5 5 0 0 1 0 10h-3"/>'),'A standard 250ml mug.','= 200g raw rice (4 portions), 95g dry penne (2 portions) or 90g oats.']
 ];
-function renderHands(){document.getElementById('handcards').innerHTML=HANDS.map(([t,ic,d,e])=>`<div class="hand">${ic}<h3>${t}</h3><p>${d}</p><div class="eq">${e}</div></div>`).join('')}
+function renderHands(){document.getElementById('handcards').innerHTML=HANDS.map(([t,ic,d,e])=>`<div class="hand">${ic}<h3>${t}</h3><p>${d}</p><div class="eq">${e}</div></div>`).join('');renderBatches()}
+function renderBatches(){
+  const el=document.getElementById('batchlist'); if(!el) return;
+  if(!S.batches.length){el.innerHTML='<p class="small muted">No batches yet. On the Today screen, tap "Change dish" on lunch or dinner, then "I cooked a big batch".</p>';return}
+  el.innerHTML='<div class="calc">'+S.batches.map(bt=>{const t=calc(boxItems(bt,1));return `<div class="row"><span>${esc(bt.n)}<small class="num">${bt.boxes} boxes · each ${Math.round(t.p)}g protein, ${Math.round(t.k)} kcal · made ${bt.made}</small></span><button class="lnk" type="button" data-bdel="${bt.id}">Delete</button></div>`}).join('')+'</div>';
+  el.querySelectorAll('[data-bdel]').forEach(b=>b.onclick=()=>{S.batches=S.batches.filter(x=>x.id!==+b.dataset.bdel);save();renderBatches()});
+}
 
 /* ---------- ME ---------- */
 function renderMe(){
@@ -1298,14 +1414,14 @@ document.getElementById('addLog').onclick=()=>{
   S.log.push({d:iso(new Date()),w:w||null,waist:wa||null}); if(w) S.weight=w;
   save();document.getElementById('logW').value='';document.getElementById('logWaist').value='';renderTarget();renderMe();
 };
-document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};S.skip={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
+document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};S.skip={};S.ex={};S.gymskip={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
 
 /* ---------- tabs ---------- */
 const TABS=['today','week','lidl','hands','me'];
 function showTab(id){
   document.querySelectorAll('.tabbar button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));
   TABS.forEach(t=>document.getElementById(t).classList.toggle('hide',t!==id));
-  if(id==='today')renderDay(); if(id==='week')renderWeek(); if(id==='lidl')renderShop(); if(id==='me')renderMe();
+  if(id==='today')renderDay(); if(id==='hands')renderBatches(); if(id==='week')renderWeek(); if(id==='lidl')renderShop(); if(id==='me')renderMe();
   try{history.replaceState(null,'',id==='today'?location.pathname:'#'+id)}catch(e){}
   window.scrollTo({top:0});
 }
