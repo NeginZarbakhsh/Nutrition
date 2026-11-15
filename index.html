@@ -477,6 +477,13 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
 .win2 label{display:grid;gap:3px;font-size:11.5px;color:var(--muted);font-weight:600}
 .win2 input{padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:16px;width:100%}
 .form:not(.form2){grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}
+
+.cswitch{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.cswitch::-webkit-scrollbar{display:none}
+.cswitch button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--ink)}
+.cswitch button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.wex.addon{border-style:dashed}
+.pretip{color:var(--saffron)!important;margin-top:4px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -658,7 +665,7 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
       <h2>How you get the sporty, toned look</h2>
       <p class="sub">"Toned" is two things at once: enough muscle, and low enough body fat to see it. For most women visible definition starts around 20–24% body fat. The order below is the order of importance.</p>
       <div class="rules">
-        <div class="rule"><span class="n">1</span><div><h3>Lift, and lift a bit heavier over time</h3><p>Follow the 3 workouts in the app. Each set ends with 1–2 reps left in the tank. When you reach the top of the rep range on every set, add weight. Write it down: the app tells you what to beat. This is 70% of the result.</p></div></div>
+        <div class="rule"><span class="n">1</span><div><h3>Lift, and lift a bit heavier over time</h3><p>Your FFS classes: Upper Body, Lower Body and Functional each week, with Metabolic swapped in at most once a week. In each class, log the main lifts in the app (weight × reps of your best set) and try to beat them. A strength class every time beats more cardio for the toned look. This is 70% of the result.</p></div></div>
         <div class="rule"><span class="n">2</span><div><h3>Protein: about ${'{'}2 g per kg{'}'} every day</h3><p>Around 110g for you, in 4 portions of 25–35g. A protein snack before bed (cottage cheese or skyr) helps overnight repair.</p></div></div>
         <div class="rule"><span class="n">3</span><div><h3>Lose fat slowly: 0.25–0.4 kg a week</h3><p>Faster than that and you lose muscle and strength, and you look flat, not toned. Plan 10–14 weeks of this, then 4–6 weeks at maintenance (eat about 250 kcal more) so your body settles. Then decide: another short cut, or a slow build.</p></div></div>
         <div class="rule"><span class="n">4</span><div><h3>Carbs are your training fuel</h3><p>Rice, oats, potato and fruit before or after lifting. Gym days get 100 kcal more. Do not cut carbs to zero: your lifts and your muscles look better with them.</p></div></div>
@@ -966,11 +973,11 @@ const SLOTS=['Breakfast','Lunch','Snack','Dinner'];
 const SLOTKEY=['b_','l_','s_','d_'];
 const DOW=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const TRAIN=[
- {gym:1,name:'Upper body',steps:'6–7k',note:'Eat your lunch rice before or after the session. Carbs around training are what let you lift harder.'},
+ {gym:1,name:'Upper Body class',steps:'6–7k',note:'Class day. Have your rice or oats before or after the class: carbs are what let you lift heavy.'},
  {gym:0,name:'Rest',steps:'9–10k',note:'Your legs may ache. A walk helps them recover faster than sitting.'},
- {gym:1,name:'Lower body',steps:'6–7k',note:'Hardest session of the week. Do not skip food before it.'},
+ {gym:1,name:'Lower Body class',steps:'6–7k',note:'Heaviest class of the week: squats and hip thrusts. Do not train on an empty stomach.'},
  {gym:0,name:'Rest',steps:'9–10k',note:'Best day for one long 40–50 minute walk.'},
- {gym:1,name:'Total body',steps:'6–7k',note:'Full session. Make sure the snack (whey) happens today.'},
+ {gym:1,name:'Functional class',steps:'6–7k',note:'FUNCON day (or Total Body / Metabolic: switch it in the class card). Make sure the whey snack happens today.'},
  {gym:0,name:'Rest · check-in',steps:'10k+',note:'Weigh and measure your waist this morning before breakfast, then log it in Me.'},
  {gym:0,name:'Rest · free meal',steps:'8–9k',note:'Free dinner tonight. One plate, enjoy it, no counting. A walk after helps.'}
 ];
@@ -1015,8 +1022,9 @@ const watchBase=()=>Math.round((TDEE()-BMR()*1.1)/10)*10;
 function watchAdj(w){let v=Math.round((w.a-watchBase())*0.5/10)*10;const late=new Date(w.t).getHours()>=18;if(!late)v=Math.max(0,v);return Math.max(-250,Math.min(500,v))}
 const exAdj=i=>{if(S.watch[i])return watchAdj(S.watch[i]);let v=0;(S.ex[i]||[]).forEach(x=>v+=Math.round(burnOf(x)*0.5/10)*10);return v};
 /* more fuel on lifting days, a little less on rest days (weekly total stays the same) */
-const lifts=i=>(TRAIN[i%7].gym&&!S.gymskip[i])||(!TRAIN[i%7].gym&&S.wdone&&S.wdone[i]);
-const cycleAdj=i=>S.watch[i]?0:lifts(i)?100:(i%7===6?0:-75);
+/* class days get more food (strength +100, functional +120, metabolic +150), rest days a little less */
+const classKcal=i=>{const k=progOf(i);if(!k)return 0;const planned=TRAIN[i%7].gym&&!S.gymskip[i], extra=!TRAIN[i%7].gym&&trainedOn(i);return (planned||extra)?PROGRAM[k].kcal:0};
+const cycleAdj=i=>S.watch[i]?0:(classKcal(i)||(i%7===6?0:-75));
 const KTd=i=>KT()+exAdj(i)+cycleAdj(i);
 
 /* ---------- icons per dish type ---------- */
@@ -1236,13 +1244,13 @@ function exCard(i){
   }
   const pk=progOf(i);
   if(pk){const P=PROGRAM[pk], done=trainedOn(i);
-    h+=`<div class="wcard${done?' done':''}"><div><b>${done?'✓ ':''}${P.n}</b><small>${P.ex.length} exercises · about ${P.min} min${tr.gym?' · +100 kcal today for the session':''}</small></div>
-      <button class="btn ${done?'':'primary'}" type="button" data-wopen="${pk}">${done?'See / edit':'Open workout'}</button></div>`;
-    if(tr.gym&&!done) h+=`<div class="exrow${S.gymskip[i]?' off':''}"><span><small>${S.gymskip[i]?'Not trained today: target set to a rest day':'Missed the gym today?'}</small></span>
+    h+=`<div class="wcard${done?' done':''}"><div><b>${done?'✓ ':''}${P.n}</b><small>${P.min} min class · +${P.kcal} kcal food today${P.ex.length?` · log ${P.ex.length} key lifts`:''}</small>${done?'':`<small class="pretip">Eat carbs + protein 2–3 h before (or a banana + yogurt 45 min before an early class).</small>`}</div>
+      <button class="btn ${done?'':'primary'}" type="button" data-wopen="${pk}">${done?'See / edit':'Open class'}</button></div>`;
+    if(tr.gym&&!done) h+=`<div class="exrow${S.gymskip[i]?' off':''}"><span><small>${S.gymskip[i]?'Not trained today: target set to a rest day':'Not going to class today?'}</small></span>
       <button class="lnk" type="button" data-gymskip="1">${S.gymskip[i]?'I went after all':'I didn’t go'}</button></div>`;
   }else{
     h+=`<p class="small" style="margin:6px 0 0">Rest day: walk ${tr.steps} steps. Muscle is built on rest days, so eat normally.</p>
-      <div class="wswap"><span class="small muted">Training today instead?</span>${Object.keys(PROGRAM).map(k=>`<button class="btn" type="button" data-wopen="${k}">${PROGRAM[k].n}</button>`).join('')}</div>`;
+      <div class="wswap"><span class="small muted">Going to a class today instead?</span>${Object.keys(PROGRAM).map(k=>`<button class="btn" type="button" data-wopen="${k}">${PROGRAM[k].n}</button>`).join('')}</div>`;
   }
   list.forEach((x,j)=>{const b=burnOf(x);
     h+=`<div class="exrow"><span><b>${exInfo(x.type)[1]} · ${x.min} min</b><small class="num">${x.kcal>0?'Your watch: ':'About '}${b} kcal burned · you eat back ${Math.round(b*0.5/10)*10}</small></span>
@@ -1309,66 +1317,81 @@ function readWatchParam(){
   document.getElementById('gotit').onclick=closeSheet; openSheet();
 }
 
-/* ---------- TRAINING PROGRAMME ----------
-   3 full sessions a week. Every muscle trained twice, ~10–16 hard sets per muscle per week.
-   Double progression: when you hit the top of the rep range on every set, add weight. */
+/* ---------- TRAINING: YOUR CLASSES AT FFS DUNDRUM ----------
+   The coach programmes the sets; the app tracks the main lifts so you can see them go up,
+   adjusts food to the class type, and adds one small extra for the "sporty" shoulders.
+   EX: [name, sets, [low, high reps], shown as, cue, swap, weight step (kg; 0 = bodyweight)] */
 const EX={
- pulldown:['Lat pulldown',3,[8,12],'2 min','Chest up, pull the bar to your upper chest, elbows down towards your back pockets. Builds the back that makes your waist look smaller.','Assisted pull-up machine',2.5],
- dbpress:['Dumbbell bench press',3,[8,12],'2 min','Squeeze shoulder blades together, lower slowly for 2–3 seconds to chest level, press up.','Push-ups (knees if needed)',1],
- row:['Seated cable row',3,[10,12],'90 s','Pull to your belly button, pause 1 second and squeeze between the shoulder blades.','One-arm dumbbell row',2.5],
- ohp:['Seated dumbbell shoulder press',3,[8,12],'90 s','Press up and slightly in, stop just before your elbows lock. Ribs down.','Machine shoulder press',1],
- lateral:['Lateral raise',3,[12,20],'60 s','Light weight, lead with your elbows, raise to shoulder height. This builds the rounded shoulder "cap" of a sporty look.','Cable lateral raise',1],
- arms:['Biceps curl + triceps pushdown',2,[10,15],'60 s','Superset: one set of each back to back, then rest. Slow on the way down.','Dumbbells for both',1],
- squat:['Goblet squat or back squat',3,[6,10],'2–3 min','Sit down between your hips, knees follow your toes, chest up. As deep as you can with a flat back.','Leg press',2.5],
- rdl:['Romanian deadlift',3,[8,10],'2 min','Push your hips back, weight close to your legs, flat back. Stop when you feel a strong hamstring stretch.','Dumbbell RDL',2.5],
- thrust:['Hip thrust',3,[8,12],'2 min','Chin tucked, ribs down, push through heels. Squeeze your glutes hard for 1 second at the top.','Glute bridge machine',5],
- split:['Bulgarian split squat',2,[8,12],'90 s','Reps per leg. Lean your chest slightly forward for more glutes.','Reverse lunge',1],
- legcurl:['Leg curl (lying or seated)',2,[10,15],'60 s','Control the weight down for 2–3 seconds.','Swiss-ball leg curl',2.5],
- calf:['Standing calf raise',3,[10,15],'60 s','Full stretch at the bottom, pause 1 second at the top.','Single-leg calf raise',2.5],
- deadbug:['Dead bug',3,[8,12],'45 s','Reps per side. Lower back pressed into the floor the whole time. Slow.','Plank 30–45 s',0],
- trapdl:['Trap-bar or dumbbell deadlift',3,[5,8],'2–3 min','Brace your belly, push the floor away, stand tall. Stop 2 reps before your form breaks.','Kettlebell deadlift',5],
- incline:['Incline dumbbell press',3,[8,12],'2 min','Bench at 30°. Upper chest and front shoulders.','Incline machine press',1],
- dbrow:['One-arm dumbbell row',3,[10,12],'90 s','Reps per arm. Pull the elbow back towards your hip.','Seated cable row',1],
- legpress:['Leg press',3,[10,15],'2 min','Feet shoulder-width, lower until your knees reach 90°, do not lock out hard.','Goblet squat',5],
- knee:['Hanging knee raise or cable crunch',3,[10,15],'60 s','Curl your pelvis up, do not swing. Visible abs come from low body fat plus this.','Reverse crunch on the floor',0]
+ bench:['Bench press',3,[3,5],'3 × 3–5','Heavy block: stop each set with 1 rep left. Feet planted, shoulder blades pinned.','DB bench press',2.5],
+ pullup:['Pull-up / chin-up / one-arm DB row',3,[5,6],'3–4 × 5–6','Log the variation in your head; if using a band, a thinner band is progress.','Single-arm DB row',0],
+ shoulder:['Seated DB shoulder press',3,[8,10],'8, 8, max','Last set is "max": count it and beat it next time.','DA DB reverse lunge',2],
+ facepull:['Cable face pull',3,[12,15],'12, 12, max','Pull to your eyebrows, thumbs back. Great for posture and the back of the shoulder.','Band pull-apart',2.5],
+ squat:['Back / front squat or Bulgarian split squat',3,[3,5],'3 × 3–5','Brace, sit down between your hips, drive up. Heavy but clean.','Goblet squat',2.5],
+ thrust:['Barbell hip thrust',3,[6,10],'3 × 6–10','Chin tucked, squeeze glutes 1 s at the top. Main glute builder.','Glute bridge',5],
+ zercher:['Zercher / goblet cyclist squat / split squat',2,[8,10],'2 sets','Controlled, full range. Quads.','Goblet squat',2],
+ rdl:['BB Romanian deadlift',3,[6,6],'3 × 6','Hips back, bar close, flat back. Hamstrings and glutes.','DB RDL',2.5],
+ squat2:['Back / front squat or BB reverse lunge',4,[6,6],'4 × 6','Same weight on all 4 sets; when all feel solid, go up next week.','Goblet squat',2.5],
+ pushpress:['DB single-arm push press',3,[6,6],'3 × 6','Dip with the legs and drive the DB up. Builds shoulders.','DB shoulder press',2],
+ chin:['Chin-up or TRX row',3,[4,6],'4–6, 4–6, max','Full hang to chin over the bar, or a slow TRX row.','TRX row',0],
+ splitsq:['DB split squat',3,[5,10],'5–6, 5–6, 6–10','Reps per leg. Front knee over toes, upright chest.','Reverse lunge',2],
+ pushup:['Push-up or SA DB floor press',3,[6,10],'6–10, 6–10, max','Body in one line. Elevate the hands if you cannot get 6.','Incline push-up',0],
+ dardl:['DB Romanian deadlift',3,[8,12],'8–12, 8–12, 6–10','Two dumbbells, slow on the way down.','KB RDL',2],
+ lateral:['Add-on: lateral raise',3,[12,20],'3 × 12–20','5 minutes after class, light dumbbells. The classes train the side of the shoulder little; this gives the rounded "sporty" shoulder.','Cable lateral raise',1]
 };
+/* kcal: extra food on that day (strength classes +100, conditioning burns more +150) */
 const PROGRAM={
- upper:{n:'Upper body',ex:['pulldown','dbpress','row','ohp','lateral','arms'],min:50},
- lower:{n:'Lower body & glutes',ex:['squat','rdl','thrust','split','legcurl','calf','deadbug'],min:55},
- full:{n:'Full body',ex:['trapdl','incline','dbrow','legpress','lateral','knee'],min:50}
+ upper:{n:'Upper Body class',ex:['bench','pullup','shoulder','facepull','lateral'],min:60,kcal:100,
+   d:'Heavy pressing and pulling. Builds arms, shoulders and the back that makes your waist look smaller.'},
+ lower:{n:'Lower Body class',ex:['squat','thrust','zercher'],min:60,kcal:100,
+   d:'Squats, hip thrusts and single-leg work. The main glute and leg session of your week.'},
+ total:{n:'Total Body class',ex:['rdl','squat2','pullup','pushpress','lateral'],min:60,kcal:100,
+   d:'Hinge, squat, pull and press in one session.'},
+ funcon:{n:'Functional class (FUNCON)',ex:['chin','splitsq','pushup','dardl','lateral'],min:60,kcal:120,
+   d:'Strength circuit plus a short finisher (farmer walk, mountain climbers, wall sit). Strength and conditioning in one.'},
+ metabolic:{n:'Metabolic / conditioning class',ex:[],min:60,kcal:150,
+   d:'Intervals on row, bike or ski plus circuits (burpees, lunges, KB swings) at 7–8/10 effort. Great for fitness and fat loss; keep it to once a week instead of a strength class, so your strength keeps going up.'}
 };
-const DAYPROG={0:'upper',2:'lower',4:'full'};
+/* your usual week: Upper on Monday, Lower on Wednesday, Functional on Friday */
+const DAYPROG={0:'upper',2:'lower',4:'funcon'};
 const progOf=i=>(S.wprog&&S.wprog[i])||DAYPROG[i%7]||null;
 const trainedOn=i=>!!(S.wdone&&S.wdone[i]);
 function lastLift(id,beforeISO){const h=(S.lifts&&S.lifts[id])||[];const prev=h.filter(x=>x.d<beforeISO);return prev.length?prev[prev.length-1]:null}
 function nextTarget(id,last){
-  const e=EX[id]; if(!last||!(last.w>=0)) return 'First time: pick a weight you can lift for the top of the range with 2 reps to spare.';
+  const e=EX[id]; if(!last||!(last.r>0)) return 'First time: log the weight and reps of your best set, so next week has a number to beat.';
   const [lo,hi]=e[2];
-  if(last.r>=hi) return e[6]?`Go up to <b>${+(last.w+e[6]).toFixed(1)} kg</b> and aim for ${lo}+ reps.`:`Make it harder: slower, or add a pause. Aim for ${hi} again.`;
-  return `Stay at <b>${last.w} kg</b> and beat <b>${last.r} reps</b> (aim ${Math.min(hi,last.r+1)}).`;
+  if(!e[6]) return last.r>=hi?`You hit ${last.r}. Next: a thinner band, a harder variation, or 1 more rep.`:`Beat <b>${last.r} reps</b> (aim ${last.r+1}).`;
+  if(last.r>=hi) return `Last time felt strong at the top of the range: try <b>${+(last.w+e[6]).toFixed(1)} kg</b>.`;
+  return `Stay at <b>${last.w} kg</b> and beat <b>${last.r} reps</b>, or match it with cleaner form.`;
 }
 function openWorkout(i,key){
   key=key||progOf(i); const P=PROGRAM[key]; if(!P) return;
-  const d=iso(dateOf(i));
-  S.lifts=S.lifts||{};
+  const d=iso(dateOf(i)); S.lifts=S.lifts||{};
   sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${P.n}</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>
-    <p class="small muted" style="margin:0">About ${P.min} min. Warm up 5 min (bike or brisk walk) and do 2 light sets of the first exercise. Every working set: stop with <b>1–2 reps left in the tank</b>.</p>`;
+    <p class="small muted" style="margin:0">${P.d}</p>
+    <div class="cswitch">${Object.keys(PROGRAM).map(k=>`<button type="button" data-cls="${k}" aria-pressed="${k===key}">${PROGRAM[k].n.replace(' class','').replace(' (FUNCON)','')}</button>`).join('')}</div>`;
   document.getElementById('sx').onclick=closeSheet;
-  let h='<div class="wlist">';
-  P.ex.forEach((id,j)=>{const e=EX[id], last=lastLift(id,d), today=(S.lifts[id]||[]).find(x=>x.d===d);
-    h+=`<div class="wex"><div class="wh"><b>${j+1}. ${e[0]}</b><span class="num">${e[1]} × ${e[2][0]}–${e[2][1]}${id==='split'||id==='dbrow'||id==='deadbug'?' each side':''} · rest ${e[3]}</span></div>
-      <p class="wcue">${e[4]} <span class="muted">Swap: ${e[5]}.</span></p>
-      <p class="wlast">${last?`Last time: <b class="num">${last.w} kg × ${last.r}</b>. `:''}${nextTarget(id,last)}</p>
-      <div class="win2"><label>kg<input type="number" inputmode="decimal" step="0.5" data-w="${id}" value="${today?today.w:''}" placeholder="${last?last.w:''}"></label>
-        <label>reps (best set)<input type="number" inputmode="numeric" data-r="${id}" value="${today?today.r:''}" placeholder="${last?last.r:''}"></label></div></div>`});
-  h+=`</div><button class="btn primary" type="button" id="wfinish" style="width:100%;justify-content:center;padding:13px;margin-top:14px">Finish workout</button>
-    <p class="small muted" style="margin-top:10px">Log the weight and reps of your best set. When every set reaches the top of the range, the app tells you to go heavier next time. That is what builds visible muscle.</p>`;
+  sHead.querySelectorAll('[data-cls]').forEach(b=>b.onclick=()=>openWorkout(i,b.dataset.cls));
+  let h='';
+  if(!P.ex.length){
+    h+=`<div class="wex"><b>How to get the most from it</b><p class="wcue">Eat a carb + protein meal 2–3 hours before (or a banana and a yogurt 45 min before an early class). Have your next meal within 2 hours after. Today you get ${P.kcal} kcal more food.</p></div>`;
+  }else{
+    h+=`<p class="small" style="margin:0 0 10px">Do the class as your coach says. Then log the <b>weight and reps of your best set</b> for these key lifts:</p><div class="wlist">`;
+    P.ex.forEach((id,j)=>{const e=EX[id], last=lastLift(id,d), today=(S.lifts[id]||[]).find(x=>x.d===d);
+      h+=`<div class="wex${id==='lateral'?' addon':''}"><div class="wh"><b>${e[0]}</b><span class="num">${e[3]}</span></div>
+        <p class="wcue">${e[4]} <span class="muted">Swap: ${e[5]}.</span></p>
+        <p class="wlast">${last?`Last time: <b class="num">${e[6]||last.w?last.w+' kg × ':''}${last.r}</b>. `:''}${nextTarget(id,last)}</p>
+        <div class="win2"><label>kg${e[6]?'':' (0 = bodyweight)'}<input type="number" inputmode="decimal" step="0.5" data-w="${id}" value="${today?today.w:''}" placeholder="${last?last.w:''}"></label>
+          <label>reps (best set)<input type="number" inputmode="numeric" data-r="${id}" value="${today?today.r:''}" placeholder="${last?last.r:''}"></label></div></div>`});
+    h+='</div>';
+  }
+  h+=`<button class="btn primary" type="button" id="wfinish" style="width:100%;justify-content:center;padding:13px;margin-top:14px">I did this class</button>`;
   sBody.innerHTML=h;
-  const store=id=>{const w=parseFloat(sBody.querySelector(`[data-w="${id}"]`).value), r=parseInt(sBody.querySelector(`[data-r="${id}"]`).value,10);
-    const arr=S.lifts[id]=(S.lifts[id]||[]).filter(x=>x.d!==d); if(w>=0&&r>0){arr.push({d,w,r});arr.sort((a,b)=>a.d<b.d?-1:1)} save()};
+  const store=id=>{const wi=sBody.querySelector(`[data-w="${id}"]`), ri=sBody.querySelector(`[data-r="${id}"]`); if(!wi) return;
+    const w=parseFloat(wi.value), r=parseInt(ri.value,10);
+    const arr=S.lifts[id]=(S.lifts[id]||[]).filter(x=>x.d!==d); if(r>0){arr.push({d,w:w>=0?w:0,r});arr.sort((a,b)=>a.d<b.d?-1:1)} save()};
   sBody.querySelectorAll('[data-w],[data-r]').forEach(inp=>inp.onchange=()=>store(inp.dataset.w||inp.dataset.r));
-  document.getElementById('wfinish').onclick=()=>{P.ex.forEach(store);S.wdone=S.wdone||{};S.wdone[i]=true;S.wprog=S.wprog||{};S.wprog[i]=key;delete S.gymskip[i];save();closeSheet();renderDay();toast(`Workout saved: <b>${P.n}</b>`)};
-  openSheet();
+  document.getElementById('wfinish').onclick=()=>{P.ex.forEach(store);S.wdone=S.wdone||{};S.wdone[i]=true;S.wprog=S.wprog||{};S.wprog[i]=key;delete S.gymskip[i];save();closeSheet();renderDay();toast(`Saved: <b>${P.n}</b>`)};
+  if(!sheet.classList.contains('open')) openSheet();
 }
 
 /* ---------- TODAY: summary + one tab per meal ---------- */
