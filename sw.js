@@ -1,6 +1,6 @@
 // Keeps the app working offline (e.g. with bad signal inside Lidl),
 // but always tries the newest version first so updates show up straight away.
-const CACHE = 'sofreh-v14';
+const CACHE = 'sofreh-v15';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, {cache: 'reload'})))).then(() => self.skipWaiting()));

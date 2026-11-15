@@ -456,6 +456,10 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
 .resetbox small{color:var(--muted);font-size:12.5px}
 .btn.danger{border-color:var(--anar);color:var(--anar);background:var(--surface);min-height:42px}
 .btn.danger.sure{background:var(--anar);color:var(--surface)}
+
+.pillcol{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.resettop{border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);color:var(--on-hero);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700;min-height:34px}
+.resettop.sure{background:var(--anar);border-color:var(--anar);color:#fff}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -662,12 +666,14 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
       </table></div>
     </div>
     <div class="section">
-      <button class="btn" id="resetTicks" type="button">Clear all ticks, choices and extras</button>
-      <span class="small muted" id="resetMsg"></span>
+      <h2>Start again</h2>
+      <p class="sub">To clear just one day, open it and tap <b>↺ Reset day</b> at the top. This button clears <b>every</b> day: ticks, skips, logged amounts, extras, watch calories, workouts and changed dishes. Your weight, targets, products and batches stay.</p>
+      <label class="small" for="forgetUsual" style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><input type="checkbox" id="forgetUsual" style="width:20px;height:20px;accent-color:var(--anar)"> Also forget my usual amounts (e.g. my oats)</label>
+      <button class="btn danger" id="resetTicks" type="button">Start completely fresh</button>
     </div>
   </section>
 
-  <footer><b style="color:var(--ink)">Version 14 · 15 Nov 2026</b> · Clear a day or reset a meal.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
+  <footer><b style="color:var(--ink)">Version 15 · 15 Nov 2026</b> · Reset day at the top; clearer Sundays.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Sections"><div class="in">
@@ -1259,7 +1265,13 @@ function afterAction(si,what){
 function coach(meals,T){
   const target=PT(), left=meals.filter(m=>!m.free&&!m.done&&!m.skipped), gap=Math.round(target-T.p), sk=meals.filter(m=>m.skipped);
   const out=[];
-  if(meals.mode==='free'&&left.length===0&&meals.some(m=>m.free&&!m.done)) out.push(`Free meal tonight. Enjoy it, no counting.`);
+  const freeLeft=meals.some(m=>m.free&&!m.done&&!m.skipped);
+  if(freeLeft){
+    const nm=left.map(m=>m.slot.toLowerCase()), lst=nm.length>1?nm.slice(0,-1).join(', ')+' and '+nm[nm.length-1]:nm[0];
+    out.push(`<b>Sunday: free meal day.</b> ${left.length?`Have ${lst} as planned, then dinner`:'Dinner'} is free: eat what you like, no counting.`);
+    out.push(`Tip: choose something with protein in it (kabab, joojeh, chicken, fish) and you will be close to ${target}g without trying.`);
+    return {lines:out,tone:'ok'};
+  }
   if(gap>2){
     const t=topUps(gap), best=t[0];
     out.push(`<b>${left.length?`Even after your meals you will be ${gap}g short`:`You are ${gap}g short`}.</b> Easiest fix: <b>${best.label}</b> (+${Math.round(best.p)}g protein, ${Math.round(best.kc)} kcal).`);
@@ -1278,7 +1290,7 @@ function dayHeader(meals,T){
   return `<div class="hero">
     <div class="top"><div><h2>${isToday?'Today':d.toLocaleDateString(undefined,{weekday:'long'})}</h2>
       <div class="date">${d.toLocaleDateString(undefined,{weekday:isToday?'long':undefined,day:'numeric',month:'long'})} · ${tr.steps} steps</div></div>
-      <span class="pill">${tr.gym?(S.gymskip[cur]?'Gym skipped':'Gym · '+tr.name):tr.name}</span></div>
+      <span class="pillcol"><span class="pill">${tr.gym?(S.gymskip[cur]?'Gym skipped':'Gym · '+tr.name):tr.name}</span>${dayHasData(cur)?`<button type="button" class="resettop" data-clear="day">↺ Reset day</button>`:''}</span></div>
     <div class="tiles">
       <div class="tile"><span class="lbl">Protein</span><div class="tv num">${Math.round(T.ep)}<small>/${PT()}g</small></div>
         <div class="hbar"><i style="width:${pct(T.p,PT())}%;background:rgba(255,255,255,.3)"></i><i style="width:${pct(T.ep,PT())}%;background:var(--saffron)"></i></div></div>
@@ -1346,6 +1358,8 @@ function mealReset(m){
   return `<div class="resetbox"><button class="btn danger" type="button" data-clear="${m.si}">Reset ${m.slot.toLowerCase()}</button>
     <small>Back to the planned dish, not eaten yet.</small></div>`;
 }
+function dayHasData(i){for(let si=0;si<4;si++){const k=i+'-'+si;if(S.done[k]||S.skip[k]||S.actual[k]||S.swaps[k])return true}
+  return !!((S.extras[i]||[]).length||(S.ex[i]||[]).length||S.gymskip[i]||S.watch[i])}
 function clearMeal(i,si){const k=i+'-'+si;['done','skip','actual','swaps','custom'].forEach(x=>{if(S[x])delete S[x][k]})}
 function clearDay(i){for(let si=0;si<4;si++)clearMeal(i,si);['extras','ex','gymskip','watch'].forEach(x=>{if(S[x])delete S[x][i]});
   Object.keys(S.have||{}).forEach(k=>{if(k.startsWith(i+'-'))delete S.have[k]})}
@@ -1679,7 +1693,11 @@ document.getElementById('addLog').onclick=()=>{
   S.log.push({d:iso(new Date()),w:w||null,waist:wa||null}); if(w) S.weight=w;
   save();document.getElementById('logW').value='';document.getElementById('logWaist').value='';renderTarget();renderMe();
 };
-document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};S.skip={};S.ex={};S.gymskip={};S.watch={};S.usual={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
+document.getElementById('resetTicks').onclick=e=>{const b=e.currentTarget;
+  if(!b.classList.contains('sure')){b.classList.add('sure');b.textContent='Tap again to clear every day';clearTimeout(b._t);b._t=setTimeout(()=>{b.classList.remove('sure');b.textContent='Start completely fresh'},3500);return}
+  ['done','swaps','have','shop','custom','extras','actual','skip','ex','gymskip','watch'].forEach(k=>S[k]={});
+  const forget=document.getElementById('forgetUsual'); if(forget&&forget.checked) S.usual={};
+  save();b.classList.remove('sure');b.textContent='Start completely fresh';toast('Everything cleared. Every day starts from zero.')};
 
 /* ---------- MY PRODUCTS ----------
    Products read from your label photos. Each one replaces the typical values for one ingredient,
