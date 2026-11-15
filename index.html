@@ -322,6 +322,31 @@ footer{margin-top:36px;font-size:12px;color:var(--muted)}
  .brow .nm{font-size:14px}
 }
 .form select,.form input,.field,.search{font-size:16px}
+
+/* one-tap meal actions */
+.acts{display:grid;grid-template-columns:1.1fr 1.3fr 1fr;gap:8px;padding:10px 14px 4px}
+.act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:13px;color:var(--ink);padding:6px 4px;text-align:center;line-height:1.15}
+.act svg{width:20px;height:20px}
+.act.yes{background:var(--firooze);border-color:var(--firooze);color:var(--surface)}
+.act.no{color:var(--anar)}
+.links{display:flex;flex-wrap:wrap;gap:4px 14px;padding:6px 14px 12px;align-items:center}
+.links details{flex:1 1 100%}
+.links summary{cursor:pointer;font-weight:600;font-size:13.5px;color:var(--firooze);list-style:none;padding:6px 0}
+.links summary::-webkit-details-marker{display:none}
+.links summary::before{content:"+ "}
+.lnk{border:0;background:none;padding:8px 0;font-weight:600;font-size:13.5px;color:var(--muted);display:inline-flex;align-items:center;gap:5px}
+.lnk svg{width:15px;height:15px}
+.mini{display:flex;align-items:center;gap:10px;padding:12px 14px;flex-wrap:wrap}
+.mini .mt{flex:1;min-width:0;font-weight:600}
+.mini .ok{width:26px;height:26px;border-radius:50%;background:var(--firooze);color:var(--surface);display:grid;place-items:center;flex:0 0 auto}
+.mini .ok svg{width:15px;height:15px}
+.meal.done .ate{padding:0 14px 12px}
+.meal.skipped{background:transparent;border-style:dashed;box-shadow:none}
+.meal.skipped .mt{color:var(--muted);font-weight:500;text-decoration:line-through}
+.meal.next{border:2px solid var(--firooze)}
+.nextbar{background:var(--firooze);color:var(--surface);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px}
+.ings li.chg .how{color:var(--abi)}
+.was{text-decoration:line-through}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -742,7 +767,7 @@ const SHOPCAT=[['meat','Meat & fish'],['dairy','Dairy & eggs'],['frozen','Frozen
 const LS='sofreh-v1';
 let S={};
 try{S=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){S={}}
-['done','swaps','have','shop','custom','extras','actual'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[];
+['done','swaps','have','shop','custom','extras','actual','skip'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[];
 S.weight=S.weight||54.5; S.height=S.height||155; S.age=S.age||30; S.sex=S.sex||'f'; S.act=S.act||1.5; S.goal=(S.goal===undefined)?0.15:S.goal;
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -812,6 +837,7 @@ function dayPlan(i){
   const out=base.map(m=>{
     const key=i+'-'+m.si, done=!!S.done[key];
     const r=Object.assign({},m,{done,orig:m.items,adjusted:false,logged:!!S.actual[key]});
+    if(S.skip[key]){r.skipped=true;r.items=[];r.t={k:0,p:0};return r}
     if(m.free){if(!done)freeOpen=true;return r}
     if(done){r.items=S.actual[key]||m.items;r.t=calc(r.items);fk+=r.t.k;fp+=r.t.p;return r}
     if(m.si===1&&role!=='single'){fk+=m.t.k;fp+=m.t.p;r.fixed=true;return r}
@@ -830,7 +856,13 @@ function dayPlan(i){
     if(b<0.6&&Pp>0){b=0.6;a=Math.max((Kn-Ke*b)/Kp,(Pn-Pe*b)/Pp,0.7);a=Math.min(a,1);b=cl((Kn-Kp*a)/Ke,0.3,1.6)}
     else if(b>1.6){b=1.6;if(Pp>0)a=cl((Kn-Ke*b)/Kp,1,2.2)}
   }else if(Pp>0) a=cl(Kn/Kp,0.7,2.2);
-  if(Pp>0&&Pp*a+Pe*b<Pn){a=cl((Pn-Pe*b)/Pp,0.7,2.2);if(Ke>0)b=cl((Kn-Kp*a)/Ke,0.3,1.6)}
+  if(Pp>0&&Pp*a+Pe*b<Pn){a=cl((Pn-Pe*b)/Pp,0.7,2.6);if(Ke>0)b=cl((Kn-Kp*a)/Ke,0.3,1.8)}
+  /* a skipped meal: win back the protein only, don't pile its calories onto dinner */
+  if(out.some(m=>m.skipped)&&Pp>0){
+    b=Math.min(b,1);
+    a=cl(Math.max(1,(Pn-Pe*b)/Pp),0.7,2.6);
+    if(Ke>0&&Kp*a+Ke*b>Kn) b=cl((Kn-Kp*a)/Ke,0.3,1);
+  }
   out.a=a; out.b=b;
   adj.forEach(r=>{
     r.items=r.items.map(([k,g])=>{if(F[k].free)return [k,g];const s=PRO.has(k)?a:b;return [k,Math.round(g*s)]});
@@ -841,7 +873,7 @@ function dayPlan(i){
 }
 function dayTotals(i){
   const r={k:0,p:0,ek:0,ep:0};
-  dayPlan(i).forEach(m=>{if(m.free)return;r.k+=m.t.k;r.p+=m.t.p;if(m.done){r.ek+=m.t.k;r.ep+=m.t.p}});
+  dayPlan(i).forEach(m=>{if(m.free||m.skipped)return;r.k+=m.t.k;r.p+=m.t.p;if(m.done){r.ek+=m.t.k;r.ep+=m.t.p}});
   extrasOf(i).forEach(x=>{const t=calc(x.items);r.k+=t.k;r.p+=t.p;r.ek+=t.k;r.ep+=t.p});
   return r;
 }
@@ -917,13 +949,15 @@ function topUps(gap){
   return o.slice(0,4);
 }
 function restCard(meals,T){
-  const target=PT(), left=meals.filter(m=>!m.free&&!m.done), eaten=Math.round(T.ep), toGo=Math.max(0,target-eaten);
+  const target=PT(), left=meals.filter(m=>!m.free&&!m.done&&!m.skipped), eaten=Math.round(T.ep), toGo=Math.max(0,target-eaten);
   const gap=Math.round(target-T.p);
   let h=`<div class="rest"><div class="rhead"><div><span class="lbl">Rest of today</span>
     <div class="rbig num"><b>${eaten}g</b> eaten · <b class="go">${toGo}g</b> to go</div></div>
     <div class="rk num">${Math.max(0,Math.round(KT()-T.ek))}<small>kcal left</small></div></div>
     <div class="rbar"><i style="width:${Math.min(100,eaten/target*100)}%"></i><i class="pl" style="width:${Math.min(100,Math.max(0,(T.p-T.ep))/target*100)}%"></i></div>`;
   if(meals.mode==='free'){h+=`<p class="rnote">Free meal tonight, so portions follow the plan. No counting.</p>`}
+  const sk=meals.filter(m=>m.skipped);
+  if(sk.length&&left.length) h+=`<p class="rnote" style="color:var(--abi);font-weight:600">${sk.map(m=>m.slot).join(' and ')} skipped. The meals below are bigger to make up the protein.</p>`;
   if(left.length){
     h+='<ol class="rlist">';
     left.forEach(m=>{h+=`<li><button type="button" class="rjump" data-jump="${m.si}"><span class="rs"><span class="lbl">${m.slot}</span><span class="rp num">+${Math.round(m.t.p)}g</span></span>
@@ -944,7 +978,7 @@ function bindRest(root){
 }
 function openRestSheet(si){
   const meals=dayPlan(cur), T=dayTotals(cur), m=meals[si];
-  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${SLOTS[si]} saved: ${Math.round(m.t.p)}g protein</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${m.skipped?SLOTS[si]+' skipped':m.free?SLOTS[si]+' done':SLOTS[si]+' saved: '+Math.round(m.t.p)+'g protein'}</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
   document.getElementById('sx').onclick=closeSheet;
   sBody.innerHTML=restCard(meals,T)+`<button class="btn primary" type="button" id="gotit" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Got it</button>`;
   bindRest(sBody); document.getElementById('gotit').onclick=closeSheet;
@@ -976,46 +1010,52 @@ function renderDay(){
   h+=restCard(meals,T);
   if(meals.mode==='free') h+=`<div class="callout" style="background:var(--anar-soft)">${SVGI.scale}<div><span class="lbl" style="color:var(--anar)">Free meal day</span><p>Portions follow the plan today. No tuning, no counting tonight.</p></div></div>`;
   const L=meals[1];
-  if(role==='cook') h+=`<div class="callout">${SVGI.pot}<div><span class="lbl">Cook today</span><p><b>${esc(L.name)}</b> for 2: double every amount shown. Eat one, box one for tomorrow.</p></div></div>`;
+  if(role==='cook') h+=L.skipped?`<div class="callout">${SVGI.pot}<div><span class="lbl">Still cook tonight</span><p>You skipped lunch, but tomorrow's lunch is <b>${esc(L.name)}</b>. Cook it for 2 tonight: box one for tomorrow, freeze the other.</p></div></div>`
+    :`<div class="callout">${SVGI.pot}<div><span class="lbl">Cook today</span><p><b>${esc(L.name)}</b> for 2: double every amount shown. Eat one, box one for tomorrow.</p></div></div>`;
   if(cur%7===6){const nx=mealAt((cur+1)%28,1);h+=`<div class="callout">${SVGI.pot}<div><span class="lbl">Sunday prep</span><p>Boil 6 eggs. Wash and dry herbs. Chop cucumber, tomato, onion. Jar of garlic yogurt. Bake 4 palms of chicken. Then cook tomorrow's lunch${nx.free?'':`: <b>${esc(nx.name)}</b>`}.</p></div></div>`}
 
+  const nextSi=(meals.find(m=>!m.done&&!m.skipped)||{}).si;
   h+='<div class="meals">';
   meals.forEach(m=>{
-    const on=m.done;
-    const tick=`<button class="tick" type="button" aria-pressed="${on}" data-si="${m.si}" aria-label="Mark ${m.slot.toLowerCase()} as eaten">${SVGI.check}</button>`;
-    const change=`<button class="btn soft" data-pick="${m.si}" type="button">${SVGI.swap}Change</button>${m.changed?`<button class="btn" data-unswap="${m.si}" type="button">Back to plan</button>`:''}`;
+    const on=m.done, isNext=isToday&&m.si===nextSi;
+    const change=`<button class="lnk" data-pick="${m.si}" type="button">${SVGI.swap}Change dish</button>${m.changed?`<button class="lnk" data-unswap="${m.si}" type="button">Back to plan</button>`:''}`;
+    const acts=`<div class="acts">
+      <button class="act yes" data-ate="${m.si}" type="button">${SVGI.check}<span>Ate it</span></button>
+      ${m.free?'':`<button class="act" data-log="${m.si}" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg><span>Different amount</span></button>`}
+      <button class="act no" data-skip="${m.si}" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Skipped</span></button></div>`;
+    const undo=`<button class="lnk" data-undo="${m.si}" type="button">Undo</button>`;
+    if(m.skipped){
+      h+=`<div class="meal skipped" id="meal-${m.si}"><div class="mini"><span class="lbl">${m.slot}</span><span class="mt">Skipped${m.name?' · '+esc(m.name):''}</span>${undo}</div></div>`;return;
+    }
+    if(on){
+      h+=`<div class="meal done" id="meal-${m.si}"><div class="mini"><span class="ok">${SVGI.check}</span><span class="lbl">${m.slot}</span>
+        <span class="mt">${m.free?'Free meal':esc(m.name)}${m.free?'':` <span class="num" style="color:var(--firooze);font-weight:700">${Math.round(m.t.p)}g</span>`}</span>${m.free?'':`<button class="lnk" data-log="${m.si}" type="button">Edit</button>`}${undo}</div>
+        ${m.free?'':`<div class="ate">${shortList(m,-1)||'Nothing logged'}</div>`}</div>`;
+      return;
+    }
     if(m.free){
-      h+=`<div class="meal${on?' done':''}" id="meal-${m.si}"><div class="mhead">${icon('free')}<div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag free">Free meal</span></div><h3>Eat what you want</h3></div>${tick}</div>
-      <div class="freebox">One plate, no counting. Planned, not a slip. Kabab, pizza, your mum's tahdig, anything. If you want to track the protein anyway, use "Add something I ate" below.</div>
-      <div class="mfoot">${change}</div></div>`;return;
+      h+=`<div class="meal${isNext?' next':''}" id="meal-${m.si}">${isNext?'<div class="nextbar">Up next</div>':''}<div class="mhead">${icon('free')}<div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag free">Free meal</span></div><h3>Eat what you want</h3></div></div>
+      <div class="freebox">One plate, no counting. Kabab, pizza, your mum's tahdig, anything.</div>${acts}<div class="links">${change}</div></div>`;return;
     }
     let tag='';
     if(m.si===1&&role==='cook') tag='<span class="tag cook">Cook ×2 today</span>';
     if(m.si===1&&role==='left') tag='<span class="tag left">Leftovers</span>';
     if(m.mine) tag+='<span class="tag mine">Your meal</span>';
-    if(m.logged) tag+='<span class="tag left">Logged</span>';
-    if(m.adjusted&&!on) tag+='<span class="tag adj">Resized for today</span>';
-    if(on){
-      h+=`<div class="meal done" id="meal-${m.si}"><div class="mhead">${icon(m.kind)}<div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag left">Eaten</span></div>
-        <h3>${esc(m.name)}</h3><div class="mac"><span class="badge p num">${Math.round(m.t.p)}g protein</span><span class="badge k num">${Math.round(m.t.k)} kcal</span></div></div>${tick}</div>
-        <div class="ate">${shortList(m,-1)||'Nothing logged'}</div>
-        <div class="mfoot"><button class="btn" data-log="${m.si}" type="button">Edit what I ate</button></div></div>`;
-      return;
-    }
-    h+=`<div class="meal" id="meal-${m.si}"><div class="mhead">${icon(m.kind)}<div class="t">
+    if(m.adjusted) tag+='<span class="tag adj">Resized for today</span>';
+    h+=`<div class="meal${isNext?' next':''}" id="meal-${m.si}">${isNext?'<div class="nextbar">Up next</div>':''}<div class="mhead">${icon(m.kind)}<div class="t">
       <div class="slot"><span class="lbl">${m.slot}</span>${tag}</div>
       <h3>${esc(m.name)}</h3>${m.fa?`<span class="fa">${m.fa}</span>`:''}
-      <div class="mac"><span class="badge p num">${Math.round(m.t.p)}g protein</span><span class="badge k num">${Math.round(m.t.k)} kcal</span>${m.min?`<span class="badge t num">${m.min} min</span>`:''}</div></div>${tick}</div>`;
+      <div class="mac"><span class="badge p num">${Math.round(m.t.p)}g protein</span><span class="badge k num">${Math.round(m.t.k)} kcal</span>${m.min?`<span class="badge t num">${m.min} min</span>`:''}</div></div></div>`;
     if(m.si===1&&role==='left') h+=`<div class="freebox">Reheat the box you made yesterday. Nothing to measure.</div>`;
     else{
       h+='<ul class="ings">';
-      m.items.forEach(([k,g])=>{const x=fmtItem(k,g);const o=(m.orig.find(r=>r[0]===k)||[k,g])[1];const was=(!on&&m.adjusted&&F[k].show(o)[0]!==x.how)?` <span class="was">(plan: ${F[k].show(o)[0]})</span>`:'';
-        h+=`<li class="${x.free?'free':''}"><span class="food">${x.name}</span><span class="how">${x.how}</span>${(x.alt||was)?`<span class="alt">${x.alt||''}${was}</span>`:''}</li>`});
+      m.items.forEach(([k,g])=>{const x=fmtItem(k,g);const o=(m.orig.find(r=>r[0]===k)||[k,g])[1];const ch=m.adjusted&&F[k].show(o)[0]!==x.how;
+        h+=`<li class="${x.free?'free':''}${ch?' chg':''}"><span class="food">${x.name}</span><span class="how">${x.how}</span>${(x.alt||ch)?`<span class="alt">${ch?`<span class="was">was ${F[k].show(o)[0]}</span> `:''}${x.alt||''}</span>`:''}</li>`});
       if(!m.items.length) h+='<li><span class="food muted">Nothing added yet</span></li>';
       h+='</ul>';
     }
-    h+=`<div class="mfoot">${m.how?`<details><summary>How to make it</summary><div class="recipe">${m.how}${m.extra?`<div class="also">Also uses: ${m.extra}, plus spices.</div>`:''}</div></details>`:''}
-      ${m.tip?`<div class="note">${m.tip}</div>`:''}<button class="btn primary" data-log="${m.si}" type="button">Log what I ate</button>${change}${m.mine?`<button class="btn" data-edit="${m.si}" type="button">Edit recipe</button>`:''}</div></div>`;
+    h+=acts+`<div class="links">${m.how?`<details><summary>How to make it</summary><div class="recipe">${m.how}${m.extra?`<div class="also">Also uses: ${m.extra}, plus spices.</div>`:''}</div></details>`:''}
+      ${m.tip?`<div class="note">${m.tip}</div>`:''}${change}${m.mine?`<button class="lnk" data-edit="${m.si}" type="button">Edit recipe</button>`:''}</div></div>`;
   });
   h+='</div>';
 
@@ -1034,10 +1074,11 @@ function renderDay(){
   if(!isToday) h+=`<div style="margin-top:16px"><button class="btn" id="gotoday" type="button">Back to today</button></div>`;
 
   out.innerHTML=h;
-  out.querySelectorAll('.tick').forEach(b=>b.onclick=()=>{const si=+b.dataset.si,k=cur+'-'+si;
-    if(S.done[k]){delete S.done[k];delete S.actual[k]}
-    else{S.done[k]=true;const m=meals[si];if(!m.free&&!S.actual[k])S.actual[k]=m.items;save();renderDay();if(!m.free)openRestSheet(si);return}
-    save();renderDay()});
+  out.querySelectorAll('[data-ate]').forEach(b=>b.onclick=()=>{const si=+b.dataset.ate,k=cur+'-'+si,m=meals[si];
+    delete S.skip[k];S.done[k]=true;if(!m.free&&!S.actual[k])S.actual[k]=m.items;save();renderDay();openRestSheet(si)});
+  out.querySelectorAll('[data-skip]').forEach(b=>b.onclick=()=>{const si=+b.dataset.skip,k=cur+'-'+si;
+    S.skip[k]=true;delete S.done[k];delete S.actual[k];save();renderDay();openRestSheet(si)});
+  out.querySelectorAll('[data-undo]').forEach(b=>b.onclick=()=>{const k=cur+'-'+b.dataset.undo;delete S.skip[k];delete S.done[k];delete S.actual[k];save();renderDay()});
   out.querySelectorAll('[data-log]').forEach(b=>b.onclick=()=>{const si=+b.dataset.log;openBuilder({mode:'log',si,init:meals[si].items})});
   out.querySelectorAll('[data-have]').forEach(c=>c.onchange=()=>{S.have[c.dataset.have]=c.checked;save()});
   out.querySelectorAll('[data-unswap]').forEach(b=>b.onclick=()=>{const k=cur+'-'+b.dataset.unswap;delete S.swaps[k];delete S.actual[k];save();renderDay()});
@@ -1132,7 +1173,7 @@ function openBuilder({mode,si=null,init=null,name=''}){
   sBody.querySelectorAll('.brow output').forEach(o=>o.style.minWidth='88px');
   document.getElementById('bsave').onclick=()=>{
     const its=items(); const key=cur+'-'+si;
-    if(mode==='log'){S.actual[key]=[...its,...keepFree];S.done[key]=true;save();renderDay();openRestSheet(si);return}
+    if(mode==='log'){S.actual[key]=[...its,...keepFree];S.done[key]=true;delete S.skip[key];save();renderDay();openRestSheet(si);return}
     if(!its.length){closeSheet();return}
     const n=(document.getElementById('bname').value||'').trim()||(mode==='extra'?'Extra':'My '+SLOTS[si].toLowerCase());
     if(mode==='extra'){(S.extras[cur]=S.extras[cur]||[]).push({n,items:its})}
@@ -1257,7 +1298,7 @@ document.getElementById('addLog').onclick=()=>{
   S.log.push({d:iso(new Date()),w:w||null,waist:wa||null}); if(w) S.weight=w;
   save();document.getElementById('logW').value='';document.getElementById('logWaist').value='';renderTarget();renderMe();
 };
-document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
+document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};S.skip={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
 
 /* ---------- tabs ---------- */
 const TABS=['today','week','lidl','hands','me'];
