@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Vazirmatn:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap">
 <style>
 /* Layout: phone-first single column; a turquoise tiled hero per day with protein + calorie rings, meal cards with dish icons, bottom tab bar like a native app. */
 :root{
@@ -471,7 +471,7 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
   <header>
     <div class="brand">
       <svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="120" fill="var(--firooze)"/><circle cx="256" cy="256" r="150" fill="none" stroke="var(--surface)" stroke-width="26"/><circle cx="256" cy="256" r="86" fill="var(--saffron)"/></svg>
-      <h1>Sofreh<span class="fa">سفره</span></h1>
+      <h1>Sofreh</h1>
     </div>
     <div class="target" id="targetbox"></div>
   </header>
@@ -673,7 +673,7 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
     </div>
   </section>
 
-  <footer><b style="color:var(--ink)">Version 15 · 15 Nov 2026</b> · Reset day at the top; clearer Sundays.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
+  <footer><b style="color:var(--ink)">Version 16 · 15 Nov 2026</b> · English only.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Sections"><div class="in">
@@ -1389,7 +1389,7 @@ function mealView(m){
   if(m.adjusted) tag+='<span class="tag adj">Resized for today</span>';
   h+=`<div class="meal"><div class="mhead">${icon(m.kind)}<div class="t">
     <div class="slot"><span class="lbl">${m.slot}</span>${tag}</div>
-    <h3>${esc(m.name)}</h3>${m.fa?`<span class="fa">${m.fa}</span>`:''}
+    <h3>${esc(m.name)}</h3>
     <div class="mac"><span class="badge p num">${Math.round(m.t.p)}g protein</span><span class="badge k num">${Math.round(m.t.k)} kcal</span>${m.min?`<span class="badge t num">${m.min} min</span>`:''}</div></div></div>`;
   if(m.si===1&&role==='left') h+=`<div class="freebox">Reheat the box you made yesterday. Nothing to measure.</div>`;
   else{
@@ -1470,7 +1470,7 @@ function openPicker(si){
     const curId=chosenId(cur,si);
     let ids=Object.keys(M).filter(id=>typeOf(id)===type);
     if(pf.tag!=='all') ids=ids.filter(id=>META[id]&&META[id][0].split(' ').includes(pf.tag));
-    if(pf.q) ids=ids.filter(id=>{const m=M[id];return (m[0]+' '+m[1]+' '+m[2].map(([k])=>F[k].n).join(' ')+' '+(META[id]?META[id][0]:'')).toLowerCase().includes(pf.q)});
+    if(pf.q) ids=ids.filter(id=>{const m=M[id];return (m[0]+' '+m[2].map(([k])=>F[k].n).join(' ')+' '+(META[id]?META[id][0]:'')).toLowerCase().includes(pf.q)});
     ids.sort((a,b)=>calc(M[b][2]).p-calc(M[a][2]).p);
     let h='<div class="opts">';
     if(!pf.q&&pf.tag==='all'){
@@ -1483,7 +1483,7 @@ function openPicker(si){
       if(type==='m') h+=`<button type="button" class="opt${curId==='free'?' cur':''}" data-id="free">${icon('free')}<span><b>Free meal</b><span class="small muted">No counting. Best once a week.</span></span><span></span></button>`;
     }
     ids.forEach(id=>{const m=M[id],t=calc(m[2]);
-      h+=`<button type="button" class="opt${id===curId?' cur':''}" data-id="${id}">${icon(kindOf(id))}<span style="min-width:0"><b>${m[0]}</b><span class="fa">${m[1]}</span></span><span class="m num"><span class="pp">${Math.round(t.p)}g</span>${Math.round(t.k)} kcal${META[id]?`<br>${META[id][1]} min`:''}</span></button>`});
+      h+=`<button type="button" class="opt${id===curId?' cur':''}" data-id="${id}">${icon(kindOf(id))}<span style="min-width:0"><b>${m[0]}</b></span><span class="m num"><span class="pp">${Math.round(t.p)}g</span>${Math.round(t.k)} kcal${META[id]?`<br>${META[id][1]} min`:''}</span></button>`});
     if(!ids.length) h+=`<div class="empty">Nothing matches. Try another word, or use "Build my own".</div>`;
     h+='</div>';
     sBody.innerHTML=h; sBody.scrollTop=0;
