@@ -11,7 +11,7 @@ A 28-day Persian meal plan for gentle fat loss and muscle definition. No kitchen
 - **No-scale guide**: how the hand measures work, and tricks like "cook 2 portions, split the pot into 2 boxes".
 - **Me**: weight, start date of the cycle, and a Saturday weight and waist check-in.
 
-Targets: about 1,550 kcal and 1.9 g protein per kg body weight. Lunch is cooked once and eaten on two days. Gym is Monday, Wednesday and Friday, and Sunday dinner is a free meal.
+Targets are worked out from your weight, height, age and activity (Mifflin-St Jeor, minus a small deficit) with 1.9 g protein per kg. At 54.5 kg and 155 cm that is about 1,530 kcal and 104 g protein. Log what you actually ate and the rest of the day's portions resize to stay on target. Lunch is cooked once and eaten on two days. Gym is Monday, Wednesday and Friday, and Sunday dinner is a free meal.
 
 Everything you tick is saved in your phone's browser, nowhere else.
 

@@ -179,8 +179,8 @@ details[open]>summary::before{content:"− "}
 .scrim{position:fixed;inset:0;background:rgba(6,20,20,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
 .scrim.open{opacity:1;pointer-events:auto}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-height:90%;display:flex;flex-direction:column;background:var(--bg);border-radius:24px 24px 0 0;
-  transform:translateY(105%);transition:transform .25s ease;box-shadow:0 -10px 40px rgba(0,0,0,.2);max-width:620px;margin:0 auto}
-.sheet.open{transform:none}
+  transform:translateY(105%);visibility:hidden;transition:transform .25s ease,visibility 0s linear .25s;box-shadow:0 -10px 40px rgba(0,0,0,.2);max-width:620px;margin:0 auto}
+.sheet.open{transform:none;visibility:visible;transition:transform .25s ease}
 .sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 0}
 .sheet .sh{padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));display:grid;gap:10px;border-bottom:1px solid var(--line)}
 .sheet .sh .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -254,6 +254,17 @@ th,td{text-align:left;padding:9px 12px;border-top:1px solid var(--line);vertical
 thead th{border-top:0;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 td.r,th.r{text-align:right}
 .form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end}
+.form2{grid-template-columns:repeat(2,minmax(0,1fr))}.form .wide{grid-column:1/-1}
+.form select{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:15px;color:var(--ink)}
+.calc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.calc .row{display:grid;grid-template-columns:1fr auto;gap:12px;padding:10px 14px;border-top:1px solid var(--line);align-items:baseline}
+.calc .row:first-child{border-top:0}
+.calc .row small{display:block;color:var(--muted);font-size:12px}
+.calc .row b{font-family:var(--font-display);font-size:18px}
+.calc .row.hl{background:var(--firooze-soft)}
+.calc .row.hl b{color:var(--firooze);font-size:22px}
+.was{color:var(--muted);font-weight:500;font-size:12px}
+.tag.adj{background:var(--abi-soft);color:var(--abi)}
 .form label{display:grid;gap:4px;font-size:12px;color:var(--muted);font-weight:600}
 .form input{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:16px;color:var(--ink)}
 p.lead{margin:8px 0 0;color:var(--muted);font-size:14px;max-width:62ch}
@@ -360,14 +371,25 @@ footer{margin-top:36px;font-size:12px;color:var(--muted)}
 
   <section id="me" class="hide">
     <div class="section" style="margin-top:16px">
-      <h2>Your numbers</h2>
-      <p class="sub">155 cm. Goal: lose a little fat and keep or build muscle, so you look more defined.</p>
-      <div class="form">
+      <h2>Your targets</h2>
+      <p class="sub">Change anything and press Save. Every meal in the app resizes to these numbers.</p>
+      <div class="form form2">
         <label for="wIn">Weight (kg)<input id="wIn" type="number" step="0.1" inputmode="decimal"></label>
+        <label for="hIn">Height (cm)<input id="hIn" type="number" step="1" inputmode="numeric"></label>
+        <label for="aIn">Age<input id="aIn" type="number" step="1" inputmode="numeric"></label>
+        <label for="sexIn">Body<select id="sexIn"><option value="f">Female</option><option value="m">Male</option></select></label>
+        <label for="actIn" class="wide">Activity<select id="actIn">
+          <option value="1.375">Light: desk job, under 6k steps, gym 1–2×</option>
+          <option value="1.5">Moderate: gym 3× a week + 7–10k steps</option>
+          <option value="1.65">Active: gym 4–5× or a job on your feet</option></select></label>
+        <label for="goalIn" class="wide">Goal<select id="goalIn">
+          <option value="0.15">Define: lose fat slowly, keep muscle</option>
+          <option value="0.08">Recomp: very slow, mostly muscle</option>
+          <option value="0">Maintain</option></select></label>
         <label for="startIn">Cycle started<input id="startIn" type="date"></label>
         <button class="btn primary" id="saveMe" type="button" style="justify-content:center;border-radius:10px">Save</button>
       </div>
-      <p class="lead" id="mytargets"></p>
+      <div id="mytargets" style="margin-top:14px"></div>
     </div>
     <div class="section">
       <h2>Saturday check-in</h2>
@@ -397,7 +419,7 @@ footer{margin-top:36px;font-size:12px;color:var(--muted)}
       <div class="rules">
         <div class="rule"><span class="n">1</span><div><h3>Lift heavier over time</h3><p>Write down weight and reps. Beat one number each session.</p></div></div>
         <div class="rule"><span class="n">2</span><div><h3>Protein at every meal</h3><p>25–45g each time. The ring on the Today screen shows how you are doing.</p></div></div>
-        <div class="rule"><span class="n">3</span><div><h3>A small deficit, not a crash</h3><p>About 1,550 kcal. Eating 1,200 would take muscle with the fat.</p></div></div>
+        <div class="rule"><span class="n">3</span><div><h3>A small deficit, not a crash</h3><p>Your target from the calculator above. Eating 1,200 would take muscle with the fat.</p></div></div>
         <div class="rule"><span class="n">4</span><div><h3>Sleep 7–8 hours</h3><p>Short sleep makes you lose more muscle on the same food.</p></div></div>
         <div class="rule"><span class="n">5</span><div><h3>Creatine, 3–5g daily</h3><p>Cheap and well studied. Expect 1–2 kg of water weight in the first two weeks. That is inside the muscle, not fat.</p></div></div>
       </div>
@@ -661,11 +683,11 @@ const TRAIN=[
 ];
 const SHOPCAT=[['meat','Meat & fish'],['dairy','Dairy & eggs'],['frozen','Frozen'],['tins','Tins'],['bakery','Bread'],['fruit','Fruit'],['veg','Potatoes'],['persian','Persian shop'],['pantry','Pantry: check, buy only if low']];
 </script><script id="app">
-const KT=1550, LS='sofreh-v1';
+const LS='sofreh-v1';
 let S={};
 try{S=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){S={}}
-['done','swaps','have','shop','custom','extras'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[];
-if(!S.weight) S.weight=54.5;
+['done','swaps','have','shop','custom','extras','actual'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[];
+S.weight=S.weight||54.5; S.height=S.height||155; S.age=S.age||30; S.sex=S.sex||'f'; S.act=S.act||1.5; S.goal=(S.goal===undefined)?0.15:S.goal;
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -678,7 +700,11 @@ const anchor=()=>{const [y,m,d]=S.anchor.split('-').map(Number);return new Date(
 const daysSince=()=>Math.round((midnight(new Date())-anchor())/DAY);
 const todayIdx=()=>((daysSince()%28)+28)%28;
 const dateOf=i=>{const d=anchor();d.setDate(d.getDate()+daysSince()-todayIdx()+i);return d};
-const PT=()=>Math.round(S.weight*1.9/5)*5;
+/* targets: Mifflin-St Jeor BMR x activity, minus the goal deficit. Protein 1.9 g per kg. */
+const BMR=()=>10*S.weight+6.25*S.height-5*S.age+(S.sex==='m'?5:-161);
+const TDEE=()=>BMR()*S.act;
+const KT=()=>Math.max(S.sex==='m'?1500:1250,Math.round(TDEE()*(1-S.goal)/10)*10);
+const PT=()=>Math.round(S.weight*1.9);
 
 /* ---------- icons per dish type ---------- */
 const IC={
@@ -700,6 +726,7 @@ const SVGI={
  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
  swap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>',
  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+ scale:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--abi)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0zM8 21h8"/></svg>',
  pot:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--saffron)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM2 10h20M9 7c0-1.5 1-1.5 1-3M14 7c0-1.5 1-1.5 1-3"/></svg>'
 };
 
@@ -718,9 +745,47 @@ function mealAt(i,si){
 }
 const dayMeals=i=>SLOTS.map((_,si)=>mealAt(i,si));
 const extrasOf=i=>S.extras[i]||[];
+/* Portions that are not eaten yet resize so the day lands on target:
+   protein foods scale by a, rice/bread/fat/fruit by b. Protein never drops below plan. */
+const PRO=new Set(['chicken','beef','mince','lamb','salmon','egg','yog','cottage','whey','feta','cheddar','lentils','split','chickpea','beans']);
+const cl=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
+function dayPlan(i){
+  const base=dayMeals(i), role=lunchRole(i);
+  let fk=0,fp=0,freeOpen=false; const adj=[];
+  extrasOf(i).forEach(x=>{const t=calc(x.items);fk+=t.k;fp+=t.p});
+  const out=base.map(m=>{
+    const key=i+'-'+m.si, done=!!S.done[key];
+    const r=Object.assign({},m,{done,orig:m.items,adjusted:false,logged:!!S.actual[key]});
+    if(m.free){if(!done)freeOpen=true;return r}
+    if(done){r.items=S.actual[key]||m.items;r.t=calc(r.items);fk+=r.t.k;fp+=r.t.p;return r}
+    if(m.si===1&&role!=='single'){fk+=m.t.k;fp+=m.t.p;r.fixed=true;return r}
+    adj.push(r);return r;
+  });
+  out.mode=freeOpen?'free':adj.length?'tuned':'done';
+  if(out.mode!=='tuned') return out;
+  let Pp=0,Pe=0,Kp=0,Ke=0,Pv=0,Kv=0;
+  adj.forEach(r=>r.items.forEach(([k,g])=>{const f=F[k],kk=f.k*g/100,pp=f.p*g/100;if(f.free){Kv+=kk;Pv+=pp}else if(PRO.has(k)){Kp+=kk;Pp+=pp}else{Ke+=kk;Pe+=pp}}));
+  const Pn=PT()-fp-Pv, Kn=KT()-fk-Kv;
+  /* keep protein portions as planned and absorb calories with rice/bread/fat;
+     if that would cut them under 60%, trim protein portions too (never below target) */
+  let a=1,b=1;
+  if(Ke>0){
+    b=(Kn-Kp*a)/Ke;
+    if(b<0.6&&Pp>0){b=0.6;a=Math.max((Kn-Ke*b)/Kp,(Pn-Pe*b)/Pp,0.7);a=Math.min(a,1);b=cl((Kn-Kp*a)/Ke,0.3,1.6)}
+    else if(b>1.6){b=1.6;if(Pp>0)a=cl((Kn-Ke*b)/Kp,1,2.2)}
+  }else if(Pp>0) a=cl(Kn/Kp,0.7,2.2);
+  if(Pp>0&&Pp*a+Pe*b<Pn){a=cl((Pn-Pe*b)/Pp,0.7,2.2);if(Ke>0)b=cl((Kn-Kp*a)/Ke,0.3,1.6)}
+  out.a=a; out.b=b;
+  adj.forEach(r=>{
+    r.items=r.items.map(([k,g])=>{if(F[k].free)return [k,g];const s=PRO.has(k)?a:b;return [k,Math.round(g*s)]});
+    r.t=calc(r.items);
+    r.adjusted=r.items.some(([k,g],j)=>F[k].show(g)[0]!==F[k].show(r.orig[j][1])[0]);
+  });
+  return out;
+}
 function dayTotals(i){
   const r={k:0,p:0,ek:0,ep:0};
-  dayMeals(i).forEach(m=>{r.k+=m.t.k;r.p+=m.t.p;if(S.done[i+'-'+m.si]){r.ek+=m.t.k;r.ep+=m.t.p}});
+  dayPlan(i).forEach(m=>{if(m.free)return;r.k+=m.t.k;r.p+=m.t.p;if(m.done){r.ek+=m.t.k;r.ep+=m.t.p}});
   extrasOf(i).forEach(x=>{const t=calc(x.items);r.k+=t.k;r.p+=t.p;r.ek+=t.k;r.ep+=t.p});
   return r;
 }
@@ -733,7 +798,7 @@ function lunchRole(i){
 }
 
 /* ---------- header ---------- */
-function renderTarget(){document.getElementById('targetbox').innerHTML=`<span class="lbl">Daily target</span><br><b class="num">${KT.toLocaleString()}</b> kcal · <b class="num">${PT()}g</b> protein`}
+function renderTarget(){document.getElementById('targetbox').innerHTML=`<span class="lbl">Daily target</span><br><b class="num">${KT().toLocaleString()}</b> kcal · <b class="num">${PT()}g</b> protein`}
 
 /* ---------- strip ---------- */
 const strip=document.getElementById('strip'), out=document.getElementById('dayout');
@@ -755,7 +820,7 @@ const fmtItem=(k,g)=>{const f=F[k];const [how,alt]=f.show(g);return {name:f.n,ho
 /* ---------- shopping need ---------- */
 function needList(i){
   const need={}, role=lunchRole(i);
-  dayMeals(i).forEach(m=>{
+  dayPlan(i).forEach(m=>{
     if(m.free) return;
     if(m.si===1&&role==='left') return;
     const mult=(m.si===1&&role==='cook')?2:1;
@@ -784,7 +849,7 @@ function renderDay(){
   buildStrip();
   [...strip.children].forEach((c,i)=>c.setAttribute('aria-current',i===cur));
   const chip=strip.children[cur]; if(chip) chip.scrollIntoView({block:'nearest',inline:'center'});
-  const tr=TRAIN[cur%7], meals=dayMeals(cur), T=dayTotals(cur), role=lunchRole(cur);
+  const tr=TRAIN[cur%7], meals=dayPlan(cur), T=dayTotals(cur), role=lunchRole(cur);
   const d=dateOf(cur), isToday=cur===todayIdx(), hasFree=meals.some(m=>m.free);
   const pct=(v,t)=>Math.min(100,v/t*100);
 
@@ -794,20 +859,22 @@ function renderDay(){
       <span class="pill">${tr.gym?'Gym · '+tr.name:tr.name}</span></div>
     <div class="rings">${ring(T.ep,T.p,PT())}
       <div class="stats">
-        <div class="stat"><span class="lbl">Protein planned</span><div class="v num">${Math.round(T.p)}g <small>target ${PT()}g</small></div></div>
-        <div class="stat"><span class="lbl">Calories eaten</span><div class="v num">${Math.round(T.ek)} <small>of ${Math.round(T.k)} planned${hasFree?' + free meal':''}</small></div>
-          <div class="hbar"><i style="width:${pct(T.k,KT)}%;background:rgba(255,255,255,.35)"></i><i style="width:${pct(T.ek,KT)}%;background:var(--saffron)"></i></div></div>
+        <div class="stat"><span class="lbl">Protein still to eat</span><div class="v num">${Math.max(0,Math.round(PT()-T.ep))}g <small>today's plan: ${Math.round(T.p)}g</small></div></div>
+        <div class="stat"><span class="lbl">Calories eaten</span><div class="v num">${Math.round(T.ek)} <small>of ${KT().toLocaleString()}${hasFree?' + free meal':''}</small></div>
+          <div class="hbar"><i style="width:${pct(T.k,KT())}%;background:rgba(255,255,255,.35)"></i><i style="width:${pct(T.ek,KT())}%;background:var(--saffron)"></i></div></div>
         <div class="stat"><span class="lbl">Steps</span><div class="v num">${tr.steps}</div></div>
       </div></div>
     <p class="note">${tr.note}</p>
   </div>`;
+  if(meals.mode==='tuned'&&meals.some(m=>m.done||m.adjusted)) h+=`<div class="callout" style="background:var(--abi-soft)">${SVGI.scale}<div><span class="lbl" style="color:var(--abi)">Portions tuned to you</span><p>Meals you have not eaten yet are resized so today ends at <b>${PT()}g protein</b> and <b>${KT().toLocaleString()} kcal</b>. Ate something different? Use <b>Log what I ate</b> and the rest adjusts.</p></div></div>`;
+  if(meals.mode==='free') h+=`<div class="callout" style="background:var(--anar-soft)">${SVGI.scale}<div><span class="lbl" style="color:var(--anar)">Free meal day</span><p>Portions follow the plan today. No tuning, no counting tonight.</p></div></div>`;
   const L=meals[1];
   if(role==='cook') h+=`<div class="callout">${SVGI.pot}<div><span class="lbl">Cook today</span><p><b>${esc(L.name)}</b> for 2: double every amount shown. Eat one, box one for tomorrow.</p></div></div>`;
   if(cur%7===6){const nx=mealAt((cur+1)%28,1);h+=`<div class="callout">${SVGI.pot}<div><span class="lbl">Sunday prep</span><p>Boil 6 eggs. Wash and dry herbs. Chop cucumber, tomato, onion. Jar of garlic yogurt. Bake 4 palms of chicken. Then cook tomorrow's lunch${nx.free?'':`: <b>${esc(nx.name)}</b>`}.</p></div></div>`}
 
   h+='<div class="meals">';
   meals.forEach(m=>{
-    const on=!!S.done[cur+'-'+m.si];
+    const on=m.done;
     const tick=`<button class="tick" type="button" aria-pressed="${on}" data-si="${m.si}" aria-label="Mark ${m.slot.toLowerCase()} as eaten">${SVGI.check}</button>`;
     const change=`<button class="btn soft" data-pick="${m.si}" type="button">${SVGI.swap}Change</button>${m.changed?`<button class="btn" data-unswap="${m.si}" type="button">Back to plan</button>`:''}`;
     if(m.free){
@@ -819,6 +886,8 @@ function renderDay(){
     if(m.si===1&&role==='cook') tag='<span class="tag cook">Cook ×2 today</span>';
     if(m.si===1&&role==='left') tag='<span class="tag left">Leftovers</span>';
     if(m.mine) tag+='<span class="tag mine">Your meal</span>';
+    if(m.logged) tag+='<span class="tag left">Logged</span>';
+    if(m.adjusted&&!on) tag+='<span class="tag adj">Resized for today</span>';
     h+=`<div class="meal${on?' done':''}"><div class="mhead">${icon(m.kind)}<div class="t">
       <div class="slot"><span class="lbl">${m.slot}</span>${tag}</div>
       <h3>${esc(m.name)}</h3>${m.fa?`<span class="fa">${m.fa}</span>`:''}
@@ -826,12 +895,13 @@ function renderDay(){
     if(m.si===1&&role==='left') h+=`<div class="freebox">Reheat the box you made yesterday. Nothing to measure.</div>`;
     else{
       h+='<ul class="ings">';
-      m.items.forEach(([k,g])=>{const x=fmtItem(k,g);h+=`<li class="${x.free?'free':''}"><span class="food">${x.name}</span><span class="how">${x.how}</span>${x.alt?`<span class="alt">${x.alt}</span>`:''}</li>`});
+      m.items.forEach(([k,g])=>{const x=fmtItem(k,g);const o=(m.orig.find(r=>r[0]===k)||[k,g])[1];const was=(!on&&m.adjusted&&F[k].show(o)[0]!==x.how)?` <span class="was">(plan: ${F[k].show(o)[0]})</span>`:'';
+        h+=`<li class="${x.free?'free':''}"><span class="food">${x.name}</span><span class="how">${x.how}</span>${(x.alt||was)?`<span class="alt">${x.alt||''}${was}</span>`:''}</li>`});
       if(!m.items.length) h+='<li><span class="food muted">Nothing added yet</span></li>';
       h+='</ul>';
     }
     h+=`<div class="mfoot">${m.how?`<details><summary>How to make it</summary><div class="recipe">${m.how}${m.extra?`<div class="also">Also uses: ${m.extra}, plus spices.</div>`:''}</div></details>`:''}
-      ${m.tip?`<div class="note">${m.tip}</div>`:''}${change}${m.mine?`<button class="btn" data-edit="${m.si}" type="button">Edit amounts</button>`:''}</div></div>`;
+      ${m.tip?`<div class="note">${m.tip}</div>`:''}<button class="btn primary" data-log="${m.si}" type="button">${on?'Edit what I ate':'Log what I ate'}</button>${change}${m.mine?`<button class="btn" data-edit="${m.si}" type="button">Edit recipe</button>`:''}</div></div>`;
   });
   h+='</div>';
 
@@ -850,13 +920,17 @@ function renderDay(){
   if(!isToday) h+=`<div style="margin-top:16px"><button class="btn" id="gotoday" type="button">Back to today</button></div>`;
 
   out.innerHTML=h;
-  out.querySelectorAll('.tick').forEach(b=>b.onclick=()=>{const k=cur+'-'+b.dataset.si;S.done[k]=!S.done[k];save();renderDay()});
+  out.querySelectorAll('.tick').forEach(b=>b.onclick=()=>{const si=+b.dataset.si,k=cur+'-'+si;
+    if(S.done[k]){delete S.done[k];delete S.actual[k]}
+    else{S.done[k]=true;const m=meals[si];if(!m.free&&!S.actual[k])S.actual[k]=m.items}
+    save();renderDay()});
+  out.querySelectorAll('[data-log]').forEach(b=>b.onclick=()=>{const si=+b.dataset.log;openBuilder({mode:'log',si,init:meals[si].items})});
   out.querySelectorAll('[data-have]').forEach(c=>c.onchange=()=>{S.have[c.dataset.have]=c.checked;save()});
-  out.querySelectorAll('[data-unswap]').forEach(b=>b.onclick=()=>{delete S.swaps[cur+'-'+b.dataset.unswap];save();renderDay()});
+  out.querySelectorAll('[data-unswap]').forEach(b=>b.onclick=()=>{const k=cur+'-'+b.dataset.unswap;delete S.swaps[k];delete S.actual[k];save();renderDay()});
   out.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>openPicker(+b.dataset.pick));
-  out.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const si=+b.dataset.edit;openBuilder({si,init:S.custom[cur+'-'+si]})});
+  out.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const si=+b.dataset.edit,c=S.custom[cur+'-'+si];openBuilder({mode:'custom',si,init:c&&c.items,name:c&&c.n})});
   out.querySelectorAll('[data-delx]').forEach(b=>b.onclick=()=>{S.extras[cur].splice(+b.dataset.delx,1);save();renderDay()});
-  document.getElementById('addExtra').onclick=()=>openBuilder({extra:true});
+  document.getElementById('addExtra').onclick=()=>openBuilder({mode:'extra'});
   const gt=document.getElementById('gotoday'); if(gt) gt.onclick=()=>{cur=todayIdx();renderDay();window.scrollTo({top:0})};
 }
 
@@ -895,50 +969,59 @@ function openPicker(si){
     if(!ids.length) h+=`<div class="empty">Nothing matches. Try another word, or use "Build my own".</div>`;
     h+='</div>';
     sBody.innerHTML=h; sBody.scrollTop=0;
-    sBody.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id;if(id===planId(cur,si))delete S.swaps[cur+'-'+si];else S.swaps[cur+'-'+si]=id;save();closeSheet();renderDay()});
-    const c=sBody.querySelector('[data-custom]'); if(c) c.onclick=()=>openBuilder({si,init:S.custom[cur+'-'+si]});
+    sBody.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const id=b.dataset.id,k=cur+'-'+si;if(id===planId(cur,si))delete S.swaps[k];else S.swaps[k]=id;delete S.actual[k];save();closeSheet();renderDay()});
+    const c=sBody.querySelector('[data-custom]'); if(c) c.onclick=()=>{const x=S.custom[cur+'-'+si];openBuilder({mode:'custom',si,init:x&&x.items,name:x&&x.n})};
   }
   list(); openSheet();
 }
 
-/* builder units: [food, grams per unit, unit, step] */
+/* builder: every food steps by a hand-sized amount */
+const STEP={chicken:50,beef:50,mince:50,lamb:50,salmon:60,egg:50,yog:30,cottage:30,feta:15,cheddar:12.5,whey:15,chickpea:60,beans:60,lentils:25,split:15,
+ rice:12.5,pasta:13.75,pitta:30,bread:40,potato:75,noodle:15,oats:22.5,flour:15,barley:15,fruit:55,date:8,plum:8,pineapple:50,avocado:35,
+ oil:5,butter:5,sesame:5,walnut:2.5,pist:6,chia:12,molasses:10,milk:62.5,almond:62.5,pea:50,edamame:50,broad:50,veg:50};
 const BU=[
- ['Protein',[['chicken',100,'palm',.5],['beef',100,'palm',.5],['mince',100,'palm',.5],['lamb',100,'palm',.5],['salmon',120,'fillet',.5],['egg',50,'egg',1],['yog',30,'heaped tbsp',1],['cottage',30,'heaped tbsp',1],['feta',30,'matchbox',.5],['cheddar',25,'small handful',.5],['whey',30,'scoop',.5],['chickpea',60,'quarter tin',1],['lentils',50,'quarter mug raw',1]]],
- ['Rice, pasta, bread',[['rice',50,'fist cooked',.5],['pasta',55,'fist cooked',.5],['pitta',60,'pitta',.5],['bread',40,'slice',1],['potato',150,'fist-size potato',.5],['noodle',30,'small bundle',1],['oats',22,'quarter mug',1]]],
- ['Fruit & sweet',[['fruit',110,'piece',1],['date',8,'date',1]]],
- ['Fat & nuts',[['oil',5,'tsp oil',1],['butter',5,'tsp butter',1],['walnut',2.5,'walnut half',1],['pist',6,'10 pistachios',1],['avocado',35,'quarter avocado',1]]],
- ['Drinks',[['milk',250,'mug of milk',.5],['almond',250,'mug almond milk',.5]]]
+ ['Protein',['chicken','beef','mince','lamb','salmon','egg','yog','cottage','feta','cheddar','whey','chickpea','lentils']],
+ ['Rice, pasta, bread',['rice','pasta','pitta','bread','potato','noodle','oats']],
+ ['Fruit & sweet',['fruit','date']],
+ ['Fat & nuts',['oil','butter','walnut','pist','avocado']],
+ ['Drinks',['milk','almond']]
 ];
-const unitOf=k=>{for(const [,rows] of BU)for(const r of rows)if(r[0]===k)return r;return null};
-function openBuilder({si=null,extra=false,init=null}){
-  const q={};
-  if(init&&init.items) init.items.forEach(([k,g])=>{const u=unitOf(k);if(u)q[k]=Math.round(g/u[1]/u[3])*u[3]});
-  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${extra?'Add something I ate':'Build my own '+SLOTS[si].toLowerCase()}</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>
-    <input class="field" id="bname" placeholder="${extra?'e.g. Latte and a biscuit':'e.g. Pasta with chicken'}" value="${init?esc(init.n):''}" aria-label="Name">`;
+function openBuilder({mode,si=null,init=null,name=''}){
+  const g={}; (init||[]).forEach(([k,v])=>g[k]=(g[k]||0)+v);
+  const mine=Object.keys(g).filter(k=>!F[k].free);
+  const keepFree=(init||[]).filter(([k])=>F[k].free);
+  const titles={log:`What did you eat for ${SLOTS[si]&&SLOTS[si].toLowerCase()}?`,custom:`Build my own ${SLOTS[si]&&SLOTS[si].toLowerCase()}`,extra:'Add something I ate'};
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${titles[mode]}</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>
+    ${mode==='log'?`<p class="small muted" style="margin:0">Set the amounts you really ate. Your meals for the rest of the day resize to keep you on ${PT()}g protein and ${KT().toLocaleString()} kcal.</p>`:
+    `<input class="field" id="bname" placeholder="${mode==='extra'?'e.g. Latte and a biscuit':'e.g. Pasta with chicken'}" value="${esc(name||'')}" aria-label="Name">`}`;
   document.getElementById('sx').onclick=closeSheet;
+  const groups=[]; if(mine.length) groups.push([mode==='log'?'In this meal':'Already added',mine]);
+  BU.forEach(([t,ks])=>{const rest=ks.filter(k=>!mine.includes(k));if(rest.length)groups.push([mine.length?'Add '+t.toLowerCase():t,rest])});
   let h='';
-  BU.forEach(([g,rows])=>{
-    h+=`<div class="bgrp"><span class="lbl">${g}</span>`;
-    rows.forEach(([k,gr,u,st])=>{h+=`<div class="brow" data-k="${k}"><span class="nm">${F[k].n}<small>per ${u}: ${Math.round(F[k].k*gr/100)} kcal, ${(F[k].p*gr/100).toFixed(1)}g protein</small></span>
-      <span class="step"><button type="button" data-d="-1" aria-label="Less ${F[k].n}">−</button><output>0</output><button type="button" data-d="1" aria-label="More ${F[k].n}">+</button></span></div>`});
+  groups.forEach(([t,ks])=>{
+    h+=`<div class="bgrp"><span class="lbl">${t}</span>`;
+    ks.forEach(k=>{const st=STEP[k]||10;h+=`<div class="brow" data-k="${k}"><span class="nm">${F[k].n}<small>each + adds ${Math.round(F[k].k*st/100)} kcal, ${(F[k].p*st/100).toFixed(1)}g protein</small></span>
+      <span class="step"><button type="button" data-d="-1" aria-label="Less ${F[k].n}">−</button><output></output><button type="button" data-d="1" aria-label="More ${F[k].n}">+</button></span></div>`});
     h+='</div>';
   });
   h+=`<p class="small muted">Vegetables, salad, herbs and pickles are free, no need to add them.</p>
-   <div class="btotal"><div class="sum" id="bsum"></div><button class="btn primary" id="bsave" type="button" style="justify-content:center;padding:12px">Save</button></div>`;
+   <div class="btotal"><div class="sum" id="bsum"></div><button class="btn primary" id="bsave" type="button" style="justify-content:center;padding:12px">${mode==='log'?'Save, I ate this':'Save'}</button></div>`;
   sBody.innerHTML=h; sBody.scrollTop=0;
-  const items=()=>Object.keys(q).filter(k=>q[k]>0).map(k=>[k,Math.round(q[k]*unitOf(k)[1]*10)/10]);
-  const fq=v=>Number.isInteger(v)?String(v):(Math.floor(v)||'')+'½';
+  const items=()=>Object.keys(g).filter(k=>g[k]>0&&!F[k].free).map(k=>[k,Math.round(g[k]*10)/10]);
   function upd(){
-    sBody.querySelectorAll('.brow').forEach(r=>{const k=r.dataset.k,v=q[k]||0;r.querySelector('output').textContent=v?fq(v):'0';r.classList.toggle('on',v>0)});
+    sBody.querySelectorAll('.brow').forEach(r=>{const k=r.dataset.k,v=g[k]||0;r.querySelector('output').textContent=v>0?F[k].show(v)[0]:'0';r.classList.toggle('on',v>0)});
     const t=calc(items());
     document.getElementById('bsum').innerHTML=`<span class="badge p num">${Math.round(t.p)}g protein</span><span class="badge k num">${Math.round(t.k)} kcal</span>`;
   }
-  sBody.querySelectorAll('.brow').forEach(r=>r.querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=r.dataset.k,st=unitOf(k)[3];q[k]=Math.max(0,(q[k]||0)+st*+b.dataset.d);upd()}));
+  sBody.querySelectorAll('.brow').forEach(r=>r.querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=r.dataset.k,st=STEP[k]||10;g[k]=Math.max(0,(g[k]||0)+st*+b.dataset.d);if(g[k]<st*0.3)g[k]=0;upd()}));
+  sBody.querySelectorAll('.brow output').forEach(o=>o.style.minWidth='88px');
   document.getElementById('bsave').onclick=()=>{
-    const its=items(); if(!its.length){closeSheet();return}
-    const n=document.getElementById('bname').value.trim()||(extra?'Extra':'My '+SLOTS[si].toLowerCase());
-    if(extra){(S.extras[cur]=S.extras[cur]||[]).push({n,items:its})}
-    else{S.custom[cur+'-'+si]={n,items:its};S.swaps[cur+'-'+si]='custom'}
+    const its=items(); const key=cur+'-'+si;
+    if(mode==='log'){S.actual[key]=[...its,...keepFree];S.done[key]=true;save();closeSheet();renderDay();return}
+    if(!its.length){closeSheet();return}
+    const n=(document.getElementById('bname').value||'').trim()||(mode==='extra'?'Extra':'My '+SLOTS[si].toLowerCase());
+    if(mode==='extra'){(S.extras[cur]=S.extras[cur]||[]).push({n,items:its})}
+    else{S.custom[key]={n,items:its};S.swaps[key]='custom';delete S.actual[key]}
     save();closeSheet();renderDay();
   };
   upd(); if(!sheet.classList.contains('open')) openSheet();
@@ -1024,9 +1107,17 @@ function renderHands(){document.getElementById('handcards').innerHTML=HANDS.map(
 
 /* ---------- ME ---------- */
 function renderMe(){
-  document.getElementById('wIn').value=S.weight;
+  document.getElementById('wIn').value=S.weight; document.getElementById('hIn').value=S.height; document.getElementById('aIn').value=S.age;
+  document.getElementById('sexIn').value=S.sex; document.getElementById('actIn').value=String(S.act); document.getElementById('goalIn').value=String(S.goal);
   document.getElementById('startIn').value=iso(dateOf(0));
-  document.getElementById('mytargets').innerHTML=`At ${S.weight} kg: about <b>${KT.toLocaleString()} kcal</b> and <b>${PT()}g protein</b> a day (1.9g per kg). A gentle deficit of roughly 300 kcal: 0.2–0.4 kg a week, keeping muscle.`;
+  const def=Math.round(TDEE()-KT()), wk=(def*7/7700);
+  document.getElementById('mytargets').innerHTML=`<div class="calc">
+    <div class="row hl"><span>Protein every day<small>${S.weight} kg × 1.9 g. Enough to keep and build muscle while you lose fat.</small></span><b class="num">${PT()} g</b></div>
+    <div class="row hl"><span>Calories every day<small>${S.goal?`About ${def} kcal under what you burn: roughly ${wk.toFixed(2)} kg a week, mostly fat.`:'Same as you burn.'}</small></span><b class="num">${KT().toLocaleString()} kcal</b></div>
+    <div class="row"><span>Your body at rest (BMR)<small>Mifflin-St Jeor: ${S.weight} kg, ${S.height} cm, ${S.age} years</small></span><b class="num">${Math.round(BMR()).toLocaleString()}</b></div>
+    <div class="row"><span>What you burn in a day<small>BMR × ${S.act} for your activity</small></span><b class="num">${Math.round(TDEE()).toLocaleString()}</b></div>
+    <div class="row"><span>Per meal, roughly<small>Breakfast · lunch · snack · dinner</small></span><b class="num" style="font-size:15px">${[.27,.3,.13,.3].map(x=>Math.round(PT()*x)+'g').join(' · ')}</b></div>
+  </div><p class="lead">These are estimates. Your Saturday check-ins tell you the truth: if the waist does not move in 3 weeks, set Activity one step lower.</p>`;
   document.getElementById('trainbody').innerHTML=TRAIN.map((t,i)=>`<tr><td>${DOW[i]}</td><td>${t.gym?'Gym · ':''}${t.name}</td><td class="r num">${t.steps}</td></tr>`).join('');
   const lo=document.getElementById('logout');
   if(!S.log.length){lo.innerHTML='<p class="small muted">No check-ins yet. Your first Saturday entry will show here, with the change from the week before.</p>';return}
@@ -1038,6 +1129,9 @@ function renderMe(){
 }
 document.getElementById('saveMe').onclick=()=>{
   const w=parseFloat(document.getElementById('wIn').value); if(w>30&&w<200) S.weight=w;
+  const ht=parseFloat(document.getElementById('hIn').value); if(ht>120&&ht<220) S.height=ht;
+  const ag=parseInt(document.getElementById('aIn').value,10); if(ag>14&&ag<100) S.age=ag;
+  S.sex=document.getElementById('sexIn').value; S.act=parseFloat(document.getElementById('actIn').value); S.goal=parseFloat(document.getElementById('goalIn').value);
   const st=document.getElementById('startIn').value;
   if(st){const [y,m,d]=st.split('-').map(Number);S.anchor=iso(mondayOf(new Date(y,m-1,d)))}
   save();renderTarget();cur=todayIdx();renderMe();
@@ -1048,7 +1142,7 @@ document.getElementById('addLog').onclick=()=>{
   S.log.push({d:iso(new Date()),w:w||null,waist:wa||null}); if(w) S.weight=w;
   save();document.getElementById('logW').value='';document.getElementById('logWaist').value='';renderTarget();renderMe();
 };
-document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
+document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
 
 /* ---------- tabs ---------- */
 const TABS=['today','week','lidl','hands','me'];
