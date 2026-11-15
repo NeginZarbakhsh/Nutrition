@@ -491,6 +491,19 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
 .qpick button.no{color:var(--anar)}
 .qpick button.no[aria-pressed="true"]{background:var(--anar);border-color:var(--anar);color:var(--surface)}
 .supp{margin:8px 0 0;padding:8px 10px;border-radius:10px;background:var(--firooze-soft)}
+
+.gbox{grid-template-columns:minmax(0,1fr);min-width:0;margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);display:grid;gap:6px}
+.gbox small{color:var(--muted);font-size:12px}
+.gbox small b{color:var(--ink)}
+.gseg{display:flex;gap:4px}
+.gseg button{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px;font-weight:600;font-size:13px;color:var(--ink)}
+.gseg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.gin{display:flex;gap:6px;min-width:0}
+.gin .btn{flex:0 0 auto}
+.gin input{flex:1;min-width:0;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:16px}
+.gin input#gMin{flex:0 0 72px}
+ul.chg{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+ul.chg li{display:grid;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -1016,6 +1029,7 @@ const KT=()=>Math.max(S.sex==='m'?1600:1400,Math.round(TDEE()*(1-S.goal)/10)*10)
 /* protein: 2.0 g/kg while losing fat keeps muscle best; 1.8 g/kg at maintenance */
 const PFAC=()=>S.goal>0?2.0:1.8;
 const PT=()=>Math.round(S.weight*PFAC());
+const PTd=i=>PT()+(S.watch&&S.watch[i]&&S.watch[i].a>=400?10:0);
 const FATMIN=()=>Math.round(S.weight*0.8);
 /* exercise: your 3 planned gym sessions are already in the activity level.
    Extra sessions add back half of what they burn (watches and estimates run high).
@@ -1103,7 +1117,7 @@ function dayPlan(i){
   if(out.mode!=='tuned') return out;
   let Pp=0,Pe=0,Kp=0,Ke=0,Pv=0,Kv=0;
   adj.forEach(r=>r.items.forEach(([k,g])=>{const f=F[k],kk=f.k*g/100,pp=f.p*g/100;if(f.free||FATK.has(k)){Kv+=kk;Pv+=pp}else if(PRO.has(k)){Kp+=kk;Pp+=pp}else{Ke+=kk;Pe+=pp}}));
-  const Pn=PT()-fp-Pv, Kn=KTd(i)-fk-Kv;
+  const Pn=PTd(i)-fp-Pv, Kn=KTd(i)-fk-Kv;
   /* keep protein portions as planned and absorb calories with rice/bread/fat;
      if that would cut them under 60%, trim protein portions too (never below target) */
   let a=1,b=1;
@@ -1152,7 +1166,7 @@ function buildStrip(){
   W.forEach((_,i)=>{
     const b=document.createElement('button'); b.type='button';
     b.className='chip'+(TRAIN[i%7].gym?' gym':'')+(i===todayIdx()?' today':'');
-    const d=dateOf(i), t=dayTotals(i), pc=Math.min(1,t.ep/PT());
+    const d=dateOf(i), t=dayTotals(i), pc=Math.min(1,t.ep/PTd(i));
     b.innerHTML=`${DOW[i%7]}<b class="num">${d.getDate()}</b><span class="dot"></span>${pc>0?`<span class="pc" style="transform:scaleX(${pc})"></span>`:''}`;
     b.setAttribute('aria-label',`${DOW[i%7]} ${d.getDate()}, day ${i+1}${TRAIN[i%7].gym?', gym day':''}`);
     b.onclick=()=>{cur=i;tab='sum';renderDay()};
@@ -1206,7 +1220,7 @@ function topUps(gap){
   return o.slice(0,4);
 }
 function restCard(meals,T){
-  const target=PT(), left=meals.filter(m=>!m.free&&!m.done&&!m.skipped), eaten=Math.round(T.ep), toGo=Math.max(0,target-eaten);
+  const target=PTd(cur), left=meals.filter(m=>!m.free&&!m.done&&!m.skipped), eaten=Math.round(T.ep), toGo=Math.max(0,target-eaten);
   const gap=Math.round(target-T.p);
   let h=`<div class="rest"><div class="rhead"><div><span class="lbl">Rest of today</span>
     <div class="rbig num"><b>${eaten}g</b> eaten · <b class="go">${toGo}g</b> to go</div></div>
@@ -1250,17 +1264,18 @@ function exCard(i){
   let h=`<div class="excard"><div class="exh"><span class="lbl">Exercise today</span>${adj?`<span class="exadj num">${adj>0?'+':''}${adj} kcal to eat</span>`:''}</div>`;
   const w=S.watch[i];
   if(w){
-    h+=`<div class="exrow watch"><span><b>Watch: ${w.a} kcal workout</b><small class="num">+${adj} kcal food today (about 45% of what the watch says). This replaces the class estimate.</small></span></div>`;
+    h+=`<div class="exrow watch"><span><b>Garmin: ${w.a} active kcal</b><small class="num">+${adj} kcal food today (about 45% of what the watch says). This replaces the class estimate.</small></span></div>`;
     return h+'</div>';
   }
   /* one tap: pick the class you did; the app estimates the rest. Logging lifts is optional. */
   const pk=progOf(i), done=trainedOn(i), skipped=!!S.gymskip[i];
-  const short=k=>PROGRAM[k].n.replace(' class','').replace(' (FUNCON)','').replace(' / conditioning','');
+  const short=k=>k==='gym'?'Own gym':PROGRAM[k].n.replace(' class','').replace(' (FUNCON)','').replace(' / conditioning','');
   const chips=`<div class="qpick">${Object.keys(PROGRAM).map(k=>`<button type="button" data-qcls="${k}" aria-pressed="${done&&pk===k}">${short(k)}</button>`).join('')}
       <button type="button" data-qcls="none" class="no" aria-pressed="${skipped&&!done}">No class</button></div>`;
   if(done&&pk){const P=PROGRAM[pk];
-    h+=`<div class="wcard done"><div><b>✓ ${P.n}</b><small>About ${classBurn(pk)} kcal burned · +${P.kcal} kcal food today</small></div>
-      <button class="btn" type="button" data-wopen="${pk}">See class</button></div>
+    h+=`<div class="wcard done"><div><b>✓ ${P.n}</b><small>${S.watch[i]?`Garmin: ${S.watch[i].a} active kcal · +${exAdj(i)} kcal food today`:`About ${classBurn(pk)} kcal burned (estimate) · +${P.kcal} kcal food today`}</small></div>
+      ${P.ex.length?`<button class="btn" type="button" data-wopen="${pk}">See class</button>`:''}</div>
+      ${watchBox(i)}
       <p class="small supp">Today: <b>1 scoop whey</b> (it is your snack, already counted) + <b>1 scoop creatine</b> (0 kcal).</p>
       <p class="small muted" style="margin:8px 0 4px">Wrong one? Tap the class you did:</p>${chips}`;
   }else{
@@ -1365,6 +1380,8 @@ const PROGRAM={
    d:'Hinge, squat, pull and press in one session.'},
  funcon:{n:'Functional class (FUNCON)',ex:['chin','splitsq','pushup','dardl','lateral'],min:60,kcal:120,
    d:'Strength circuit plus a short finisher (farmer walk, mountain climbers, wall sit). Strength and conditioning in one.'},
+ gym:{n:'Own gym session',ex:[],min:60,kcal:100,
+   d:'Your own workout at any gym. For a better estimate, type the calories from your Garmin below.'},
  metabolic:{n:'Metabolic / conditioning class',ex:[],min:60,kcal:150,
    d:'Intervals on row, bike or ski plus circuits (burpees, lunges, KB swings) at 7–8/10 effort. Great for fitness and fat loss; keep it to once a week instead of a strength class, so your strength keeps going up.'}
 };
@@ -1380,8 +1397,57 @@ function nextTarget(id,last){
   if(last.r>=hi) return `Last time felt strong at the top of the range: try <b>${+(last.w+e[6]).toFixed(1)} kg</b>.`;
   return `Stay at <b>${last.w} kg</b> and beat <b>${last.r} reps</b>, or match it with cleaner form.`;
 }
-const CLASSMET={upper:5,lower:5.5,total:5.5,funcon:6,metabolic:8};
+const CLASSMET={upper:5,lower:5.5,total:5.5,funcon:6,gym:5,metabolic:8};
 const classBurn=k=>Math.round(((CLASSMET[k]||5)-1)*S.weight*(PROGRAM[k].min/60)/10)*10;
+/* Garmin activity shows Total and Active calories. Total includes what you burn anyway at rest,
+   so it is converted to Active by taking off your resting burn for the session time. */
+const restPerMin=()=>BMR()/1440;
+function watchBox(i){
+  const w=S.watch[i], kind=(w&&w.kind)||S.wkind||'active';
+  return `<div class="gbox"><span class="lbl">Garmin calories for this session (optional)</span>
+    <div class="gseg"><button type="button" data-gk="active" aria-pressed="${kind==='active'}">Active</button><button type="button" data-gk="total" aria-pressed="${kind==='total'}">Total</button></div>
+    <div class="gin"><input id="gIn" type="number" inputmode="numeric" placeholder="kcal" value="${w?(w.raw||w.a):''}" aria-label="Calories from Garmin">
+      <input id="gMin" type="number" inputmode="numeric" placeholder="min" value="${w&&w.min?w.min:60}" aria-label="Minutes" ${kind==='total'?'':'hidden'}>
+      <button type="button" class="btn primary" id="gSave">Save</button></div>
+    ${w?`<small class="num">Saved: ${w.raw||w.a} ${w.kind==='total'?'total':'active'} kcal → <b>${w.a} active</b> · +${exAdj(i)} kcal food${PTd(i)>PT()?` · +${PTd(i)-PT()}g protein`:''}</small>`:'<small>Without it, the app uses an estimate for the class.</small>'}</div>`;
+}
+function saveGarmin(i,raw,kind,min){
+  const before=dayPlan(i), bT=dayTotals(i), bK=KTd(i), bP=PTd(i);
+  if(raw>0){const a=kind==='total'?Math.max(0,Math.round(raw-restPerMin()*(min||60))):raw;S.watch[i]={a,raw,kind,min:min||60,t:Date.now()}}
+  else delete S.watch[i];
+  S.wkind=kind; save();
+  const after=dayPlan(i), aK=KTd(i), aP=PTd(i);
+  renderDay(); showChanges(i,before,after,bK,aK,bP,aP);
+}
+function simpleTip(i,dk,after){
+  const T=dayTotals(i), left=after.some(m=>!m.done&&!m.free&&!m.skipped), spare=Math.round((KTd(i)-T.k)/10)*10, pgap=Math.round(PTd(i)-T.p);
+  const out=[];
+  if(pgap>2) out.push(`For protein, add <b>${Math.ceil(pgap/3)} heaped tbsp skyr</b> or <b>½ scoop whey</b> (+${pgap}g needed).`);
+  if(spare>=60) out.push(`You have about <b>${spare} kcal</b> to use: ${spare>=150?'add ⅓ cup cooked rice or 1 wrap to your next meal':'add a piece of fruit'}${left?'':' as a snack'}.`);
+  else if(spare<=-60) out.push(`You are about <b>${-spare} kcal</b> over: skip the bread or rice at your next meal.`);
+  if(!out.length) out.push(left?'Your remaining meals already fit. Eat them as shown.':'All meals are done and you are on target.');
+  return out.join('<br>');
+}
+function showChanges(i,before,after,bK,aK,bP,aP){
+  const w=S.watch[i];
+  let rows='';
+  after.forEach((m,si)=>{
+    if(m.free||m.done||m.skipped||!m.items) return;
+    const b=before[si]; if(!b.items) return;
+    const ch=[];
+    m.items.forEach(([k,g])=>{if(F[k].free)return;const o=(b.items.find(x=>x[0]===k)||[k,0])[1];const s1=F[k].show(o)[0],s2=F[k].show(g)[0];if(o&&s1!==s2)ch.push(`${F[k].n}: ${s1} → <b>${s2}</b>`)});
+    if(ch.length) rows+=`<li><span class="lbl">${m.slot}</span><span>${ch.join('<br>')}</span></li>`;
+  });
+  const dk=aK-bK, dp=aP-bP;
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${w?'Workout saved':'Workout removed'}</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
+  document.getElementById('sx').onclick=closeSheet;
+  sBody.innerHTML=`<div class="exsum">${w?`<b class="num">${w.a} active kcal</b>${w.kind==='total'?` (from ${w.raw} total, minus about ${w.raw-w.a} you burn anyway)`:''}.<br>`:''}
+    Today's target: <b class="num">${aK.toLocaleString()} kcal</b>${dk?` (${dk>0?'+':''}${dk})`:''} · <b class="num">${aP}g protein</b>${dp?` (${dp>0?'+':''}${dp}g)`:''}.</div>
+    ${rows?`<p class="small" style="margin:12px 0 6px"><b>What changes in the meals still to eat:</b></p><ul class="chg">${rows}</ul>`:`<p class="small" style="margin-top:12px">${simpleTip(i,dk,after)}</p>`}
+    <button class="btn primary" type="button" id="gotit" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Got it</button>`;
+  document.getElementById('gotit').onclick=closeSheet;
+  if(!sheet.classList.contains('open')) openSheet();
+}
 function openWorkout(i,key){
   key=key||progOf(i); const P=PROGRAM[key]; if(!P) return;
   const d=iso(dateOf(i)); S.lifts=S.lifts||{};
@@ -1423,7 +1489,7 @@ function afterAction(si,what){
   toast(what==='skip'?`${SLOTS[si]} skipped. The rest of your day is adjusted.`:m.free?`${SLOTS[si]} done.`:`${SLOTS[si]} saved: <b>${Math.round(m.t.p)}g protein</b>`);
 }
 function coach(meals,T){
-  const target=PT(), left=meals.filter(m=>!m.free&&!m.done&&!m.skipped), gap=Math.round(target-T.p), sk=meals.filter(m=>m.skipped);
+  const target=PTd(cur), left=meals.filter(m=>!m.free&&!m.done&&!m.skipped), gap=Math.round(target-T.p), sk=meals.filter(m=>m.skipped);
   const out=[];
   const freeLeft=meals.some(m=>m.free&&!m.done&&!m.skipped);
   if(freeLeft){
@@ -1453,8 +1519,8 @@ function dayHeader(meals,T){
       <div class="date">${d.toLocaleDateString(undefined,{weekday:isToday?'long':undefined,day:'numeric',month:'long'})} · ${tr.steps} steps</div></div>
       <span class="pillcol"><span class="pill">${tr.gym?(S.gymskip[cur]?'Gym skipped':'Gym · '+tr.name):tr.name}</span>${dayHasData(cur)?`<button type="button" class="resettop" data-clear="day">↺ Reset day</button>`:''}</span></div>
     <div class="tiles">
-      <div class="tile"><span class="lbl">Protein</span><div class="tv num">${Math.round(T.ep)}<small>/${PT()}g</small></div>
-        <div class="hbar"><i style="width:${pct(T.p,PT())}%;background:rgba(255,255,255,.3)"></i><i style="width:${pct(T.ep,PT())}%;background:var(--saffron)"></i></div></div>
+      <div class="tile"><span class="lbl">Protein</span><div class="tv num">${Math.round(T.ep)}<small>/${PTd(cur)}g</small></div>
+        <div class="hbar"><i style="width:${pct(T.p,PTd(cur))}%;background:rgba(255,255,255,.3)"></i><i style="width:${pct(T.ep,PTd(cur))}%;background:var(--saffron)"></i></div></div>
       <div class="tile"><span class="lbl">Calories</span><div class="tv num">${Math.round(T.ek)}<small>/${tgt.toLocaleString()}</small></div>
         <div class="hbar"><i style="width:${pct(T.k,tgt)}%;background:rgba(255,255,255,.3)"></i><i style="width:${pct(T.ek,tgt)}%;background:var(--saffron)"></i></div></div>
       <label class="tile watch" for="watchIn"><span class="lbl">Watch workout</span>
@@ -1609,8 +1675,11 @@ function renderDay(){
   out.querySelectorAll('[data-qcls]').forEach(b=>b.onclick=()=>{const k=b.dataset.qcls;S.wdone=S.wdone||{};S.wprog=S.wprog||{};
     if(k==='none'){delete S.wdone[cur];delete S.wprog[cur];if(TRAIN[cur%7].gym)S.gymskip[cur]=true;save();renderDay();toast('No class today. Food set to a rest day.');return}
     S.wdone[cur]=true;S.wprog[cur]=k;delete S.gymskip[cur];save();renderDay();toast(`${PROGRAM[k].n}: about ${classBurn(k)} kcal burned, <b>+${PROGRAM[k].kcal} kcal</b> food today`)});
+  out.querySelectorAll('[data-gk]').forEach(b=>b.onclick=()=>{S.wkind=b.dataset.gk;out.querySelectorAll('[data-gk]').forEach(x=>x.setAttribute('aria-pressed',x===b));const m=document.getElementById('gMin');if(m)m.hidden=b.dataset.gk!=='total'});
+  const gs2=document.getElementById('gSave'); if(gs2){const go=()=>{const kind=(out.querySelector('[data-gk][aria-pressed="true"]')||{}).dataset?.gk||'active';saveGarmin(cur,parseInt(document.getElementById('gIn').value,10)||0,kind,parseInt(document.getElementById('gMin').value,10)||60)};
+    gs2.onclick=go; document.getElementById('gIn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go()}}}
   const wi=document.getElementById('watchIn'), ws=document.getElementById('watchSave');
-  const saveWatch=()=>{const v=parseInt(wi.value,10);if(v>0){S.watch[cur]={a:v,t:Date.now()}}else delete S.watch[cur];save();renderDay();const a=exAdj(cur);if(v>0)toast(a>0?`Watch saved: you can eat <b>${a} kcal more</b> today`:a<0?`Watch saved: ${-a} kcal less today`:'Watch saved: a normal day')};
+  const saveWatch=()=>{saveGarmin(cur,parseInt(wi.value,10)||0,'active',60)};
   ws.onclick=saveWatch; wi.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();saveWatch()}};
   const gt=document.getElementById('gotoday'); if(gt) gt.onclick=()=>{cur=todayIdx();tab='sum';renderDay();window.scrollTo({top:0})};
 }
