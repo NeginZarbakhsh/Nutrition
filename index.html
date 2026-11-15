@@ -68,7 +68,7 @@ header{padding-block:16px 6px;display:flex;align-items:center;justify-content:sp
 /* bottom tab bar */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);
   padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
-.tabbar .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabbar .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
 .tabbar button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11px;font-weight:600;color:var(--muted);border-radius:12px}
 .tabbar svg{width:24px;height:24px}
 .tabbar button[aria-selected="true"]{color:var(--firooze)}
@@ -427,6 +427,30 @@ code.url{font-size:12px;word-break:break-all;background:var(--sunk);padding:1px 
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .toast b{color:var(--saffron)}
 @media (max-width:380px){.tiles{grid-template-columns:1fr 1fr}.tile.watch{grid-column:1/-1}.daytabs button{font-size:11px}}
+
+/* products */
+.howadd{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.howadd>div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:grid;gap:4px;align-content:start;font-size:14px}
+.howadd span{color:var(--muted);font-size:13px}
+.howadd>div:first-child{background:var(--firooze-soft);border-color:transparent}
+.pgroup{margin-top:14px;display:grid;gap:8px}
+.pcard{display:grid;grid-template-columns:76px 1fr;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.pcard.on{border:2px solid var(--firooze)}
+.pphoto{width:76px;height:76px;border-radius:12px;background:var(--sunk);display:grid;place-items:center;overflow:hidden;cursor:pointer;font-size:12px;font-weight:600;color:var(--firooze)}
+.pphoto img{width:100%;height:100%;object-fit:cover}
+.pinfo{min-width:0;display:grid;gap:3px;font-size:14px}
+.pnums{font-size:12.5px;color:var(--muted)}
+.pportion{font-size:13.5px}
+.pfrom{font-size:11.5px;color:var(--muted)}
+.pbtns{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.inuse{font-weight:700;color:var(--firooze);font-size:13px}
+.pform{display:grid;gap:10px}
+.pform label{display:grid;gap:4px;font-size:12px;font-weight:600;color:var(--muted)}
+.pform select{padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:16px}
+.pf2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-align:middle;margin-right:8px}
+.tabbar button{font-size:10.5px}
+@media (max-width:420px){.howadd{grid-template-columns:1fr}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -490,6 +514,19 @@ code.url{font-size:12px;word-break:break-all;background:var(--sunk);padding:1px 
     <div class="section">
       <h2>Persian shop, every couple of months</h2>
       <p class="sub">Saffron · dried limes (limoo amani) · barberries (zereshk) · dried fenugreek · dried plums (alu) · reshteh noodles · pomegranate molasses · advieh · sumac · dried mint · vine leaves · torshi</p>
+    </div>
+  </section>
+
+  <section id="prod" class="hide">
+    <div class="section" style="margin-top:16px">
+      <h2>My products</h2>
+      <p class="sub">The exact things you buy at Lidl Little Island. Each product replaces the typical values for that ingredient, so every meal, portion and shopping list uses your real product.</p>
+      <div class="howadd">
+        <div><b>Easiest: send Claude a photo</b><span>Photograph the nutrition table on the back of the pack and send it in your chat with Claude. Claude adds it here and tells you exactly how much makes one portion.</span></div>
+        <div><b>Or add it yourself</b><span>Copy kcal and protein per 100g from the label.</span><button class="btn primary" id="addProd" type="button" style="margin-top:8px">+ Add a product</button></div>
+      </div>
+      <div id="prodout" style="margin-top:14px"></div>
+      <p class="lead">Tap "+ photo" on a product to add a picture of the front of the pack. It then shows next to that ingredient in your meals and shopping list, so you grab the right one in the shop. Photos stay on this phone.</p>
     </div>
   </section>
 
@@ -625,12 +662,13 @@ code.url{font-size:12px;word-break:break-all;background:var(--sunk);padding:1px 
     </div>
   </section>
 
-  <footer><b style="color:var(--ink)">Version 12 · 15 Nov 2026</b> · Chicken in mini fillets, pasta and rice in cups.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
+  <footer><b style="color:var(--ink)">Version 13 · 15 Nov 2026</b> · My products: your exact Lidl items.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Sections"><div class="in">
   <button role="tab" data-tab="today" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>Today</button>
   <button role="tab" data-tab="week" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Week</button>
+  <button role="tab" data-tab="prod" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-5 9 5v10l-9 4-9-4z"/><path d="M3 9l9 4 9-4M12 13v10"/></svg>Products</button>
   <button role="tab" data-tab="lidl" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11h11L21 8H6.2"/><circle cx="9" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></svg>Lidl</button>
   <button role="tab" data-tab="hands" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V5.5a1.5 1.5 0 0 1 3 0V10M10 9.5V4a1.5 1.5 0 0 1 3 0v6M13 9.5V5a1.5 1.5 0 0 1 3 0v6M16 10.5V8a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-3l-2.5-4.3a1.5 1.5 0 0 1 2.6-1.5L7 14"/></svg>Portions</button>
   <button role="tab" data-tab="me" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Me</button>
@@ -657,7 +695,7 @@ const CUP=x=>{const c=[];for(let i=1;i<=12;i++)c.push(i/4);for(let i=1;i<=9;i++)
 const MINI=40; /* one mini chicken fillet, raw */
 const CUPV=x=>{const c=[];for(let i=1;i<=12;i++)c.push(i/4);for(let i=1;i<=9;i++)c.push(i/3);return c.reduce((b,y)=>Math.abs(y-x)<Math.abs(b-x)?y:b,c[0])};
 /* round amounts to what you can actually count or measure, so the numbers match the screen */
-const SNAP={chicken:g=>Math.max(1,Math.round(g/MINI))*MINI, egg:g=>Math.max(25,Math.round(g/25)*25),
+const SNAP={chicken:g=>{const u=F.chicken.unitG||MINI;return Math.max(1,Math.round(g/u))*u}, egg:g=>Math.max(25,Math.round(g/25)*25),
   rice:g=>Math.round(CUPV(g/200)*200), pasta:g=>Math.round(CUPV(g/95)*95), lentils:g=>Math.round(CUPV(g/200)*200)};
 const snap=items=>items.map(([k,g])=>SNAP[k]&&g>0?[k,SNAP[k](g)]:[k,g]);
 const PL=(x,s,p)=>`${FR(x)} ${Math.round(x*4)/4>1?p:s}`;
@@ -682,7 +720,7 @@ lentils:{n:'Red or green lentils',k:340,p:24,show:g=>[`${CUP(g/200)} cup raw`,`a
  beans:{n:'Kidney beans, tinned',k:110,p:7.5,show:g=>[`${FR(g/240)} tin`,'drained'],shop:'tins',pack:[240,'tin (400g)']},
  broad:{n:'Broad beans, frozen',k:80,p:7.5,show:g=>[PL(g/100,'fist','fists'),''],shop:'frozen',pack:[750,'bag']},
  barley:{n:'Pearl barley',k:350,p:10,show:g=>[`${Math.max(1,Math.round(g/15))} heaped tbsp raw`,''],shop:'pantry',pack:[500,'bag (500g)']},
- pitta:{n:'High-protein wrap (Lidl)',k:293,p:16,show:g=>[HALF(g/61,'wrap','wraps'),'9.8g protein each'],shop:'bakery',pack:[366,'pack of 6 wraps']},
+ pitta:{n:'Wrap or pitta',k:260,p:10,show:g=>[HALF(g/61,'wrap','wraps'),''],shop:'bakery',pack:[366,'pack of 6']},
  bread:{n:'Wholemeal bread',k:240,p:10,show:g=>[CNT(g/40,'slice','slices'),''],shop:'bakery',pack:[800,'loaf']},
  flour:{n:'Plain flour',k:350,p:10,show:g=>[`${Math.max(1,Math.round(g/15))} heaped tbsp`,''],shop:'pantry',pack:[1000,'bag (1kg)']},
  noodle:{n:'Reshteh noodles (or linguine)',k:350,p:12,show:g=>[`a small bundle, ${FR(g/30)} fist`,'dry'],shop:'pantry',pack:[500,'pack']},
@@ -1034,7 +1072,8 @@ function buildStrip(){
     strip.appendChild(b);
   });
 }
-const fmtItem=(k,g)=>{const f=F[k];const [how,alt]=f.show(g);return {name:f.n,how,alt,free:f.free}};
+const thumb=k=>{const f=F[k],ph=f.prod&&(S.pphoto||{})[f.prod.id];return ph?`<img class="thumb" src="${ph}" alt="">`:''};
+const fmtItem=(k,g)=>{const f=F[k];const [how,alt]=f.show(g);return {name:thumb(k)+esc(f.n),how,alt,free:f.free}};
 
 /* ---------- shopping need ---------- */
 function needList(i){
@@ -1546,7 +1585,7 @@ function renderShop(){
       else if(k==='fruit'){const n=Math.ceil(g/110);q=`${n} pieces`;d='apples, oranges, pears, bananas, berries'}
       else if(k==='avocado'){q=`${Math.max(1,Math.ceil(g/140))} avocado`}
       else{const n=Math.max(1,Math.ceil(g/f.pack[0]-0.15));q=`${n} × ${f.pack[1]}`;d=`You will use about ${g>=1000?(g/1000).toFixed(1)+' kg':Math.round(g/10)*10+' g'}${cat==='meat'?'. Freeze in 2-portion bags the day you buy':''}`}
-      h+=`<li><label><input type="checkbox" data-shop="${key}" ${S.shop[key]?'checked':''}><span>${f.n}${d?`<span class="d">${d}</span>`:''}</span><span class="q">${q}</span></label></li>`;
+      h+=`<li><label><input type="checkbox" data-shop="${key}" ${S.shop[key]?'checked':''}><span>${thumb(k)}${esc(f.n)}${d?`<span class="d">${d}</span>`:''}</span><span class="q">${q}</span></label></li>`;
     });
   });
   const base=['onions (1 net)','tomatoes (1 kg)','cucumbers (4–6)','lemons (4)','garlic (1 bulb)','herbs: parsley, coriander, mint, dill'];
@@ -1620,18 +1659,109 @@ document.getElementById('addLog').onclick=()=>{
 };
 document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};S.skip={};S.ex={};S.gymskip={};S.watch={};S.usual={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
 
+/* ---------- MY PRODUCTS ----------
+   Products read from your label photos. Each one replaces the typical values for one ingredient,
+   so every meal, portion count and shopping list uses the real thing you buy.
+   unit: [singular, plural, grams per piece] for things you count (wraps, fillets, eggs). */
+const PRODUCTS=[
+ {id:'lidl-hp-wrap',food:'pitta',name:'High protein tortilla wraps (Lidl)',kcal:293,protein:16,pack:366,packLabel:'pack of 6 wraps',unit:['wrap','wraps',61],added:'2026-11-15',from:'your label photo'}
+];
+const FOODBASE={}; Object.keys(F).forEach(k=>FOODBASE[k]={n:F[k].n,k:F[k].k,p:F[k].p,show:F[k].show,pack:F[k].pack,unitG:F[k].unitG});
+const allProducts=()=>[...PRODUCTS,...(S.myprod||[])];
+const activeProd=k=>{const id=S.active&&S.active[k];if(id==='none')return null;const all=allProducts().filter(p=>p.food===k);return all.find(p=>p.id===id)||all[0]||null};
+const half=n=>{const v=Math.max(.5,Math.round(n*2)/2);return Number.isInteger(v)?String(v):(v<1?'½':Math.floor(v)+'½')};
+function applyProducts(){
+  Object.keys(FOODBASE).forEach(k=>{
+    const b=FOODBASE[k], p=activeProd(k), f=F[k];
+    Object.assign(f,{n:b.n,k:b.k,p:b.p,show:b.show,pack:b.pack,unitG:b.unitG,prod:null});
+    if(!p) return;
+    f.prod=p; f.n=p.name; f.k=+p.kcal; f.p=+p.protein;
+    if(p.pack>0) f.pack=[+p.pack,p.packLabel||`pack (${p.pack}g)`];
+    if(p.unit&&p.unit[2]>0){
+      const [s,pl,ug]=p.unit; f.unitG=+ug;
+      f.show=g=>{const n=Math.max(.5,Math.round(g/ug*2)/2);return [`${half(g/ug)} ${n>1?pl:s}`,`${Math.round(g)}g · ${(f.p*ug/100).toFixed(1)}g protein each`]};
+    }else{
+      f.show=g=>{const r=b.show(g);return [r[0],`${Math.round(g)}g${p.pack>0?` · ${FR(g/p.pack)} of the pack`:''}`]};
+    }
+  });
+}
+/* the amount of this ingredient a typical portion in your plan uses */
+function typicalGrams(k){
+  const gs=[];W.forEach((_,i)=>SLOTS.forEach((__,si)=>{const m=mealAt(i,si);if(m.items)m.items.forEach(([kk,g])=>{if(kk===k)gs.push(g)})}));
+  if(!gs.length) return null; gs.sort((a,b)=>a-b); return gs[Math.floor(gs.length/2)];
+}
+const FOODCHOICES=['chicken','mince','beef','lamb','salmon','egg','yog','cottage','feta','cheddar','whey','pitta','bread','pasta','rice','oats','lentils','split','chickpea','beans','milk','almond','potato','pea','edamame','broad','noodle','walnut','pist','date','fruit','oil','butter','chia'];
+function renderProducts(){
+  const el=document.getElementById('prodout'); if(!el) return;
+  const all=allProducts(); let h='';
+  if(!all.length) h+='<p class="small muted">No products yet.</p>';
+  const foods=[...new Set(all.map(p=>p.food))];
+  foods.forEach(k=>{
+    const list=all.filter(p=>p.food===k), act=activeProd(k);
+    h+=`<div class="pgroup"><span class="lbl">${FOODBASE[k]?FOODBASE[k].n:k}</span>`;
+    list.forEach(p=>{
+      const on=act&&act.id===p.id, photo=(S.pphoto||{})[p.id];
+      const tg=typicalGrams(k);
+      let portion='';
+      if(on&&tg){const t=calc([[k,tg]]);portion=`<div class="pportion">A portion in your plan: <b>${F[k].show(tg)[0]}</b> (${Math.round(tg)}g) = <b>${Math.round(t.p)}g protein</b>, ${Math.round(t.k)} kcal</div>`}
+      const wk=on?Math.round([0,1,2,3,4,5,6].map(j=>needList(Math.floor(todayIdx()/7)*7+j)[k]||0).reduce((a,b)=>a+b,0)):0;
+      h+=`<div class="pcard${on?' on':''}">
+        <label class="pphoto" for="ph-${p.id}" title="Add a photo of the front">${photo?`<img src="${photo}" alt="">`:'<span>+ photo</span>'}<input type="file" accept="image/*" id="ph-${p.id}" data-photo="${p.id}" hidden></label>
+        <div class="pinfo"><b>${esc(p.name)}</b>
+          <span class="pnums num">${p.kcal} kcal · ${p.protein}g protein per 100g${p.pack?` · pack ${p.packLabel||p.pack+'g'}`:''}${p.unit?` · 1 ${p.unit[0]} = ${p.unit[2]}g`:''}</span>
+          ${portion}${on&&wk?`<div class="pportion">This week you use <b>${F[k].show(wk)[0]}</b>${p.pack?` ≈ ${(wk/p.pack).toFixed(1)} packs`:''}</div>`:''}
+          <span class="pfrom">${p.from?`From ${esc(p.from)}`:'Added by you'}${p.added?` · ${p.added}`:''}</span>
+          <div class="pbtns">${on?'<span class="inuse">✓ In use in your meals</span>':`<button class="btn soft" type="button" data-use="${p.id}">Use this one</button>`}
+            ${String(p.id).startsWith('u')?`<button class="lnk" type="button" data-pdel="${p.id}">Delete</button>`:''}</div></div></div>`;
+    });
+    h+=`<button class="lnk" type="button" data-nouse="${k}">${act?'Use typical values instead':''}</button></div>`;
+  });
+  el.innerHTML=h;
+  el.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>{const p=allProducts().find(x=>x.id===b.dataset.use);S.active=S.active||{};S.active[p.food]=p.id;save();applyProducts();renderProducts();toast(`Now using ${esc(p.name)}`)});
+  el.querySelectorAll('[data-nouse]').forEach(b=>{if(!b.textContent)return b.remove();b.onclick=()=>{S.active=S.active||{};S.active[b.dataset.nouse]='none';save();applyProducts();renderProducts()}});
+  el.querySelectorAll('[data-pdel]').forEach(b=>b.onclick=()=>{S.myprod=(S.myprod||[]).filter(p=>p.id!==b.dataset.pdel);save();applyProducts();renderProducts()});
+  el.querySelectorAll('[data-photo]').forEach(inp=>inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;shrinkPhoto(f,url=>{S.pphoto=S.pphoto||{};S.pphoto[inp.dataset.photo]=url;save();renderProducts()})});
+}
+function shrinkPhoto(file,done){
+  const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const s=Math.min(1,220/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);try{done(c.toDataURL('image/jpeg',.72))}catch(e){}};img.src=r.result};r.readAsDataURL(file);
+}
+function openAddProduct(){
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">Add a product</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>
+    <p class="small muted" style="margin:0">Copy the numbers from the nutrition table on the back of the pack. Or just send Claude a photo of it.</p>`;
+  document.getElementById('sx').onclick=closeSheet;
+  sBody.innerHTML=`<div class="pform">
+    <label for="pf-food">It replaces<select id="pf-food">${FOODCHOICES.map(k=>`<option value="${k}">${FOODBASE[k].n}</option>`).join('')}</select></label>
+    <label for="pf-name">Name<input id="pf-name" class="field" placeholder="e.g. Chicken mini fillets, Lidl"></label>
+    <div class="pf2"><label for="pf-k">kcal per 100g<input id="pf-k" class="field" type="number" inputmode="decimal"></label>
+    <label for="pf-p">Protein per 100g<input id="pf-p" class="field" type="number" inputmode="decimal" step="0.1"></label></div>
+    <div class="pf2"><label for="pf-pack">Pack weight (g)<input id="pf-pack" class="field" type="number" inputmode="numeric"></label>
+    <label for="pf-n">Pieces in the pack<input id="pf-n" class="field" type="number" inputmode="numeric" placeholder="optional"></label></div>
+    <label for="pf-u">What is one piece called?<input id="pf-u" class="field" placeholder="e.g. fillet, wrap, slice (optional)"></label>
+    <p class="small muted" id="pf-msg"></p>
+    <button class="btn primary" type="button" id="pf-save" style="width:100%;justify-content:center;padding:13px">Save product</button></div>`;
+  document.getElementById('pf-save').onclick=()=>{
+    const v=id=>document.getElementById(id).value.trim(), food=v('pf-food'), name=v('pf-name'), k=parseFloat(v('pf-k')), p=parseFloat(v('pf-p')), pack=parseFloat(v('pf-pack'))||0, n=parseInt(v('pf-n'),10)||0, u=v('pf-u');
+    if(!name||!(k>0)||!(p>=0)){document.getElementById('pf-msg').textContent='Add at least the name, kcal and protein per 100g.';return}
+    const prod={id:'u'+Date.now(),food,name,kcal:k,protein:p,pack,added:iso(new Date())};
+    if(pack&&n>0){const s=u||'piece';prod.unit=[s,s.endsWith('s')?s:s+'s',Math.round(pack/n*10)/10];prod.packLabel=`pack of ${n} (${pack}g)`}
+    S.myprod=S.myprod||[];S.myprod.push(prod);S.active=S.active||{};S.active[food]=prod.id;save();applyProducts();closeSheet();renderProducts();toast(`Saved. Your meals now use ${esc(name)}`);
+  };
+  openSheet();
+}
+
 /* ---------- tabs ---------- */
-const TABS=['today','week','lidl','hands','me'];
+const TABS=['today','week','prod','lidl','hands','me'];
 function showTab(id){
   document.querySelectorAll('.tabbar button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));
   TABS.forEach(t=>document.getElementById(t).classList.toggle('hide',t!==id));
-  if(id==='today'){tab='sum';renderDay();} if(id==='hands')renderBatches(); if(id==='week')renderWeek(); if(id==='lidl')renderShop(); if(id==='me')renderMe();
+  if(id==='today'){tab='sum';renderDay();} if(id==='hands')renderBatches(); if(id==='week')renderWeek(); if(id==='lidl')renderShop(); if(id==='me')renderMe(); if(id==='prod')renderProducts();
   try{history.replaceState(null,'',id==='today'?location.pathname:'#'+id)}catch(e){}
   window.scrollTo({top:0});
 }
 document.querySelectorAll('.tabbar button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
-renderTarget(); renderHands(); renderDay(); readWatchParam();
+applyProducts(); renderTarget(); renderHands(); renderDay(); readWatchParam();
+document.getElementById('addProd').onclick=openAddProduct;
 const h0=location.hash.slice(1); if(TABS.includes(h0)) showTab(h0);
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(TABS.includes(h))showTab(h)});
 
