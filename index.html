@@ -364,6 +364,11 @@ footer{margin-top:36px;font-size:12px;color:var(--muted)}
 .exsum{margin-top:12px;padding:12px;border-radius:12px;background:var(--saffron-soft);font-size:14px}
 .brow.boxes{background:var(--firooze-soft);border-radius:12px;padding:10px 12px;border-top:0;margin-top:10px}
 output small.gram{display:block;font-size:11px;color:var(--muted);font-weight:500}
+
+.exbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.exbtns .btn{justify-content:center;min-height:44px}
+.exrow.watch b{color:var(--firooze)}
+code.url{font-size:12px;word-break:break-all;background:var(--sunk);padding:1px 4px;border-radius:4px;color:var(--ink)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -532,6 +537,21 @@ output small.gram{display:block;font-size:11px;color:var(--muted);font-weight:50
         <div class="rule"><span class="n">4</span><div><h3>Sleep 7–8 hours</h3><p>Short sleep makes you lose more muscle on the same food.</p></div></div>
         <div class="rule"><span class="n">5</span><div><h3>Creatine, 3–5g daily</h3><p>Cheap and well studied. Expect 1–2 kg of water weight in the first two weeks. That is inside the muscle, not fat.</p></div></div>
       </div>
+    </div>
+    <div class="section">
+      <h2>Garmin sync (iPhone)</h2>
+      <p class="sub">Garmin does not let small apps read your account, but your iPhone can pass the number along. Set this up once, about 5 minutes. It works on the GitHub link of this app (neginzarbakhsh.github.io/Nutrition), added to your Home Screen.</p>
+      <div class="rules">
+        <div class="rule"><span class="n">1</span><div><h3>Let Garmin write to Apple Health</h3><p>Garmin Connect app → More (☰) → Settings → Connected Apps → Apple Health → turn on <b>Active Calories</b>. Then in the Health app, allow Garmin Connect to write Active Energy.</p></div></div>
+        <div class="rule"><span class="n">2</span><div><h3>Make the Shortcut</h3><p>Shortcuts app → + → add these 4 actions:<br>
+          <b>Find Health Samples</b> where Type is <b>Active Energy</b> and Start Date is <b>Today</b><br>
+          <b>Calculate Statistics</b>: <b>Sum</b> of Health Samples<br>
+          <b>Round Number</b> (Ones place)<br>
+          <b>Open URLs</b>: <code class="url">https://neginzarbakhsh.github.io/Nutrition/?active=</code> then tap the blue Rounded Number to add it at the end<br><br>
+          Name it <b>Sofreh calories</b>.</p></div></div>
+        <div class="rule"><span class="n">3</span><div><h3>Run it in the evening</h3><p>Open Garmin Connect first so the watch syncs, then tap the Shortcut. Or let it run itself: Shortcuts → Automation → Time of Day → 7:30pm → Run Sofreh calories.</p></div></div>
+      </div>
+      <p class="lead">Active calories are what you burn moving: steps, gym, everything. Your plan already counts a normal day (about the number shown in the Garmin box on Today). You eat back half of anything above that. A very quiet day lowers the target a little, but only after 6pm.</p>
     </div>
     <div class="section">
       <h2>Your training week</h2>
@@ -795,7 +815,7 @@ const SHOPCAT=[['meat','Meat & fish'],['dairy','Dairy & eggs'],['frozen','Frozen
 const LS='sofreh-v1';
 let S={};
 try{S=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){S={}}
-['done','swaps','have','shop','custom','extras','actual','skip','ex','gymskip'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[]; S.batches=S.batches||[];
+['done','swaps','have','shop','custom','extras','actual','skip','ex','gymskip','watch'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[]; S.batches=S.batches||[];
 S.weight=S.weight||54.5; S.height=S.height||155; S.age=S.age||30; S.sex=S.sex||'f'; S.act=S.act||1.5; S.goal=(S.goal===undefined)?0.15:S.goal;
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -820,7 +840,12 @@ const PT=()=>Math.round(S.weight*1.9);
 const EXT=[['gym','Weights / gym',5],['walk','Brisk walk',3.8],['run','Running',9],['cycle','Cycling',7],['swim','Swimming',7],['class','Class / HIIT',7.5],['yoga','Yoga / pilates',3],['sport','Sport / dance',6],['other','Something else',5]];
 const exInfo=t=>EXT.find(e=>e[0]===t)||EXT[EXT.length-1];
 const burnOf=x=>x.kcal>0?x.kcal:Math.round((exInfo(x.type)[2]-1)*S.weight*x.min/60);
-const exAdj=i=>{let v=0;(S.ex[i]||[]).forEach(x=>v+=Math.round(burnOf(x)*0.5/10)*10);if(S.gymskip[i])v-=150;return v};
+/* Garmin "active calories" for the whole day replaces the per-workout estimates.
+   Your activity level already assumes a normal amount (TDEE - BMR - 10% for digestion);
+   you eat back half of anything above it, or eat a bit less below it (only after 6pm, once the day is mostly done). */
+const watchBase=()=>Math.round((TDEE()-BMR()*1.1)/10)*10;
+function watchAdj(w){let v=Math.round((w.a-watchBase())*0.5/10)*10;const late=new Date(w.t).getHours()>=18;if(!late)v=Math.max(0,v);return Math.max(-250,Math.min(500,v))}
+const exAdj=i=>{if(S.watch[i])return watchAdj(S.watch[i]);let v=0;(S.ex[i]||[]).forEach(x=>v+=Math.round(burnOf(x)*0.5/10)*10);if(S.gymskip[i])v-=150;return v};
 const KTd=i=>KT()+exAdj(i);
 
 /* ---------- icons per dish type ---------- */
@@ -1027,6 +1052,13 @@ function openRestSheet(si){
 function exCard(i){
   const tr=TRAIN[i%7], list=S.ex[i]||[], adj=exAdj(i);
   let h=`<div class="excard"><div class="exh"><span class="lbl">Exercise today</span>${adj?`<span class="exadj num">${adj>0?'+':''}${adj} kcal to eat</span>`:''}</div>`;
+  const w=S.watch[i];
+  if(w){const t=new Date(w.t), late=t.getHours()>=18;
+    h+=`<div class="exrow watch"><span><b>Garmin: ${w.a} active kcal</b><small class="num">Synced ${t.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})} · a normal day for you is about ${watchBase()} · ${adj>=0?'+':''}${adj} kcal${!late&&w.a<watchBase()?' (sync again after 6pm for the full day)':''}</small></span>
+      <button class="lnk" type="button" id="watchdel">Remove</button></div>`;
+    h+=`<p class="small muted" style="margin:6px 0 0">Your Garmin total already includes every workout and walk, so nothing else needs logging today.</p>`;
+    return h+`<button class="btn soft" type="button" id="addWatch" style="margin-top:10px;width:100%;justify-content:center;min-height:44px">Update Garmin calories</button></div>`;
+  }
   if(tr.gym){
     h+=`<div class="exrow${S.gymskip[i]?' off':''}"><span><b>Planned: gym · ${tr.name}</b><small>${S.gymskip[i]?'Not done today: 150 kcal less to eat':'Already counted in your daily target'}</small></span>
       <button class="lnk" type="button" data-gymskip="1">${S.gymskip[i]?'I went after all':'I didn’t go'}</button></div>`;
@@ -1035,7 +1067,7 @@ function exCard(i){
     h+=`<div class="exrow"><span><b>${exInfo(x.type)[1]} · ${x.min} min</b><small class="num">${x.kcal>0?'Your watch: ':'About '}${b} kcal burned · you eat back ${Math.round(b*0.5/10)*10}</small></span>
       <button class="lnk" type="button" data-exdel="${j}">Remove</button></div>`});
   if(!tr.gym&&!list.length) h+=`<p class="small muted" style="margin:6px 0 0">Rest day. Did you train or walk a lot after all? Log it and you can eat a bit more.</p>`;
-  h+=`<button class="btn soft" type="button" id="addEx" style="margin-top:10px;width:100%;justify-content:center;min-height:44px">+ Log exercise</button></div>`;
+  h+=`<div class="exbtns"><button class="btn soft" type="button" id="addEx">+ Log exercise</button><button class="btn soft" type="button" id="addWatch">Garmin calories</button></div></div>`;
   return h;
 }
 function openExercise(){
@@ -1062,6 +1094,39 @@ function openExercise(){
   document.getElementById('exk').oninput=e=>{x.kcal=Math.max(0,parseInt(e.target.value,10)||0);upd()};
   document.getElementById('exsave').onclick=()=>{(S.ex[cur]=S.ex[cur]||[]).push({...x});save();closeSheet();renderDay()};
   upd(); openSheet();
+}
+
+function openWatch(){
+  const w=S.watch[cur];
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">Calories from your Garmin</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
+  document.getElementById('sx').onclick=closeSheet;
+  sBody.innerHTML=`<p class="small" style="margin:0 0 10px">In the Garmin Connect app, open <b>Calories</b> for today and type the <b>Active</b> number (not Total, not Resting).</p>
+    <label class="brow" for="wk" style="display:grid"><span class="nm">Active calories today<small>A normal day for you is about ${watchBase()}</small></span>
+      <input id="wk" class="field" type="number" inputmode="numeric" placeholder="e.g. 620" value="${w?w.a:''}" style="max-width:130px;justify-self:end"></label>
+    <div class="exsum" id="wsum">Type the number to see what it changes.</div>
+    <button class="btn primary" type="button" id="wsave" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Save</button>
+    <p class="small muted" style="margin-top:14px">Tired of typing it? On iPhone you can make it one tap: see <b>Me → Garmin sync</b>.</p>`;
+  const inp=document.getElementById('wk');
+  const upd=()=>{const v=parseInt(inp.value,10);if(!(v>0)){document.getElementById('wsum').textContent='Type the number to see what it changes.';return}
+    const adj=watchAdj({a:v,t:Date.now()});
+    document.getElementById('wsum').innerHTML=adj>0?`You moved more than usual. Eat <b class="num">${adj} kcal more</b> today (half the extra).`:adj<0?`A quieter day than usual. Eat <b class="num">${-adj} kcal less</b> today.`:`About a normal day. Your target stays the same.${new Date().getHours()<18?' Before 6pm the app never lowers it.':''}`};
+  inp.oninput=upd; upd();
+  document.getElementById('wsave').onclick=()=>{const v=parseInt(inp.value,10);if(v>0){S.watch[cur]={a:v,t:Date.now()};save()}closeSheet();renderDay()};
+  openSheet(); setTimeout(()=>{try{inp.focus()}catch(e){}},300);
+}
+/* one-tap sync: an iPhone Shortcut opens ...?active=640 */
+function readWatchParam(){
+  let q; try{q=new URLSearchParams(location.search)}catch(e){return}
+  const v=parseInt(q.get('active'),10); if(!(v>0)) return;
+  const i=todayIdx(); S.watch[i]={a:v,t:Date.now()}; save();
+  try{history.replaceState(null,'',location.pathname+location.hash)}catch(e){}
+  cur=i; renderDay();
+  const adj=exAdj(i);
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">Garmin synced</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
+  document.getElementById('sx').onclick=closeSheet;
+  sBody.innerHTML=`<div class="exsum"><b class="num">${v} active kcal</b> today.<br>${adj>0?`You can eat <b>${adj} kcal more</b>. Rice, bread and fruit get a little bigger.`:adj<0?`A quieter day: <b>${-adj} kcal less</b> today.`:'About a normal day. Your target stays the same.'}</div>
+    <button class="btn primary" type="button" id="gotit" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Got it</button>`;
+  document.getElementById('gotit').onclick=closeSheet; openSheet();
 }
 
 /* ---------- TODAY ---------- */
@@ -1166,7 +1231,9 @@ function renderDay(){
   out.querySelectorAll('[data-delx]').forEach(b=>b.onclick=()=>{S.extras[cur].splice(+b.dataset.delx,1);save();renderDay()});
   document.getElementById('addExtra').onclick=()=>openBuilder({mode:'extra'});
   bindRest(out);
-  document.getElementById('addEx').onclick=openExercise;
+  const ae=document.getElementById('addEx'); if(ae) ae.onclick=openExercise;
+  document.getElementById('addWatch').onclick=openWatch;
+  const wd=document.getElementById('watchdel'); if(wd) wd.onclick=()=>{delete S.watch[cur];save();renderDay()};
   out.querySelectorAll('[data-exdel]').forEach(b=>b.onclick=()=>{S.ex[cur].splice(+b.dataset.exdel,1);save();renderDay()});
   const gs=out.querySelector('[data-gymskip]'); if(gs) gs.onclick=()=>{S.gymskip[cur]=!S.gymskip[cur];save();renderDay()};
   const gt=document.getElementById('gotoday'); if(gt) gt.onclick=()=>{cur=todayIdx();renderDay();window.scrollTo({top:0})};
@@ -1414,7 +1481,7 @@ document.getElementById('addLog').onclick=()=>{
   S.log.push({d:iso(new Date()),w:w||null,waist:wa||null}); if(w) S.weight=w;
   save();document.getElementById('logW').value='';document.getElementById('logWaist').value='';renderTarget();renderMe();
 };
-document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};S.skip={};S.ex={};S.gymskip={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
+document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};S.skip={};S.ex={};S.gymskip={};S.watch={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
 
 /* ---------- tabs ---------- */
 const TABS=['today','week','lidl','hands','me'];
@@ -1427,7 +1494,7 @@ function showTab(id){
 }
 document.querySelectorAll('.tabbar button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
-renderTarget(); renderHands(); renderDay();
+renderTarget(); renderHands(); renderDay(); readWatchParam();
 const h0=location.hash.slice(1); if(TABS.includes(h0)) showTab(h0);
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(TABS.includes(h))showTab(h)});
 

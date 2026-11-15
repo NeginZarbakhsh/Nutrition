@@ -1,5 +1,5 @@
 // Keeps the app working offline (e.g. with bad signal inside Lidl).
-const CACHE = 'sofreh-v7';
+const CACHE = 'sofreh-v8';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

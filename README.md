@@ -5,6 +5,7 @@ A 28-day Persian meal plan for gentle fat loss and muscle definition. No kitchen
 - **Today**: a protein ring, then the four meals for the day with amounts in hand measures (palm, fist, matchbox, teaspoon, heaped tablespoon, mug) or pack fractions ("½ tin", "⅓ of the tub"). Tick meals as you eat them.
 - **Choose any meal**: tap *Change* on a meal to pick from 80 dishes (rice, pasta, khoresh, kabab, kuku, soups, light meals) with search and filters, or *Build my own* with palms, fists and spoons and see the protein straight away.
 - **Exercise**: log any extra workout (type, minutes, optional calories from your watch). Half of what it burns is added to that day's calories. Skipping a planned gym day takes 150 kcal off.
+- **Garmin**: type today's Active calories from Garmin Connect, or set up the iPhone Shortcut in Me → Garmin sync. The Shortcut reads Active Energy from Apple Health and opens `https://neginzarbakhsh.github.io/Nutrition/?active=<number>`. Half of anything above a normal day is added to the calorie target.
 - **Batch cooking**: enter what went in the pot once and how many equal boxes you split it into; then pick "1 box" for any meal. For food already frozen, pick the closest dish and choose a plate size.
 - **Extras**: add anything else you ate (a latte, dates, a slice of cake) so the protein and calories stay honest.
 - **Week**: a protein chart of eaten vs planned vs target, and the week's meals at a glance.
