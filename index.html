@@ -490,6 +490,7 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
 .qpick button[aria-pressed="true"]{background:var(--firooze);border-color:var(--firooze);color:var(--surface)}
 .qpick button.no{color:var(--anar)}
 .qpick button.no[aria-pressed="true"]{background:var(--anar);border-color:var(--anar);color:var(--surface)}
+.supp{margin:8px 0 0;padding:8px 10px;border-radius:10px;background:var(--firooze-soft)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -635,6 +636,7 @@ img.thumb{width:28px;height:28px;border-radius:6px;object-fit:cover;vertical-ali
           <option value="0.15">Define: lose fat slowly, keep muscle</option>
           <option value="0.08">Recomp: very slow, mostly muscle</option>
           <option value="0">Maintain</option></select></label>
+        <label for="coffeeIn">Milk in coffee, ml/day<input id="coffeeIn" type="number" inputmode="numeric"></label>
         <label for="startIn">Cycle started<input id="startIn" type="date"></label>
         <button class="btn primary" id="saveMe" type="button" style="justify-content:center;border-radius:10px">Save</button>
       </div>
@@ -1063,7 +1065,7 @@ const SVGI={
 const SLOTTYPE=['b','m','s','m'];
 const typeOf=id=>id.startsWith('b_')?'b':id.startsWith('s_')?'s':'m';
 const calc=items=>items.reduce((a,[k,g])=>{if(!F[k])return a;a.k+=F[k].k*g/100;a.p+=F[k].p*g/100;a.f+=(F[k].f||0)*g/100;return a},{k:0,p:0,f:0});
-const planId=(i,si)=>W[i][si]===FREE?'free':W[i][si];
+const planId=(i,si)=>{if(si===2&&typeof trainedOn==='function'&&trainedOn(i)&&!TRAIN[i%7].gym)return 's_whey';return W[i][si]===FREE?'free':W[i][si]};
 const chosenId=(i,si)=>S.swaps[i+'-'+si]||planId(i,si);
 function mealAt(i,si){
   const id=chosenId(i,si), slot=SLOTS[si], changed=!!S.swaps[i+'-'+si];
@@ -1075,6 +1077,9 @@ function mealAt(i,si){
 }
 const dayMeals=i=>SLOTS.map((_,si)=>mealAt(i,si));
 const extrasOf=i=>S.extras[i]||[];
+/* your everyday coffee with a little milk: counted automatically, amount set in Me */
+const coffeeMl=()=>S.coffeeMl===undefined?60:S.coffeeMl;
+const dailyItems=()=>coffeeMl()>0?[{n:`Coffee with milk (${coffeeMl()} ml)`,items:[['milk',coffeeMl()]]}]:[];
 /* Portions that are not eaten yet resize so the day lands on target:
    protein foods scale by a, rice/bread/fat/fruit by b. Protein never drops below plan. */
 const PRO=new Set(['chicken','beef','mince','lamb','salmon','egg','yog','cottage','whey','feta','cheddar','lentils','split','chickpea','beans']);
@@ -1084,7 +1089,7 @@ const cl=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
 function dayPlan(i){
   const base=dayMeals(i), role=lunchRole(i);
   let fk=0,fp=0,freeOpen=false; const adj=[];
-  extrasOf(i).forEach(x=>{const t=calc(x.items);fk+=t.k;fp+=t.p});
+  [...dailyItems(),...extrasOf(i)].forEach(x=>{const t=calc(x.items);fk+=t.k;fp+=t.p});
   const out=base.map(m=>{
     const key=i+'-'+m.si, done=!!S.done[key];
     const r=Object.assign({},m,{done,orig:m.items,adjusted:false,logged:!!S.actual[key]});
@@ -1125,7 +1130,7 @@ function dayPlan(i){
 function dayTotals(i){
   const r={k:0,p:0,f:0,ek:0,ep:0};
   dayPlan(i).forEach(m=>{if(m.free||m.skipped)return;r.k+=m.t.k;r.p+=m.t.p;r.f+=m.t.f||0;if(m.done){r.ek+=m.t.k;r.ep+=m.t.p}});
-  extrasOf(i).forEach(x=>{const t=calc(x.items);r.k+=t.k;r.p+=t.p;r.f+=t.f;r.ek+=t.k;r.ep+=t.p});
+  [...dailyItems(),...extrasOf(i)].forEach(x=>{const t=calc(x.items);r.k+=t.k;r.p+=t.p;r.f+=t.f;r.ek+=t.k;r.ep+=t.p});
   return r;
 }
 function lunchRole(i){
@@ -1255,11 +1260,12 @@ function exCard(i){
       <button type="button" data-qcls="none" class="no" aria-pressed="${skipped&&!done}">No class</button></div>`;
   if(done&&pk){const P=PROGRAM[pk];
     h+=`<div class="wcard done"><div><b>✓ ${P.n}</b><small>About ${classBurn(pk)} kcal burned · +${P.kcal} kcal food today</small></div>
-      ${P.ex.length?`<button class="btn" type="button" data-wopen="${pk}">Log lifts</button>`:''}</div>
+      <button class="btn" type="button" data-wopen="${pk}">See class</button></div>
+      <p class="small supp">Today: <b>1 scoop whey</b> (it is your snack, already counted) + <b>1 scoop creatine</b> (0 kcal).</p>
       <p class="small muted" style="margin:8px 0 4px">Wrong one? Tap the class you did:</p>${chips}`;
   }else{
     h+=`<p class="small" style="margin:6px 0 4px"><b>${tr.gym&&!skipped?`Planned: ${PROGRAM[pk]?PROGRAM[pk].n:'class'}.`:'Rest day.'}</b> Which class did you do? One tap is enough.</p>${chips}`;
-    if(tr.gym&&!skipped) h+=`<p class="small pretip" style="margin:8px 0 0">Before class: carbs + protein 2–3 h before, or a banana + yogurt 45 min before an early class.</p>`;
+    if(tr.gym&&!skipped) h+=`<p class="small pretip" style="margin:8px 0 0">Before class: carbs + protein 2–3 h before, or a banana + yogurt 45 min before an early class. After: 1 scoop whey + 1 scoop creatine.</p>`;
     if(skipped) h+=`<p class="small muted" style="margin:8px 0 0">No class today: food set to a rest day. Walk ${tr.steps} steps.</p>`;
     if(!tr.gym&&!skipped) h+=`<p class="small muted" style="margin:8px 0 0">No class? Walk ${tr.steps} steps. Muscle is built on rest days, so eat normally.</p>`;
   }
@@ -1388,13 +1394,9 @@ function openWorkout(i,key){
   if(!P.ex.length){
     h+=`<div class="wex"><b>How to get the most from it</b><p class="wcue">Eat a carb + protein meal 2–3 hours before (or a banana and a yogurt 45 min before an early class). Have your next meal within 2 hours after. Today you get ${P.kcal} kcal more food.</p></div>`;
   }else{
-    h+=`<p class="small" style="margin:0 0 10px">Do the class as your coach says. Then log the <b>weight and reps of your best set</b> for these key lifts:</p><div class="wlist">`;
-    P.ex.forEach((id,j)=>{const e=EX[id], last=lastLift(id,d), today=(S.lifts[id]||[]).find(x=>x.d===d);
-      h+=`<div class="wex${id==='lateral'?' addon':''}"><div class="wh"><b>${e[0]}</b><span class="num">${e[3]}</span></div>
-        <p class="wcue">${e[4]} <span class="muted">Swap: ${e[5]}.</span></p>
-        <p class="wlast">${last?`Last time: <b class="num">${e[6]||last.w?last.w+' kg × ':''}${last.r}</b>. `:''}${nextTarget(id,last)}</p>
-        <div class="win2"><label>kg${e[6]?'':' (0 = bodyweight)'}<input type="number" inputmode="decimal" step="0.5" data-w="${id}" value="${today?today.w:''}" placeholder="${last?last.w:''}"></label>
-          <label>reps (best set)<input type="number" inputmode="numeric" data-r="${id}" value="${today?today.r:''}" placeholder="${last?last.r:''}"></label></div></div>`});
+    h+=`<p class="small" style="margin:0 0 10px">What this class contains (from your FFS app). Nothing to type: picking the class is enough.</p><div class="wlist">`;
+    P.ex.forEach(id=>{const e=EX[id];
+      h+=`<div class="wex${id==='lateral'?' addon':''}"><div class="wh"><b>${e[0]}</b><span class="num">${e[3]}</span></div><p class="wcue">${e[4]}</p></div>`});
     h+='</div>';
   }
   h+=`<button class="btn primary" type="button" id="wfinish" style="width:100%;justify-content:center;padding:13px;margin-top:14px">I did this class</button>`;
@@ -1403,7 +1405,7 @@ function openWorkout(i,key){
     const w=parseFloat(wi.value), r=parseInt(ri.value,10);
     const arr=S.lifts[id]=(S.lifts[id]||[]).filter(x=>x.d!==d); if(r>0){arr.push({d,w:w>=0?w:0,r});arr.sort((a,b)=>a.d<b.d?-1:1)} save()};
   sBody.querySelectorAll('[data-w],[data-r]').forEach(inp=>inp.onchange=()=>store(inp.dataset.w||inp.dataset.r));
-  document.getElementById('wfinish').onclick=()=>{P.ex.forEach(store);S.wdone=S.wdone||{};S.wdone[i]=true;S.wprog=S.wprog||{};S.wprog[i]=key;delete S.gymskip[i];save();closeSheet();renderDay();toast(`Saved: <b>${P.n}</b>`)};
+  document.getElementById('wfinish').onclick=()=>{S.wdone=S.wdone||{};S.wdone[i]=true;S.wprog=S.wprog||{};S.wprog[i]=key;delete S.gymskip[i];save();closeSheet();renderDay();toast(`Saved: <b>${P.n}</b>`)};
   if(!sheet.classList.contains('open')) openSheet();
 }
 
@@ -1494,8 +1496,9 @@ function summaryView(meals,T){
   // extras
   const ex=extrasOf(cur);
   h+=`<div class="extras"><div class="exh"><h3>Extras</h3><button class="btn soft" id="addExtra" type="button">+ Add</button></div>`;
+  h+='<ul>'+dailyItems().map(x=>{const t=calc(x.items);return `<li><span>${esc(x.n)} <span class="muted num">· ${Math.round(t.p)}g · ${Math.round(t.k)} kcal</span></span><span class="small muted">every day</span></li>`}).join('')+'</ul>';
   if(ex.length){h+='<ul>';ex.forEach((x,j)=>{const t=calc(x.items);h+=`<li><span>${esc(x.n)} <span class="muted num">· ${Math.round(t.p)}g · ${Math.round(t.k)} kcal</span></span><button class="lnk" data-delx="${j}" type="button">Remove</button></li>`});h+='</ul>'}
-  else h+=`<p class="small muted" style="margin:4px 0 0">Coffee with milk, nuts, a biscuit at work: add it here.</p>`;
+  else h+=`<p class="small muted" style="margin:4px 0 0">Anything else, like nuts or a biscuit at work: add it here.</p>`;
   h+='</div>';
   if(!gymTop) h+=exCard(cur);
   const L=meals[1];
@@ -1825,7 +1828,7 @@ function renderBatches(){
 function renderMe(){
   document.getElementById('wIn').value=S.weight; document.getElementById('hIn').value=S.height; document.getElementById('aIn').value=S.age;
   document.getElementById('sexIn').value=S.sex; document.getElementById('actIn').value=String(S.act); document.getElementById('goalIn').value=String(S.goal);
-  document.getElementById('startIn').value=iso(dateOf(0));
+  document.getElementById('startIn').value=iso(dateOf(0)); document.getElementById('coffeeIn').value=coffeeMl();
   const def=Math.round(TDEE()-KT()), wk=(def*7/7700);
   const fmin=FATMIN(), carbs=Math.round((KT()-PT()*4-Math.round(S.weight*0.95)*9)/4);
   document.getElementById('mytargets').innerHTML=`<div class="calc">
@@ -1850,6 +1853,7 @@ document.getElementById('saveMe').onclick=()=>{
   const ht=parseFloat(document.getElementById('hIn').value); if(ht>120&&ht<220) S.height=ht;
   const ag=parseInt(document.getElementById('aIn').value,10); if(ag>14&&ag<100) S.age=ag;
   S.sex=document.getElementById('sexIn').value; S.act=parseFloat(document.getElementById('actIn').value); S.goal=parseFloat(document.getElementById('goalIn').value);
+  const cm=parseInt(document.getElementById('coffeeIn').value,10); if(cm>=0&&cm<=500) S.coffeeMl=cm;
   const st=document.getElementById('startIn').value;
   if(st){const [y,m,d]=st.split('-').map(Number);S.anchor=iso(mondayOf(new Date(y,m-1,d)))}
   save();renderTarget();cur=todayIdx();renderMe();
