@@ -696,6 +696,17 @@ ul.chg li{display:grid;gap:2px;background:var(--surface);border:1px solid var(--
       </div>
     </div>
     <div class="section">
+      <h2>Starting running again</h2>
+      <p class="sub">Running is great for your heart and mood and helps fat loss. Done right, it does not cost muscle.</p>
+      <div class="rules">
+        <div class="rule"><span class="n">1</span><div><h3>Start easy</h3><p>Weeks 1–3: run/walk, e.g. 1 min run + 1 min walk × 10–15. Then 20–30 min easy runs. "Easy" means you can talk in full sentences. Add no more than about 10% a week.</p></div></div>
+        <div class="rule"><span class="n">2</span><div><h3>Twice a week is enough</h3><p>Keep your 3 strength classes first. Run on rest days (Tue/Thu/Sat), and not the day before Lower Body, so your legs are fresh for squats.</p></div></div>
+        <div class="rule"><span class="n">3</span><div><h3>Eat for it</h3><p>Log the run with "+ Add a run" (distance or Garmin active calories): the app adds about 45% back as carbs. For runs over 45 min, have a banana or toast 30–60 min before.</p></div></div>
+        <div class="rule"><span class="n">4</span><div><h3>Look after the legs</h3><p>Proper running shoes (fitted at a running shop), soft surfaces at the start, and stop if a pain gets worse while running. Shin or knee pain means slow down the build-up.</p></div></div>
+        <div class="rule"><span class="n">5</span><div><h3>Iron and water</h3><p>Runners lose more iron. If you feel unusually tired or out of breath, ask your GP to check ferritin. Drink 400–600 ml extra on run days.</p></div></div>
+      </div>
+    </div>
+    <div class="section">
       <h2>Supplements worth it (and only these)</h2>
       <div class="table-wrap"><table>
         <thead><tr><th>What</th><th>How much</th><th>Why</th></tr></thead>
@@ -1029,14 +1040,16 @@ const KT=()=>Math.max(S.sex==='m'?1600:1400,Math.round(TDEE()*(1-S.goal)/10)*10)
 /* protein: 2.0 g/kg while losing fat keeps muscle best; 1.8 g/kg at maintenance */
 const PFAC=()=>S.goal>0?2.0:1.8;
 const PT=()=>Math.round(S.weight*PFAC());
-const PTd=i=>PT()+(S.watch&&S.watch[i]&&S.watch[i].a>=400?10:0);
+const PTd=i=>{const burn=(S.watch&&S.watch[i]?S.watch[i].a:0)+((S.ex&&S.ex[i])||[]).reduce((s,x)=>s+burnOf(x),0);return PT()+(burn>=400?10:0)};
 const FATMIN=()=>Math.round(S.weight*0.8);
 /* exercise: your 3 planned gym sessions are already in the activity level.
    Extra sessions add back half of what they burn (watches and estimates run high).
    A planned gym day you skip takes 150 kcal off. */
-const EXT=[['gym','Weights / gym',5],['walk','Brisk walk',3.8],['run','Running',9],['cycle','Cycling',7],['swim','Swimming',7],['class','Class / HIIT',7.5],['yoga','Yoga / pilates',3],['sport','Sport / dance',6],['other','Something else',5]];
+const EXT=[['gym','Weights / gym',5],['walk','Brisk walk',3.8],['run','Run',9],['cycle','Cycling',7],['swim','Swimming',7],['class','Class / HIIT',7.5],['yoga','Yoga / pilates',3],['sport','Sport / dance',6],['other','Something else',5]];
 const exInfo=t=>EXT.find(e=>e[0]===t)||EXT[EXT.length-1];
-const burnOf=x=>x.kcal>0?x.kcal:Math.round((exInfo(x.type)[2]-1)*S.weight*x.min/60);
+/* running: about 0.9 kcal per kg per km on top of resting, so distance gives the best estimate */
+const burnOf=x=>x.kcal>0?x.kcal:(x.type==='run'&&x.km>0)?Math.round(0.9*S.weight*x.km):Math.round((exInfo(x.type)[2]-1)*S.weight*x.min/60);
+const backOf=x=>Math.min(400,Math.round(burnOf(x)*0.45/10)*10);
 /* Garmin "active calories" for the whole day replaces the per-workout estimates.
    Your activity level already assumes a normal amount (TDEE - BMR - 10% for digestion);
    you eat back half of anything above it, or eat a bit less below it (only after 6pm, once the day is mostly done). */
@@ -1044,7 +1057,7 @@ const burnOf=x=>x.kcal>0?x.kcal:Math.round((exInfo(x.type)[2]-1)*S.weight*x.min/
 /* the watch is worn only for the workout: its number is the workout's calories.
    You eat back about 45% of it (watches run high), and it replaces the class estimate. Max +400. */
 function watchAdj(w){return Math.min(400,Math.round(w.a*0.45/10)*10)}
-const exAdj=i=>{if(S.watch[i])return watchAdj(S.watch[i]);let v=0;(S.ex[i]||[]).forEach(x=>v+=Math.round(burnOf(x)*0.5/10)*10);return v};
+const exAdj=i=>{let v=S.watch[i]?watchAdj(S.watch[i]):0;(S.ex[i]||[]).forEach(x=>v+=backOf(x));return v};
 /* more fuel on lifting days, a little less on rest days (weekly total stays the same) */
 /* class days get more food (strength +100, functional +120, metabolic +150), rest days a little less */
 const classKcal=i=>{const k=progOf(i);if(!k)return 0;const planned=TRAIN[i%7].gym&&!S.gymskip[i], extra=!TRAIN[i%7].gym&&trainedOn(i);return (planned||extra)?PROGRAM[k].kcal:0};
@@ -1285,20 +1298,22 @@ function exCard(i){
     if(!tr.gym&&!skipped) h+=`<p class="small muted" style="margin:8px 0 0">No class? Walk ${tr.steps} steps. Muscle is built on rest days, so eat normally.</p>`;
   }
   list.forEach((x,j)=>{const b=burnOf(x);
-    h+=`<div class="exrow"><span><b>${exInfo(x.type)[1]} · ${x.min} min</b><small class="num">${x.kcal>0?'Your watch: ':'About '}${b} kcal burned · you eat back ${Math.round(b*0.5/10)*10}</small></span>
+    h+=`<div class="exrow"><span><b>${exInfo(x.type)[1]} · ${x.km?x.km+' km · ':''}${x.min} min</b><small class="num">${x.kcal>0?'Garmin: ':'About '}${b} kcal burned · +${backOf(x)} kcal food</small></span>
       <button class="lnk" type="button" data-exdel="${j}">Remove</button></div>`});
-  h+=`<button class="btn soft" type="button" id="addEx" style="margin-top:10px;width:100%;justify-content:center;min-height:44px">+ Log other exercise (run, class, swim…)</button><p class="small muted" style="margin:8px 0 0">Wore your watch? Type the workout calories at the top for a more exact number.</p></div>`;
+  h+=`<div class="exbtns"><button class="btn soft" type="button" id="addRun">+ Add a run</button><button class="btn soft" type="button" id="addEx">+ Other exercise</button></div><p class="small muted" style="margin:8px 0 0">Wore your watch? Type the workout calories at the top for a more exact number.</p></div>`;
   return h;
 }
-function openExercise(){
-  const x={type:'gym',min:45,kcal:0};
+function openExercise(type){
+  const x={type:type||'gym',min:type==='run'?30:45,kcal:0,km:0};
   sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">Log exercise</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
   document.getElementById('sx').onclick=closeSheet;
   sBody.innerHTML=`<span class="lbl">What did you do?</span>
     <div class="extypes">${EXT.map(e=>`<button type="button" data-t="${e[0]}" aria-pressed="${e[0]===x.type}">${e[1]}</button>`).join('')}</div>
     <div class="brow" style="margin-top:14px"><span class="nm">How long<small>minutes of actual exercise</small></span>
       <span class="step"><button type="button" id="mmin" aria-label="Shorter">−</button><output id="omin" style="min-width:88px"></output><button type="button" id="pmin" aria-label="Longer">+</button></span></div>
-    <label class="brow" for="exk" style="display:grid"><span class="nm">Calories from your watch<small>Optional. Leave empty and the app estimates it.</small></span>
+    <label class="brow" for="exkm" id="kmrow" style="display:grid"><span class="nm">Distance (km)<small>Optional, gives a better estimate</small></span>
+      <input id="exkm" class="field" type="number" inputmode="decimal" step="0.1" placeholder="e.g. 4" style="max-width:130px;justify-self:end"></label>
+    <label class="brow" for="exk" style="display:grid"><span class="nm">Garmin <b>active</b> calories<small>Optional. Leave empty and the app estimates it.</small></span>
       <input id="exk" class="field" type="number" inputmode="numeric" placeholder="e.g. 320" style="max-width:130px;justify-self:end"></label>
     <div class="exsum" id="exsum"></div>
     <button class="btn primary" type="button" id="exsave" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Save exercise</button>`;
@@ -1306,13 +1321,16 @@ function openExercise(){
     sBody.querySelectorAll('[data-t]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===x.type));
     document.getElementById('omin').textContent=x.min+' min';
     const b=burnOf(x), back=Math.round(b*0.5/10)*10;
-    document.getElementById('exsum').innerHTML=`<b class="num">${x.kcal>0?'':'About '}${b} kcal burned</b><br>You can eat <b class="num">${back} kcal more</b> today. That is half: watches and estimates usually run high. Protein stays ${PT()}g; the extra goes into rice, bread and fruit.`;
+    document.getElementById('kmrow').hidden=x.type!=='run';
+    document.getElementById('exsum').innerHTML=`<b class="num">${x.kcal>0?'':'About '}${b} kcal burned</b><br>You can eat <b class="num">${backOf(x)} kcal more</b> today (about 45%: watches and estimates run high). The extra goes into rice, oats, potato and fruit.${x.type==='run'?'<br><br><b>Running tip:</b> keep it easy (you can talk), 20–40 min, 2× a week. Not the day before Lower Body.':''}`;
   };
   sBody.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{x.type=b.dataset.t;upd()});
   document.getElementById('mmin').onclick=()=>{x.min=Math.max(10,x.min-5);upd()};
   document.getElementById('pmin').onclick=()=>{x.min=Math.min(240,x.min+5);upd()};
   document.getElementById('exk').oninput=e=>{x.kcal=Math.max(0,parseInt(e.target.value,10)||0);upd()};
-  document.getElementById('exsave').onclick=()=>{(S.ex[cur]=S.ex[cur]||[]).push({...x});save();closeSheet();renderDay()};
+  document.getElementById('exkm').oninput=e=>{x.km=Math.max(0,parseFloat(e.target.value)||0);upd()};
+  document.getElementById('exsave').onclick=()=>{const before=dayPlan(cur),bK=KTd(cur),bP=PTd(cur);(S.ex[cur]=S.ex[cur]||[]).push({...x});save();
+    const after=dayPlan(cur);renderDay();showChanges(cur,before,after,bK,KTd(cur),bP,PTd(cur),`${exInfo(x.type)[1]} saved`)};
   upd(); openSheet();
 }
 
@@ -1428,7 +1446,7 @@ function simpleTip(i,dk,after){
   if(!out.length) out.push(left?'Your remaining meals already fit. Eat them as shown.':'All meals are done and you are on target.');
   return out.join('<br>');
 }
-function showChanges(i,before,after,bK,aK,bP,aP){
+function showChanges(i,before,after,bK,aK,bP,aP,title){
   const w=S.watch[i];
   let rows='';
   after.forEach((m,si)=>{
@@ -1439,9 +1457,9 @@ function showChanges(i,before,after,bK,aK,bP,aP){
     if(ch.length) rows+=`<li><span class="lbl">${m.slot}</span><span>${ch.join('<br>')}</span></li>`;
   });
   const dk=aK-bK, dp=aP-bP;
-  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${w?'Workout saved':'Workout removed'}</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${title||(w?'Workout saved':'Workout removed')}</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
   document.getElementById('sx').onclick=closeSheet;
-  sBody.innerHTML=`<div class="exsum">${w?`<b class="num">${w.a} active kcal</b>${w.kind==='total'?` (from ${w.raw} total, minus about ${w.raw-w.a} you burn anyway)`:''}.<br>`:''}
+  sBody.innerHTML=`<div class="exsum">${w&&!title?`<b class="num">${w.a} active kcal</b>${w.kind==='total'?` (from ${w.raw} total, minus about ${w.raw-w.a} you burn anyway)`:''}.<br>`:''}
     Today's target: <b class="num">${aK.toLocaleString()} kcal</b>${dk?` (${dk>0?'+':''}${dk})`:''} · <b class="num">${aP}g protein</b>${dp?` (${dp>0?'+':''}${dp}g)`:''}.</div>
     ${rows?`<p class="small" style="margin:12px 0 6px"><b>What changes in the meals still to eat:</b></p><ul class="chg">${rows}</ul>`:`<p class="small" style="margin-top:12px">${simpleTip(i,dk,after)}</p>`}
     <button class="btn primary" type="button" id="gotit" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Got it</button>`;
@@ -1666,7 +1684,8 @@ function renderDay(){
     else{clearMeal(cur,+w);save();renderDay();toast(`${SLOTS[+w]} reset to the plan`)}
   });
   const ax=document.getElementById('addExtra'); if(ax) ax.onclick=()=>openBuilder({mode:'extra'});
-  const ae=document.getElementById('addEx'); if(ae) ae.onclick=openExercise;
+  const ae=document.getElementById('addEx'); if(ae) ae.onclick=()=>openExercise('gym');
+  const ar=document.getElementById('addRun'); if(ar) ar.onclick=()=>openExercise('run');
   const aw=document.getElementById('addWatch'); if(aw) aw.onclick=openWatch;
   const wd=document.getElementById('watchdel'); if(wd) wd.onclick=()=>{delete S.watch[cur];save();renderDay()};
   out.querySelectorAll('[data-exdel]').forEach(b=>b.onclick=()=>{S.ex[cur].splice(+b.dataset.exdel,1);save();renderDay()});
