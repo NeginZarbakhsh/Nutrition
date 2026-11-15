@@ -531,6 +531,7 @@ code.url{font-size:12px;word-break:break-all;background:var(--sunk);padding:1px 
         <div class="rule"><span class="n">1</span><div><h3>Split the pot, not the portion</h3><p>Cook for exactly 2 (or 4) portions with the amounts shown, then pour into 2 (or 4) equal boxes.</p></div></div>
         <div class="rule"><span class="n">2</span><div><h3>One mug of raw rice is 4 portions</h3><p>A 250ml mug holds about 200g raw rice. For 2 portions use half a mug. Dry penne: one mug is 2 portions.</p></div></div>
         <div class="rule"><span class="n">3</span><div><h3>Oil with a teaspoon only</h3><p>Never pour from the bottle. 1 teaspoon = 45 kcal. Four glugs into a pot is about 400 kcal you will not notice.</p></div></div>
+        <div class="rule"><span class="n">0</span><div><h3>The app learns your amounts</h3><p>Change a dish once with "Different amount" (e.g. 3 spoons of oats, milk, 1 tbsp chia) and it is saved as your usual. Next time "Ate it" is enough. To go back, open the dish and tap "Use the plan's amounts again".</p></div></div>
         <div class="rule"><span class="n">4</span><div><h3>Count what comes in units</h3><p>Eggs, wraps, slices, salmon fillets, dates, walnut halves, pistachios. Counting is as accurate as weighing.</p></div></div>
         <div class="rule"><span class="n">5</span><div><h3>Eating out or at family dinners</h3><p>Half the plate salad or sabzi, 1–2 palms of kabab or chicken, one fist of rice, and the tahdig is a treat, not a portion.</p></div></div>
       </div>
@@ -624,7 +625,7 @@ code.url{font-size:12px;word-break:break-all;background:var(--sunk);padding:1px 
     </div>
   </section>
 
-  <footer><b style="color:var(--ink)">Version 10 · 15 Nov 2026</b> · Day summary with meal tabs and watch calories at the top.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
+  <footer><b style="color:var(--ink)">Version 11 · 15 Nov 2026</b> · Remembers your usual amounts.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Sections"><div class="in">
@@ -675,7 +676,7 @@ const F={
  bread:{n:'Wholemeal bread',k:240,p:10,show:g=>[CNT(g/40,'slice','slices'),''],shop:'bakery',pack:[800,'loaf']},
  flour:{n:'Plain flour',k:350,p:10,show:g=>[`${Math.max(1,Math.round(g/15))} heaped tbsp`,''],shop:'pantry',pack:[1000,'bag (1kg)']},
  noodle:{n:'Reshteh noodles (or linguine)',k:350,p:12,show:g=>[`a small bundle, ${FR(g/30)} fist`,'dry'],shop:'pantry',pack:[500,'pack']},
- oats:{n:'Oats',k:375,p:13,show:g=>[`${FR(g/90)} mug`,`about ${Math.round(g/10)} heaped tbsp`],shop:'pantry',pack:[1000,'bag (1kg)']},
+ oats:{n:'Oats',k:375,p:13,show:g=>[CNT(g/10,'heaped spoon','heaped spoons'),`about ${FR(g/90)} mug`],shop:'pantry',pack:[1000,'bag (1kg)']},
  milk:{n:'Semi-skimmed milk',k:47,p:3.5,show:g=>[`${FR(g/250)} mug`,`${g} ml`],shop:'dairy',pack:[1000,'carton (1L)']},
  almond:{n:'Almond milk, unsweetened',k:13,p:0.4,show:g=>[`${FR(g/250)} mug`,`${g} ml`],shop:'dairy',pack:[1000,'carton (1L)']},
  chia:{n:'Chia seeds',k:486,p:17,show:g=>[CNT(g/12,'tbsp','tbsp'),''],shop:'pantry',pack:[200,'bag']},
@@ -873,7 +874,7 @@ const SHOPCAT=[['meat','Meat & fish'],['dairy','Dairy & eggs'],['frozen','Frozen
 const LS='sofreh-v1';
 let S={};
 try{S=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){S={}}
-['done','swaps','have','shop','custom','extras','actual','skip','ex','gymskip','watch'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[]; S.batches=S.batches||[];
+['done','swaps','have','shop','custom','extras','actual','skip','ex','gymskip','watch','usual'].forEach(k=>S[k]=S[k]||{}); S.log=S.log||[]; S.batches=S.batches||[];
 S.weight=S.weight||54.5; S.height=S.height||155; S.age=S.age||30; S.sex=S.sex||'f'; S.act=S.act||1.5; S.goal=(S.goal===undefined)?0.15:S.goal;
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -941,7 +942,8 @@ function mealAt(i,si){
   if(id==='free') return {slot,si,id,free:true,changed,t:{k:0,p:0}};
   if(id==='custom'){const c=S.custom[i+'-'+si]||{n:'My meal',items:[]};return {slot,si,id,mine:true,changed,name:c.n,items:c.items,t:calc(c.items),kind:c.batch?'khoresh':'mine',box:!!c.batch,how:c.batch?'From your batch. Reheat one box. Nothing to measure.':''}}
   const m=M[id]; if(!m) return {slot,si,id:'free',free:true,changed,t:{k:0,p:0}};
-  return {slot,si,id,changed,name:m[0],fa:m[1],items:m[2],how:m[3],extra:m[4],tip:m[5],t:calc(m[2]),kind:kindOf(id),min:META[id]?META[id][1]:null};
+  const u=S.usual[id], its=u||m[2];
+  return {slot,si,id,changed,usual:!!u,name:m[0],fa:m[1],items:its,how:m[3],extra:m[4],tip:m[5],t:calc(its),kind:kindOf(id),min:META[id]?META[id][1]:null};
 }
 const dayMeals=i=>SLOTS.map((_,si)=>mealAt(i,si));
 const extrasOf=i=>S.extras[i]||[];
@@ -959,7 +961,7 @@ function dayPlan(i){
     if(S.skip[key]){r.skipped=true;r.items=[];r.t={k:0,p:0};return r}
     if(m.free){if(!done)freeOpen=true;return r}
     if(done){r.items=S.actual[key]||m.items;r.t=calc(r.items);fk+=r.t.k;fp+=r.t.p;return r}
-    if((m.si===1&&role!=='single')||m.box){fk+=m.t.k;fp+=m.t.p;r.fixed=true;return r}
+    if((m.si===1&&role!=='single')||m.box||m.usual){fk+=m.t.k;fp+=m.t.p;r.fixed=true;return r}
     adj.push(r);return r;
   });
   out.mode=freeOpen?'free':adj.length?'tuned':'done';
@@ -1304,6 +1306,7 @@ function mealView(m){
   if(m.si===1&&role==='cook') tag='<span class="tag cook">Cook ×2 today</span>';
   if(m.si===1&&role==='left') tag='<span class="tag left">Leftovers</span>';
   if(m.mine) tag+=m.box?'<span class="tag left">From your batch</span>':'<span class="tag mine">Your meal</span>';
+  if(m.usual) tag+='<span class="tag mine">Your usual amounts</span>';
   if(m.adjusted) tag+='<span class="tag adj">Resized for today</span>';
   h+=`<div class="meal"><div class="mhead">${icon(m.kind)}<div class="t">
     <div class="slot"><span class="lbl">${m.slot}</span>${tag}</div>
@@ -1318,7 +1321,7 @@ function mealView(m){
     h+='</ul>';
   }
   h+=acts+`<div class="links">${m.how?`<details><summary>How to make it</summary><div class="recipe">${m.how}${m.extra?`<div class="also">Also uses: ${m.extra}, plus spices.</div>`:''}</div></details>`:''}
-    ${m.tip?`<div class="note">${m.tip}</div>`:''}${change}${m.mine&&!m.box?`<button class="lnk" data-edit="${m.si}" type="button">Edit recipe</button>`:''}</div></div>`;
+    ${m.tip?`<div class="note">${m.tip}</div>`:''}${change}${m.mine&&!m.box?`<button class="lnk" data-edit="${m.si}" type="button">Edit recipe</button>`:''}${m.usual?`<button class="lnk" data-forget="${m.id}" type="button">Use the plan's amounts again</button>`:''}</div></div>`;
   return h;
 }
 function renderDay(){
@@ -1343,6 +1346,7 @@ function renderDay(){
   out.querySelectorAll('[data-have]').forEach(c=>c.onchange=()=>{S.have[c.dataset.have]=c.checked;save()});
   out.querySelectorAll('[data-unswap]').forEach(b=>b.onclick=()=>{const k=cur+'-'+b.dataset.unswap;delete S.swaps[k];delete S.actual[k];save();renderDay()});
   out.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>openPicker(+b.dataset.pick));
+  out.querySelectorAll('[data-forget]').forEach(b=>b.onclick=()=>{delete S.usual[b.dataset.forget];save();renderDay();toast('Back to the plan’s amounts')});
   out.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const si=+b.dataset.edit,c=S.custom[cur+'-'+si];openBuilder({mode:'custom',si,init:c&&c.items,name:c&&c.n})});
   out.querySelectorAll('[data-delx]').forEach(b=>b.onclick=()=>{S.extras[cur].splice(+b.dataset.delx,1);save();renderDay()});
   out.querySelectorAll('[data-top]').forEach(b=>b.onclick=()=>{const [k,g]=b.dataset.top.split(':');(S.extras[cur]=S.extras[cur]||[]).push({n:b.dataset.label,items:[[k,+g]]});save();renderDay();toast(`Added: ${esc(b.dataset.label)}`)});
@@ -1420,7 +1424,7 @@ const bShow=(k,g)=>{const f=F[k];if(f.pack&&['meat','tins'].includes(f.shop)||k=
 
 /* builder: every food steps by a hand-sized amount */
 const STEP={chicken:50,beef:50,mince:50,lamb:50,salmon:60,egg:50,yog:30,cottage:30,feta:15,cheddar:12.5,whey:15,chickpea:60,beans:60,lentils:25,split:15,
- rice:12.5,pasta:13.75,pitta:30.5,bread:40,potato:75,noodle:15,oats:22.5,flour:15,barley:15,fruit:55,date:8,plum:8,pineapple:50,avocado:35,
+ rice:12.5,pasta:13.75,pitta:30.5,bread:40,potato:75,noodle:15,oats:10,flour:15,barley:15,fruit:55,date:8,plum:8,pineapple:50,avocado:35,
  oil:5,butter:5,sesame:5,walnut:2.5,pist:6,chia:12,molasses:10,milk:62.5,almond:62.5,pea:50,edamame:50,broad:50,veg:50};
 const BU=[
  ['Protein',['chicken','beef','mince','lamb','salmon','egg','yog','cottage','feta','cheddar','whey','chickpea','lentils']],
@@ -1429,6 +1433,7 @@ const BU=[
  ['Fat & nuts',['oil','butter','walnut','pist','avocado']],
  ['Drinks',['milk','almond']]
 ];
+const usualId=si=>{if(si===null)return null;const id=chosenId(cur,si);return M[id]?id:null};
 function openBuilder({mode,si=null,init=null,name=''}){
   const g={}; (init||[]).forEach(([k,v])=>g[k]=(g[k]||0)+v);
   const mine=Object.keys(g).filter(k=>!F[k].free);
@@ -1436,7 +1441,7 @@ function openBuilder({mode,si=null,init=null,name=''}){
   const titles={log:`What did you eat for ${SLOTS[si]&&SLOTS[si].toLowerCase()}?`,custom:`Build my own ${SLOTS[si]&&SLOTS[si].toLowerCase()}`,extra:'Add something I ate',batch:'What went in the pot?'};
   const isB=mode==='batch', ST=isB?BSTEP:STEP, base={...g}; let boxes=4;
   sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${titles[mode]}</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>
-    ${mode==='log'?`<p class="small muted" style="margin:0">Set the amounts you really ate. Your meals for the rest of the day resize to keep you on ${PT()}g protein and ${KTd(cur).toLocaleString()} kcal.</p>`:
+    ${mode==='log'?`<p class="small muted" style="margin:0">Set the amounts you really ate. ${usualId(si)?`They become <b>your usual amounts</b> for ${esc(M[usualId(si)][0])}, used every time until you change them.`:''} The rest of the day adjusts to keep you on ${PT()}g protein.</p>`:
     `<input class="field" id="bname" placeholder="${mode==='extra'?'e.g. Latte and a biscuit':isB?'e.g. Chicken pasta, Sunday':'e.g. Pasta with chicken'}" value="${esc(name||'')}" aria-label="Name">
      ${isB?`<p class="small muted" style="margin:0">Add the whole pot: packs, tins, spoons of oil. Then say how many equal boxes you split it into.</p>`:''}`}`;
   document.getElementById('sx').onclick=closeSheet;
@@ -1468,7 +1473,9 @@ function openBuilder({mode,si=null,init=null,name=''}){
   sBody.querySelectorAll('.brow output').forEach(o=>o.style.minWidth='88px');
   document.getElementById('bsave').onclick=()=>{
     const its=items(); const key=cur+'-'+si;
-    if(mode==='log'){S.actual[key]=[...its,...keepFree];S.done[key]=true;delete S.skip[key];save();closeSheet();afterAction(si,'ate');return}
+    if(mode==='log'){S.actual[key]=[...its,...keepFree];S.done[key]=true;delete S.skip[key];
+      const uid=usualId(si); if(uid&&its.length) S.usual[uid]=[...its,...keepFree];
+      save();closeSheet();afterAction(si,'ate');if(uid&&its.length)setTimeout(()=>toast(`Saved as your usual <b>${esc(M[uid][0])}</b>`),2700);return}
     if(!its.length){closeSheet();return}
     const n=(document.getElementById('bname').value||'').trim()||(mode==='extra'?'Extra':'My '+SLOTS[si].toLowerCase());
     if(isB){const bt={id:Date.now(),n:(document.getElementById('bname').value||'').trim()||'My batch',items:its,boxes,made:iso(new Date())};S.batches.push(bt);save();useBatch(bt.id,si,1);return}
@@ -1600,7 +1607,7 @@ document.getElementById('addLog').onclick=()=>{
   S.log.push({d:iso(new Date()),w:w||null,waist:wa||null}); if(w) S.weight=w;
   save();document.getElementById('logW').value='';document.getElementById('logWaist').value='';renderTarget();renderMe();
 };
-document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};S.skip={};S.ex={};S.gymskip={};S.watch={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
+document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};S.custom={};S.extras={};S.actual={};S.skip={};S.ex={};S.gymskip={};S.watch={};S.usual={};save();document.getElementById('resetMsg').textContent=' Cleared.'};
 
 /* ---------- tabs ---------- */
 const TABS=['today','week','lidl','hands','me'];
