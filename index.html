@@ -1,3 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sofreh">
 <title>Sofreh Meal Plan</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="A 28-day Persian meal plan for gentle fat loss and muscle definition. Hand measures instead of a scale, a Lidl list for every day, and protein tracking.">
@@ -269,10 +276,59 @@ td.r,th.r{text-align:right}
 .form input{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:16px;color:var(--ink)}
 p.lead{margin:8px 0 0;color:var(--muted);font-size:14px;max-width:62ch}
 footer{margin-top:36px;font-size:12px;color:var(--muted)}
+
+/* rest of today */
+.rest{margin-top:12px;background:var(--surface);border:2px solid var(--firooze);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
+.rhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.rbig{font-family:var(--font-display);font-size:19px;margin-top:2px}
+.rbig b{font-weight:700} .rbig b.go{color:var(--firooze)}
+.rk{text-align:right;font-family:var(--font-display);font-weight:700;font-size:19px;color:var(--saffron);line-height:1.1}
+.rk small{display:block;font-family:var(--font-body);font-size:11px;color:var(--muted);font-weight:600}
+.rbar{height:8px;border-radius:4px;background:var(--sunk);margin-top:10px;display:flex;overflow:hidden}
+.rbar i{display:block;height:100%;background:var(--firooze)}
+.rbar i.pl{background:var(--firooze);opacity:.28}
+.rlist{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.rjump{width:100%;text-align:left;border:0;background:var(--sunk);border-radius:14px;padding:10px 12px;display:grid;gap:2px}
+.rs{display:flex;justify-content:space-between;align-items:center}
+.rp{font-weight:700;color:var(--firooze);font-size:14px}
+.rn{font-weight:600;font-size:15px}
+.ri{font-size:13.5px;color:var(--muted);line-height:1.45}
+.ri b{color:var(--ink);font-weight:600}
+.rnote{margin:10px 0 0;font-size:14px;color:var(--muted)}
+.rnote.good{color:var(--sabz);font-weight:600}
+.topup{margin-top:12px;background:var(--saffron-soft);border-radius:14px;padding:12px}
+.topup p{margin:0 0 8px;font-size:14px}
+.topbtns{display:grid;gap:6px}
+.topbtn{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;font-weight:600;font-size:14px;min-height:48px}
+.topbtn small{color:var(--firooze);font-weight:600;font-size:12px;white-space:nowrap}
+.ate{padding:0 14px 4px;font-size:13.5px;color:var(--muted);line-height:1.5}
+.ate b{color:var(--ink);font-weight:600}
+.meal.done{opacity:1;background:var(--sunk)}
+.meal.done .mhead h3{text-decoration:none}
+.meal.done .mhead{padding-bottom:6px}
+/* phone tuning */
+@media (max-width:480px){
+ .hero{padding:16px 14px 14px;border-radius:22px}
+ .hero h2{font-size:23px}
+ .ring{width:112px;height:112px} .ring .c b{font-size:25px}
+ .rings{gap:12px;margin-top:10px}
+ .stat .v{font-size:17px}
+ .hero .note{font-size:13px}
+ .mhead{grid-template-columns:44px 1fr 44px;gap:10px;padding:12px}
+ .ico{width:44px;height:44px;border-radius:14px} .ico svg{width:26px;height:26px}
+ .mhead h3{font-size:16.5px}
+ .mfoot .btn{flex:1 1 auto;justify-content:center;min-height:42px}
+ .step button{width:40px;height:40px}
+ .brow .nm{font-size:14px}
+}
+.form select,.form input,.field,.search{font-size:16px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
 
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
 <div class="wrap">
   <header>
     <div class="brand">
@@ -844,6 +900,57 @@ function ring(ep,pp,target){
   </svg><div class="c"><b class="num">${Math.round(ep)}g</b><span>protein eaten<br>of ${target}g</span></div></div>`;
 }
 
+/* ---------- rest of today ---------- */
+const SN={chicken:'chicken',beef:'beef',mince:'mince',lamb:'lamb',salmon:'salmon',egg:'',yog:'yogurt',cottage:'cottage cheese',feta:'feta',cheddar:'cheese',rice:'rice',
+ lentils:'lentils',split:'split peas',chickpea:'chickpeas',beans:'beans',broad:'broad beans',barley:'barley',pitta:'',bread:'bread',flour:'flour',noodle:'noodles',oats:'oats',
+ milk:'milk',almond:'almond milk',chia:'chia',whey:'whey',oil:'oil',sesame:'sesame oil',walnut:'',pist:'pistachios',plum:'',molasses:'pomegranate molasses',potato:'',
+ pea:'peas',edamame:'edamame',pineapple:'pineapple',avocado:'',fruit:'fruit',pasta:'pasta',date:'',butter:'butter'};
+const shortList=(m,i)=>{if(i>=0&&m.si===1&&lunchRole(i)==='left')return 'Your box from yesterday';
+  return m.items.filter(([k])=>!F[k].free).map(([k,g])=>`<b>${F[k].show(g)[0]}</b>${SN[k]?' '+SN[k]:''}`).join(' · ')};
+function topUps(gap){
+  const o=[], up=(k,g,label)=>{const t=calc([[k,g]]);o.push({k,g,label,p:t.p,kc:t.k})};
+  const ny=Math.ceil(gap/3); if(ny<=10) up('yog',ny*30,`${ny} heaped tbsp Greek yogurt or skyr`);
+  const ne=Math.ceil(gap/6.3); if(ne<=4) up('egg',ne*50,`${ne} boiled egg${ne>1?'s':''}`);
+  const nw=Math.ceil(gap/11.7)/2; if(nw<=2) up('whey',nw*30,`${nw===.5?'½':nw} scoop whey in water`);
+  const nc=Math.ceil(gap/11.5)/2; if(nc<=2.5) up('chicken',nc*100,`${FR(nc)} palm${nc>1?'s':''} of chicken`);
+  const nt=Math.ceil(gap/3.45); if(nt<=10&&o.length<4) up('cottage',nt*30,`${nt} heaped tbsp cottage cheese`);
+  return o.slice(0,4);
+}
+function restCard(meals,T){
+  const target=PT(), left=meals.filter(m=>!m.free&&!m.done), eaten=Math.round(T.ep), toGo=Math.max(0,target-eaten);
+  const gap=Math.round(target-T.p);
+  let h=`<div class="rest"><div class="rhead"><div><span class="lbl">Rest of today</span>
+    <div class="rbig num"><b>${eaten}g</b> eaten · <b class="go">${toGo}g</b> to go</div></div>
+    <div class="rk num">${Math.max(0,Math.round(KT()-T.ek))}<small>kcal left</small></div></div>
+    <div class="rbar"><i style="width:${Math.min(100,eaten/target*100)}%"></i><i class="pl" style="width:${Math.min(100,Math.max(0,(T.p-T.ep))/target*100)}%"></i></div>`;
+  if(meals.mode==='free'){h+=`<p class="rnote">Free meal tonight, so portions follow the plan. No counting.</p>`}
+  if(left.length){
+    h+='<ol class="rlist">';
+    left.forEach(m=>{h+=`<li><button type="button" class="rjump" data-jump="${m.si}"><span class="rs"><span class="lbl">${m.slot}</span><span class="rp num">+${Math.round(m.t.p)}g</span></span>
+      <span class="rn">${esc(m.name)}${m.adjusted?' <span class="tag adj">resized</span>':''}</span><span class="ri">${shortList(m,cur)}</span></button></li>`});
+    h+='</ol>';
+  }
+  if(gap>2){
+    h+=`<div class="topup"><p><b>${left.length?'Even with the meals above you are':'You are'} ${gap}g short.</b> Add one of these. Tap it once you have eaten it.</p><div class="topbtns">`;
+    topUps(gap).forEach(t=>{h+=`<button type="button" class="topbtn" data-top="${t.k}:${t.g}" data-label="${esc(t.label)}"><span>${t.label}</span><small class="num">+${Math.round(t.p)}g protein · ${Math.round(t.kc)} kcal</small></button>`});
+    h+='</div></div>';
+  }else if(!left.length&&meals.mode!=='free'){h+=`<p class="rnote good">You hit your protein today. Well done.</p>`}
+  else if(left.length) h+=`<p class="rnote">Eat these and you land on <b>${target}g protein</b> and about <b>${Math.round(T.k).toLocaleString()} kcal</b>.</p>`;
+  return h+'</div>';
+}
+function bindRest(root){
+  root.querySelectorAll('[data-top]').forEach(b=>b.onclick=()=>{const [k,g]=b.dataset.top.split(':');(S.extras[cur]=S.extras[cur]||[]).push({n:b.dataset.label,items:[[k,+g]]});save();closeSheet();renderDay()});
+  root.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>{closeSheet();const el=document.getElementById('meal-'+b.dataset.jump);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})});
+}
+function openRestSheet(si){
+  const meals=dayPlan(cur), T=dayTotals(cur), m=meals[si];
+  sHead.innerHTML=`<div class="row"><h2 id="sheetTitle">${SLOTS[si]} saved: ${Math.round(m.t.p)}g protein</h2><button class="x" type="button" id="sx" aria-label="Close">${SVGI.x}</button></div>`;
+  document.getElementById('sx').onclick=closeSheet;
+  sBody.innerHTML=restCard(meals,T)+`<button class="btn primary" type="button" id="gotit" style="width:100%;justify-content:center;padding:13px;margin-top:12px">Got it</button>`;
+  bindRest(sBody); document.getElementById('gotit').onclick=closeSheet;
+  if(!sheet.classList.contains('open')) openSheet();
+}
+
 /* ---------- TODAY ---------- */
 function renderDay(){
   buildStrip();
@@ -866,7 +973,7 @@ function renderDay(){
       </div></div>
     <p class="note">${tr.note}</p>
   </div>`;
-  if(meals.mode==='tuned'&&meals.some(m=>m.done||m.adjusted)) h+=`<div class="callout" style="background:var(--abi-soft)">${SVGI.scale}<div><span class="lbl" style="color:var(--abi)">Portions tuned to you</span><p>Meals you have not eaten yet are resized so today ends at <b>${PT()}g protein</b> and <b>${KT().toLocaleString()} kcal</b>. Ate something different? Use <b>Log what I ate</b> and the rest adjusts.</p></div></div>`;
+  h+=restCard(meals,T);
   if(meals.mode==='free') h+=`<div class="callout" style="background:var(--anar-soft)">${SVGI.scale}<div><span class="lbl" style="color:var(--anar)">Free meal day</span><p>Portions follow the plan today. No tuning, no counting tonight.</p></div></div>`;
   const L=meals[1];
   if(role==='cook') h+=`<div class="callout">${SVGI.pot}<div><span class="lbl">Cook today</span><p><b>${esc(L.name)}</b> for 2: double every amount shown. Eat one, box one for tomorrow.</p></div></div>`;
@@ -878,7 +985,7 @@ function renderDay(){
     const tick=`<button class="tick" type="button" aria-pressed="${on}" data-si="${m.si}" aria-label="Mark ${m.slot.toLowerCase()} as eaten">${SVGI.check}</button>`;
     const change=`<button class="btn soft" data-pick="${m.si}" type="button">${SVGI.swap}Change</button>${m.changed?`<button class="btn" data-unswap="${m.si}" type="button">Back to plan</button>`:''}`;
     if(m.free){
-      h+=`<div class="meal${on?' done':''}"><div class="mhead">${icon('free')}<div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag free">Free meal</span></div><h3>Eat what you want</h3></div>${tick}</div>
+      h+=`<div class="meal${on?' done':''}" id="meal-${m.si}"><div class="mhead">${icon('free')}<div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag free">Free meal</span></div><h3>Eat what you want</h3></div>${tick}</div>
       <div class="freebox">One plate, no counting. Planned, not a slip. Kabab, pizza, your mum's tahdig, anything. If you want to track the protein anyway, use "Add something I ate" below.</div>
       <div class="mfoot">${change}</div></div>`;return;
     }
@@ -888,7 +995,14 @@ function renderDay(){
     if(m.mine) tag+='<span class="tag mine">Your meal</span>';
     if(m.logged) tag+='<span class="tag left">Logged</span>';
     if(m.adjusted&&!on) tag+='<span class="tag adj">Resized for today</span>';
-    h+=`<div class="meal${on?' done':''}"><div class="mhead">${icon(m.kind)}<div class="t">
+    if(on){
+      h+=`<div class="meal done" id="meal-${m.si}"><div class="mhead">${icon(m.kind)}<div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag left">Eaten</span></div>
+        <h3>${esc(m.name)}</h3><div class="mac"><span class="badge p num">${Math.round(m.t.p)}g protein</span><span class="badge k num">${Math.round(m.t.k)} kcal</span></div></div>${tick}</div>
+        <div class="ate">${shortList(m,-1)||'Nothing logged'}</div>
+        <div class="mfoot"><button class="btn" data-log="${m.si}" type="button">Edit what I ate</button></div></div>`;
+      return;
+    }
+    h+=`<div class="meal" id="meal-${m.si}"><div class="mhead">${icon(m.kind)}<div class="t">
       <div class="slot"><span class="lbl">${m.slot}</span>${tag}</div>
       <h3>${esc(m.name)}</h3>${m.fa?`<span class="fa">${m.fa}</span>`:''}
       <div class="mac"><span class="badge p num">${Math.round(m.t.p)}g protein</span><span class="badge k num">${Math.round(m.t.k)} kcal</span>${m.min?`<span class="badge t num">${m.min} min</span>`:''}</div></div>${tick}</div>`;
@@ -901,7 +1015,7 @@ function renderDay(){
       h+='</ul>';
     }
     h+=`<div class="mfoot">${m.how?`<details><summary>How to make it</summary><div class="recipe">${m.how}${m.extra?`<div class="also">Also uses: ${m.extra}, plus spices.</div>`:''}</div></details>`:''}
-      ${m.tip?`<div class="note">${m.tip}</div>`:''}<button class="btn primary" data-log="${m.si}" type="button">${on?'Edit what I ate':'Log what I ate'}</button>${change}${m.mine?`<button class="btn" data-edit="${m.si}" type="button">Edit recipe</button>`:''}</div></div>`;
+      ${m.tip?`<div class="note">${m.tip}</div>`:''}<button class="btn primary" data-log="${m.si}" type="button">Log what I ate</button>${change}${m.mine?`<button class="btn" data-edit="${m.si}" type="button">Edit recipe</button>`:''}</div></div>`;
   });
   h+='</div>';
 
@@ -922,7 +1036,7 @@ function renderDay(){
   out.innerHTML=h;
   out.querySelectorAll('.tick').forEach(b=>b.onclick=()=>{const si=+b.dataset.si,k=cur+'-'+si;
     if(S.done[k]){delete S.done[k];delete S.actual[k]}
-    else{S.done[k]=true;const m=meals[si];if(!m.free&&!S.actual[k])S.actual[k]=m.items}
+    else{S.done[k]=true;const m=meals[si];if(!m.free&&!S.actual[k])S.actual[k]=m.items;save();renderDay();if(!m.free)openRestSheet(si);return}
     save();renderDay()});
   out.querySelectorAll('[data-log]').forEach(b=>b.onclick=()=>{const si=+b.dataset.log;openBuilder({mode:'log',si,init:meals[si].items})});
   out.querySelectorAll('[data-have]').forEach(c=>c.onchange=()=>{S.have[c.dataset.have]=c.checked;save()});
@@ -931,6 +1045,7 @@ function renderDay(){
   out.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const si=+b.dataset.edit,c=S.custom[cur+'-'+si];openBuilder({mode:'custom',si,init:c&&c.items,name:c&&c.n})});
   out.querySelectorAll('[data-delx]').forEach(b=>b.onclick=()=>{S.extras[cur].splice(+b.dataset.delx,1);save();renderDay()});
   document.getElementById('addExtra').onclick=()=>openBuilder({mode:'extra'});
+  bindRest(out);
   const gt=document.getElementById('gotoday'); if(gt) gt.onclick=()=>{cur=todayIdx();renderDay();window.scrollTo({top:0})};
 }
 
@@ -1000,7 +1115,7 @@ function openBuilder({mode,si=null,init=null,name=''}){
   let h='';
   groups.forEach(([t,ks])=>{
     h+=`<div class="bgrp"><span class="lbl">${t}</span>`;
-    ks.forEach(k=>{const st=STEP[k]||10;h+=`<div class="brow" data-k="${k}"><span class="nm">${F[k].n}<small>each + adds ${Math.round(F[k].k*st/100)} kcal, ${(F[k].p*st/100).toFixed(1)}g protein</small></span>
+    ks.forEach(k=>{const st=STEP[k]||10;h+=`<div class="brow" data-k="${k}"><span class="nm">${F[k].n}<small>+ adds ${(F[k].p*st/100).toFixed(1)}g protein · ${Math.round(F[k].k*st/100)} kcal</small></span>
       <span class="step"><button type="button" data-d="-1" aria-label="Less ${F[k].n}">−</button><output></output><button type="button" data-d="1" aria-label="More ${F[k].n}">+</button></span></div>`});
     h+='</div>';
   });
@@ -1017,7 +1132,7 @@ function openBuilder({mode,si=null,init=null,name=''}){
   sBody.querySelectorAll('.brow output').forEach(o=>o.style.minWidth='88px');
   document.getElementById('bsave').onclick=()=>{
     const its=items(); const key=cur+'-'+si;
-    if(mode==='log'){S.actual[key]=[...its,...keepFree];S.done[key]=true;save();closeSheet();renderDay();return}
+    if(mode==='log'){S.actual[key]=[...its,...keepFree];S.done[key]=true;save();renderDay();openRestSheet(si);return}
     if(!its.length){closeSheet();return}
     const n=(document.getElementById('bname').value||'').trim()||(mode==='extra'?'Extra':'My '+SLOTS[si].toLowerCase());
     if(mode==='extra'){(S.extras[cur]=S.extras[cur]||[]).push({n,items:its})}
@@ -1163,3 +1278,6 @@ if('serviceWorker' in navigator && /github\.io$|^localhost$/.test(location.hostn
   try{navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
 }
 </script>
+
+</body>
+</html>
