@@ -369,6 +369,64 @@ output small.gram{display:block;font-size:11px;color:var(--muted);font-weight:50
 .exbtns .btn{justify-content:center;min-height:44px}
 .exrow.watch b{color:var(--firooze)}
 code.url{font-size:12px;word-break:break-all;background:var(--sunk);padding:1px 4px;border-radius:4px;color:var(--ink)}
+
+/* day header tiles */
+.tiles{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:8px;margin-top:14px}
+.tile{background:rgba(255,255,255,.12);border-radius:14px;padding:10px;display:grid;gap:2px;align-content:start;min-width:0}
+.tile .lbl{color:var(--on-hero-muted);font-size:10px}
+.tv{font-family:var(--font-display);font-size:24px;font-weight:700;line-height:1.1}
+.tv small{font-size:12px;color:var(--on-hero-muted);font-weight:500}
+.tile .hbar{margin-top:6px}
+.tile.watch{cursor:text}
+.win{display:flex;gap:4px;margin-top:2px}
+.win input{width:100%;min-width:0;border:0;border-radius:9px;padding:6px 8px;font-size:16px;font-weight:600;background:var(--surface);color:var(--ink)}
+.win button{border:0;border-radius:9px;background:var(--saffron);color:#fff;font-weight:700;font-size:13px;padding:0 9px}
+.wnote{font-size:11px;color:var(--on-hero-muted);margin-top:3px}
+/* sticky meal tabs */
+.daytabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--bg);display:grid;grid-template-columns:1.15fr repeat(4,1fr);gap:4px;padding:10px 0 8px;margin-top:6px}
+.daytabs button{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 2px;font-size:12px;font-weight:600;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;justify-content:center}
+.daytabs button[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.st{font-style:normal;font-size:11px;font-weight:800;line-height:1;height:14px;display:block}
+.st.yes{color:var(--firooze)} .st.no{color:var(--anar)}
+.st.nx{width:8px;height:8px;border-radius:50%;background:var(--saffron);margin:3px 0}
+.daytabs button[aria-selected="true"] .st.yes{color:var(--firooze-soft)}
+/* coach */
+.coach{border-radius:var(--r);padding:12px 14px;margin-top:8px;background:var(--firooze-soft)}
+.coach p{margin:0;font-size:14.5px;line-height:1.5}
+.coach p+p{margin-top:6px}
+.coach.warn{background:var(--saffron-soft)}
+.coach.good{background:var(--sabz-soft)} .coach.good b{color:var(--sabz)}
+.coach.info{background:var(--abi-soft)}
+.coach .topbtns{margin-top:10px}
+/* day rows */
+.dayrows{display:grid;gap:8px;margin-top:12px}
+.dayrow{display:grid;grid-template-columns:40px 1fr 14px;gap:10px;align-items:center;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;box-shadow:var(--shadow)}
+.dr-st{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:16px}
+.dr-st .ico.sm{width:40px;height:40px;border-radius:12px} .dr-st .ico.sm svg{width:22px;height:22px}
+.dayrow.yes .dr-st{background:var(--firooze);color:var(--surface)} .dayrow.yes .dr-st svg{width:20px;height:20px}
+.dayrow.no .dr-st{background:var(--anar-soft);color:var(--anar)}
+.dayrow.yes,.dayrow.no{background:var(--sunk);box-shadow:none}
+.dr-t{min-width:0;display:grid;gap:1px}
+.dr-h{display:flex;justify-content:space-between;gap:8px}
+.dr-h b{color:var(--firooze);font-size:14px}
+.dr-n{font-weight:600;font-size:15px}
+.dr-i{font-size:13px;color:var(--muted);line-height:1.4}
+.dr-i b{color:var(--ink);font-weight:600}
+.dr-go{color:var(--muted);font-size:22px;line-height:1}
+.extras .exh{display:flex;justify-content:space-between;align-items:center}
+.needbox{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.needbox summary{list-style:none;cursor:pointer;padding:13px 14px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:600}
+.needbox summary::-webkit-details-marker{display:none}
+.needbox summary small{color:var(--muted);font-weight:500;font-size:12px}
+.needbox .checklist{border:0;border-top:1px solid var(--line);border-radius:0}
+.status{border-radius:var(--r);padding:14px;display:grid;gap:6px;font-size:14px}
+.status.yes{background:var(--firooze-soft)} .status.no{background:var(--anar-soft)}
+.status span{color:var(--muted)} .status span b{color:var(--ink)}
+.sbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:50;background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:999px;font-size:14px;max-width:calc(100% - 32px);text-align:center;transition:opacity .2s,transform .2s;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast b{color:var(--saffron)}
+@media (max-width:380px){.tiles{grid-template-columns:1fr 1fr}.tile.watch{grid-column:1/-1}.daytabs button{font-size:11px}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.ring{width:112px;height:112px}.ring .c b{font-size:25px}}
 </style>
@@ -566,7 +624,7 @@ code.url{font-size:12px;word-break:break-all;background:var(--sunk);padding:1px 
     </div>
   </section>
 
-  <footer><b style="color:var(--ink)">Version 9 · 15 Nov 2026</b> · Garmin calories, exercise and batch cooking included.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
+  <footer><b style="color:var(--ink)">Version 10 · 15 Nov 2026</b> · Day summary with meal tabs and watch calories at the top.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Sections"><div class="in">
@@ -960,7 +1018,7 @@ function buildStrip(){
     const d=dateOf(i), t=dayTotals(i), pc=Math.min(1,t.ep/PT());
     b.innerHTML=`${DOW[i%7]}<b class="num">${d.getDate()}</b><span class="dot"></span>${pc>0?`<span class="pc" style="transform:scaleX(${pc})"></span>`:''}`;
     b.setAttribute('aria-label',`${DOW[i%7]} ${d.getDate()}, day ${i+1}${TRAIN[i%7].gym?', gym day':''}`);
-    b.onclick=()=>{cur=i;renderDay()};
+    b.onclick=()=>{cur=i;tab='sum';renderDay()};
     strip.appendChild(b);
   });
 }
@@ -1002,9 +1060,9 @@ const shortList=(m,i)=>{if(i>=0&&m.si===1&&lunchRole(i)==='left')return 'Your bo
   return m.items.filter(([k])=>!F[k].free).map(([k,g])=>`<b>${F[k].show(g)[0]}</b>${SN[k]?' '+SN[k]:''}`).join(' · ')};
 function topUps(gap){
   const o=[], up=(k,g,label)=>{const t=calc([[k,g]]);o.push({k,g,label,p:t.p,kc:t.k})};
+  const nw=Math.ceil(gap/11.7)/2; if(nw<=2) up('whey',nw*30,`${nw===.5?'½':nw===1.5?'1½':nw} scoop${nw>1?'s':''} of whey in water or milk`);
   const ny=Math.ceil(gap/3); if(ny<=10) up('yog',ny*30,`${ny} heaped tbsp Greek yogurt or skyr`);
   const ne=Math.ceil(gap/6.3); if(ne<=4) up('egg',ne*50,`${ne} boiled egg${ne>1?'s':''}`);
-  const nw=Math.ceil(gap/11.7)/2; if(nw<=2) up('whey',nw*30,`${nw===.5?'½':nw} scoop whey in water`);
   const nc=Math.ceil(gap/11.5)/2; if(nc<=2.5) up('chicken',nc*100,`${FR(nc)} palm${nc>1?'s':''} of chicken`);
   const nt=Math.ceil(gap/3.45); if(nt<=10&&o.length<4) up('cottage',nt*30,`${nt} heaped tbsp cottage cheese`);
   return o.slice(0,4);
@@ -1055,9 +1113,9 @@ function exCard(i){
   const w=S.watch[i];
   if(w){const t=new Date(w.t), late=t.getHours()>=18;
     h+=`<div class="exrow watch"><span><b>Garmin: ${w.a} active kcal</b><small class="num">Synced ${t.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})} · a normal day for you is about ${watchBase()} · ${adj>=0?'+':''}${adj} kcal${!late&&w.a<watchBase()?' (sync again after 6pm for the full day)':''}</small></span>
-      <button class="lnk" type="button" id="watchdel">Remove</button></div>`;
+      </div>`;
     h+=`<p class="small muted" style="margin:6px 0 0">Your Garmin total already includes every workout and walk, so nothing else needs logging today.</p>`;
-    return h+`<button class="btn soft" type="button" id="addWatch" style="margin-top:10px;width:100%;justify-content:center;min-height:44px">Update Garmin calories</button></div>`;
+    return h+'</div>';
   }
   if(tr.gym){
     h+=`<div class="exrow${S.gymskip[i]?' off':''}"><span><b>Planned: gym · ${tr.name}</b><small>${S.gymskip[i]?'Not done today: 150 kcal less to eat':'Already counted in your daily target'}</small></span>
@@ -1067,7 +1125,7 @@ function exCard(i){
     h+=`<div class="exrow"><span><b>${exInfo(x.type)[1]} · ${x.min} min</b><small class="num">${x.kcal>0?'Your watch: ':'About '}${b} kcal burned · you eat back ${Math.round(b*0.5/10)*10}</small></span>
       <button class="lnk" type="button" data-exdel="${j}">Remove</button></div>`});
   if(!tr.gym&&!list.length) h+=`<p class="small muted" style="margin:6px 0 0">Rest day. Did you train or walk a lot after all? Log it and you can eat a bit more.</p>`;
-  h+=`<div class="exbtns"><button class="btn soft" type="button" id="addEx">+ Log exercise</button><button class="btn soft" type="button" id="addWatch">Garmin calories</button></div></div>`;
+  h+=`<button class="btn soft" type="button" id="addEx" style="margin-top:10px;width:100%;justify-content:center;min-height:44px">+ Log a workout</button><p class="small muted" style="margin:8px 0 0">Wearing your watch? Just type its active calories at the top instead.</p></div>`;
   return h;
 }
 function openExercise(){
@@ -1129,99 +1187,157 @@ function readWatchParam(){
   document.getElementById('gotit').onclick=closeSheet; openSheet();
 }
 
-/* ---------- TODAY ---------- */
+/* ---------- TODAY: summary + one tab per meal ---------- */
+let tab='sum';
+const TABN=['Breakfast','Lunch','Snack','Dinner'];
+function toast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.className='toast';t.setAttribute('role','status');document.body.appendChild(t)}
+  t.innerHTML=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2600);
+}
+function afterAction(si,what){
+  const m=dayPlan(cur)[si];
+  tab='sum';renderDay();window.scrollTo({top:0,behavior:'smooth'});
+  toast(what==='skip'?`${SLOTS[si]} skipped. The rest of your day is adjusted.`:m.free?`${SLOTS[si]} done.`:`${SLOTS[si]} saved: <b>${Math.round(m.t.p)}g protein</b>`);
+}
+function coach(meals,T){
+  const target=PT(), left=meals.filter(m=>!m.free&&!m.done&&!m.skipped), gap=Math.round(target-T.p), sk=meals.filter(m=>m.skipped);
+  const out=[];
+  if(meals.mode==='free'&&left.length===0&&meals.some(m=>m.free&&!m.done)) out.push(`Free meal tonight. Enjoy it, no counting.`);
+  if(gap>2){
+    const t=topUps(gap), best=t[0];
+    out.push(`<b>${left.length?`Even after your meals you will be ${gap}g short`:`You are ${gap}g short`}.</b> Easiest fix: <b>${best.label}</b> (+${Math.round(best.p)}g protein, ${Math.round(best.kc)} kcal).`);
+    return {lines:out,tops:t,tone:'warn'};
+  }
+  if(!left.length&&!meals.some(m=>m.free&&!m.done)){out.push(`<b>Done for today: ${Math.round(T.ep)}g protein.</b> Nothing else needed.`);return {lines:out,tone:'good'}}
+  if(sk.length&&left.length) out.push(`${sk.map(m=>m.slot).join(' and ')} skipped, no problem. ${left.map(m=>m.slot).join(' and ')} ${left.length>1?'are':'is'} a bit bigger to make up the protein.`);
+  if(left.length){const n=left[0];out.push(`Next: <b>${n.slot.toLowerCase()}</b>, ${esc(n.name)} (+${Math.round(n.t.p)}g). Eat what is planned below and you land on <b>${target}g protein</b>.`)}
+  const spare=Math.round((KTd(cur)-T.k)/10)*10;
+  if(spare>=150&&meals.mode!=='free') out.push(`You have about ${spare} kcal spare${exAdj(cur)>0?' from your activity':''}. Hungry? Add a fist of rice, a wrap or a piece of fruit.`);
+  return {lines:out,tone:sk.length?'info':'ok'};
+}
+function dayHeader(meals,T){
+  const tr=TRAIN[cur%7], d=dateOf(cur), isToday=cur===todayIdx(), tgt=KTd(cur), w=S.watch[cur], adj=exAdj(cur);
+  const pct=(v,t)=>Math.min(100,v/t*100);
+  return `<div class="hero">
+    <div class="top"><div><h2>${isToday?'Today':d.toLocaleDateString(undefined,{weekday:'long'})}</h2>
+      <div class="date">${d.toLocaleDateString(undefined,{weekday:isToday?'long':undefined,day:'numeric',month:'long'})} · ${tr.steps} steps</div></div>
+      <span class="pill">${tr.gym?(S.gymskip[cur]?'Gym skipped':'Gym · '+tr.name):tr.name}</span></div>
+    <div class="tiles">
+      <div class="tile"><span class="lbl">Protein</span><div class="tv num">${Math.round(T.ep)}<small>/${PT()}g</small></div>
+        <div class="hbar"><i style="width:${pct(T.p,PT())}%;background:rgba(255,255,255,.3)"></i><i style="width:${pct(T.ep,PT())}%;background:var(--saffron)"></i></div></div>
+      <div class="tile"><span class="lbl">Calories</span><div class="tv num">${Math.round(T.ek)}<small>/${tgt.toLocaleString()}</small></div>
+        <div class="hbar"><i style="width:${pct(T.k,tgt)}%;background:rgba(255,255,255,.3)"></i><i style="width:${pct(T.ek,tgt)}%;background:var(--saffron)"></i></div></div>
+      <label class="tile watch" for="watchIn"><span class="lbl">Watch active</span>
+        <span class="win"><input id="watchIn" type="number" inputmode="numeric" placeholder="kcal" value="${w?w.a:''}" aria-label="Active calories from your watch"><button type="button" id="watchSave" aria-label="Save watch calories">OK</button></span>
+        <small class="wnote num">${w?(adj>0?`+${adj} kcal to eat`:adj<0?`${adj} kcal today`:'normal day'):`normal ≈ ${watchBase()}`}</small></label>
+    </div>
+  </div>`;
+}
+function tabsBar(meals){
+  const nextSi=(meals.find(m=>!m.done&&!m.skipped)||{}).si;
+  const st=m=>m.skipped?'<i class="st no">✕</i>':m.done?'<i class="st yes">✓</i>':m.si===nextSi&&cur===todayIdx()?'<i class="st nx"></i>':'';
+  return `<div class="daytabs" role="tablist" aria-label="Meals">
+    <button type="button" role="tab" data-tab="sum" aria-selected="${tab==='sum'}">Summary</button>
+    ${meals.map(m=>`<button type="button" role="tab" data-tab="${m.si}" aria-selected="${tab===String(m.si)}">${st(m)}${TABN[m.si]}</button>`).join('')}
+  </div>`;
+}
+function summaryView(meals,T){
+  const role=lunchRole(cur), c=coach(meals,T);
+  let h=`<div class="coach ${c.tone}">${c.lines.map(l=>`<p>${l}</p>`).join('')}`;
+  if(c.tops){h+=`<div class="topbtns">${c.tops.map(t=>`<button type="button" class="topbtn" data-top="${t.k}:${t.g}" data-label="${esc(t.label)}"><span>${t.label}</span><small class="num">+${Math.round(t.p)}g · ${Math.round(t.kc)} kcal · I had it</small></button>`).join('')}</div>`}
+  h+='</div>';
+  h+='<div class="dayrows">';
+  meals.forEach(m=>{
+    let state, body;
+    if(m.skipped){state='no';body='<span class="muted">Skipped</span>'}
+    else if(m.done){state='yes';body=m.free?'Free meal':`${shortList(m,-1)}`}
+    else if(m.free){state='';body='Free meal: eat what you want'}
+    else{state='';body=shortList(m,cur)}
+    const ptxt=m.free||m.skipped?'':(m.done?`${Math.round(m.t.p)}g`:`+${Math.round(m.t.p)}g`);
+    h+=`<button type="button" class="dayrow ${state}" data-open="${m.si}">
+      <span class="dr-st">${m.skipped?'✕':m.done?SVGI.check:icon(m.free?'free':m.kind,'ico sm')}</span>
+      <span class="dr-t"><span class="dr-h"><span class="lbl">${m.slot}${m.adjusted&&!m.done?' · resized':''}</span><b class="num">${ptxt}</b></span>
+        <span class="dr-n">${m.free?'Free meal':esc(m.name)}</span><span class="dr-i">${body}</span></span>
+      <span class="dr-go" aria-hidden="true">›</span></button>`;
+  });
+  h+='</div>';
+  // extras
+  const ex=extrasOf(cur);
+  h+=`<div class="extras"><div class="exh"><h3>Extras</h3><button class="btn soft" id="addExtra" type="button">+ Add</button></div>`;
+  if(ex.length){h+='<ul>';ex.forEach((x,j)=>{const t=calc(x.items);h+=`<li><span>${esc(x.n)} <span class="muted num">· ${Math.round(t.p)}g · ${Math.round(t.k)} kcal</span></span><button class="lnk" data-delx="${j}" type="button">Remove</button></li>`});h+='</ul>'}
+  else h+=`<p class="small muted" style="margin:4px 0 0">Coffee with milk, nuts, a biscuit at work: add it here.</p>`;
+  h+='</div>';
+  h+=exCard(cur);
+  const L=meals[1];
+  if(role==='cook') h+=L.skipped?`<div class="callout">${SVGI.pot}<div><span class="lbl">Still cook tonight</span><p>Tomorrow's lunch is <b>${esc(L.name)}</b>. Cook it for 2: box one for tomorrow, freeze the other.</p></div></div>`
+    :`<div class="callout">${SVGI.pot}<div><span class="lbl">Cook today</span><p><b>${esc(L.name)}</b> for 2: double every amount. Eat one, box one for tomorrow.</p></div></div>`;
+  if(cur%7===6){const nx=mealAt((cur+1)%28,1);h+=`<div class="callout">${SVGI.pot}<div><span class="lbl">Sunday prep</span><p>Boil 6 eggs. Wash herbs. Chop cucumber, tomato, onion. Jar of garlic yogurt. Bake 4 palms of chicken. Cook tomorrow's lunch${nx.free?'':`: <b>${esc(nx.name)}</b>`}.</p></div></div>`}
+  const need=needList(cur), extras=extrasFor(cur), keys=Object.keys(need).filter(k=>!F[k].free);
+  h+=`<details class="needbox"><summary><span>What you need today</span><small>tick what you have, buy the rest</small></summary><ul class="checklist">`;
+  keys.forEach(k=>{const x=fmtItem(k,need[k]);const key=cur+'-'+k;
+    h+=`<li><label><input type="checkbox" data-have="${key}" ${S.have[key]?'checked':''}><span>${x.name}</span><span class="q">${x.how}</span></label></li>`});
+  if(extras.length){const key=cur+'-extras';h+=`<li><label><input type="checkbox" data-have="${key}" ${S.have[key]?'checked':''}><span>Fresh veg, herbs & flavour<span class="d">${extras.join(' · ')}</span></span><span class="q"></span></label></li>`}
+  if(!keys.length&&!extras.length) h+='<li class="plain muted">Nothing to buy for today.</li>';
+  h+='</ul></details>';
+  return h;
+}
+function mealView(m){
+  const role=lunchRole(cur);
+  const change=`<button class="lnk" data-pick="${m.si}" type="button">${SVGI.swap}Change dish</button>${m.changed?`<button class="lnk" data-unswap="${m.si}" type="button">Back to plan</button>`:''}`;
+  const acts=`<div class="acts">
+      <button class="act yes" data-ate="${m.si}" type="button">${SVGI.check}<span>Ate it</span></button>
+      ${m.free?'':`<button class="act" data-log="${m.si}" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg><span>Different amount</span></button>`}
+      <button class="act no" data-skip="${m.si}" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Skipped</span></button></div>`;
+  let h='';
+  if(m.done||m.skipped){
+    h+=`<div class="status ${m.skipped?'no':'yes'}"><b>${m.skipped?`You skipped ${m.slot.toLowerCase()}.`:`You ate ${m.slot.toLowerCase()}: ${m.free?'free meal':Math.round(m.t.p)+'g protein, '+Math.round(m.t.k)+' kcal'}.`}</b>
+      <span>${m.done&&!m.free?shortList(m,-1):''}</span>
+      <div class="sbtns">${m.done&&!m.free?`<button class="btn" data-log="${m.si}" type="button">Change amounts</button>`:''}<button class="btn" data-undo="${m.si}" type="button">Undo</button></div></div>`;
+    return h;
+  }
+  if(m.free){
+    return `<div class="meal"><div class="mhead">${icon('free')}<div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag free">Free meal</span></div><h3>Eat what you want</h3></div></div>
+      <div class="freebox">One plate, no counting. Kabab, pizza, your mum's tahdig, anything.</div>${acts}<div class="links">${change}</div></div>`;
+  }
+  let tag='';
+  if(m.si===1&&role==='cook') tag='<span class="tag cook">Cook ×2 today</span>';
+  if(m.si===1&&role==='left') tag='<span class="tag left">Leftovers</span>';
+  if(m.mine) tag+=m.box?'<span class="tag left">From your batch</span>':'<span class="tag mine">Your meal</span>';
+  if(m.adjusted) tag+='<span class="tag adj">Resized for today</span>';
+  h+=`<div class="meal"><div class="mhead">${icon(m.kind)}<div class="t">
+    <div class="slot"><span class="lbl">${m.slot}</span>${tag}</div>
+    <h3>${esc(m.name)}</h3>${m.fa?`<span class="fa">${m.fa}</span>`:''}
+    <div class="mac"><span class="badge p num">${Math.round(m.t.p)}g protein</span><span class="badge k num">${Math.round(m.t.k)} kcal</span>${m.min?`<span class="badge t num">${m.min} min</span>`:''}</div></div></div>`;
+  if(m.si===1&&role==='left') h+=`<div class="freebox">Reheat the box you made yesterday. Nothing to measure.</div>`;
+  else{
+    h+='<ul class="ings">';
+    m.items.forEach(([k,g])=>{const x=fmtItem(k,g);const o=(m.orig.find(r=>r[0]===k)||[k,g])[1];const ch=m.adjusted&&F[k].show(o)[0]!==x.how;
+      h+=`<li class="${x.free?'free':''}${ch?' chg':''}"><span class="food">${x.name}</span><span class="how">${x.how}</span>${(x.alt||ch)?`<span class="alt">${ch?`<span class="was">was ${F[k].show(o)[0]}</span> `:''}${x.alt||''}</span>`:''}</li>`});
+    if(!m.items.length) h+='<li><span class="food muted">Nothing added yet</span></li>';
+    h+='</ul>';
+  }
+  h+=acts+`<div class="links">${m.how?`<details><summary>How to make it</summary><div class="recipe">${m.how}${m.extra?`<div class="also">Also uses: ${m.extra}, plus spices.</div>`:''}</div></details>`:''}
+    ${m.tip?`<div class="note">${m.tip}</div>`:''}${change}${m.mine&&!m.box?`<button class="lnk" data-edit="${m.si}" type="button">Edit recipe</button>`:''}</div></div>`;
+  return h;
+}
 function renderDay(){
   buildStrip();
   [...strip.children].forEach((c,i)=>c.setAttribute('aria-current',i===cur));
   const chip=strip.children[cur]; if(chip) chip.scrollIntoView({block:'nearest',inline:'center'});
-  const tr=TRAIN[cur%7], meals=dayPlan(cur), T=dayTotals(cur), role=lunchRole(cur);
-  const d=dateOf(cur), isToday=cur===todayIdx(), hasFree=meals.some(m=>m.free);
-  const pct=(v,t)=>Math.min(100,v/t*100);
-
-  let h=`<div class="hero">
-    <div class="top"><div><h2>${isToday?'Today':d.toLocaleDateString(undefined,{weekday:'long'})}</h2>
-      <div class="date">${d.toLocaleDateString(undefined,{weekday:isToday?'long':undefined,day:'numeric',month:'long'})} · Week ${Math.floor(cur/7)+1}, day ${cur+1}</div></div>
-      <span class="pill">${tr.gym?'Gym · '+tr.name:tr.name}</span></div>
-    <div class="rings">${ring(T.ep,T.p,PT())}
-      <div class="stats">
-        <div class="stat"><span class="lbl">Protein still to eat</span><div class="v num">${Math.max(0,Math.round(PT()-T.ep))}g <small>today's plan: ${Math.round(T.p)}g</small></div></div>
-        <div class="stat"><span class="lbl">Calories eaten</span><div class="v num">${Math.round(T.ek)} <small>of ${KTd(cur).toLocaleString()}${hasFree?' + free meal':''}</small></div>
-          <div class="hbar"><i style="width:${pct(T.k,KTd(cur))}%;background:rgba(255,255,255,.35)"></i><i style="width:${pct(T.ek,KTd(cur))}%;background:var(--saffron)"></i></div></div>
-        <div class="stat"><span class="lbl">Steps</span><div class="v num">${tr.steps}</div></div>
-      </div></div>
-    <p class="note">${tr.note}</p>
-  </div>`;
-  h+=restCard(meals,T)+exCard(cur);
-  if(meals.mode==='free') h+=`<div class="callout" style="background:var(--anar-soft)">${SVGI.scale}<div><span class="lbl" style="color:var(--anar)">Free meal day</span><p>Portions follow the plan today. No tuning, no counting tonight.</p></div></div>`;
-  const L=meals[1];
-  if(role==='cook') h+=L.skipped?`<div class="callout">${SVGI.pot}<div><span class="lbl">Still cook tonight</span><p>You skipped lunch, but tomorrow's lunch is <b>${esc(L.name)}</b>. Cook it for 2 tonight: box one for tomorrow, freeze the other.</p></div></div>`
-    :`<div class="callout">${SVGI.pot}<div><span class="lbl">Cook today</span><p><b>${esc(L.name)}</b> for 2: double every amount shown. Eat one, box one for tomorrow.</p></div></div>`;
-  if(cur%7===6){const nx=mealAt((cur+1)%28,1);h+=`<div class="callout">${SVGI.pot}<div><span class="lbl">Sunday prep</span><p>Boil 6 eggs. Wash and dry herbs. Chop cucumber, tomato, onion. Jar of garlic yogurt. Bake 4 palms of chicken. Then cook tomorrow's lunch${nx.free?'':`: <b>${esc(nx.name)}</b>`}.</p></div></div>`}
-
-  const nextSi=(meals.find(m=>!m.done&&!m.skipped)||{}).si;
-  h+='<div class="meals">';
-  meals.forEach(m=>{
-    const on=m.done, isNext=isToday&&m.si===nextSi;
-    const change=`<button class="lnk" data-pick="${m.si}" type="button">${SVGI.swap}Change dish</button>${m.changed?`<button class="lnk" data-unswap="${m.si}" type="button">Back to plan</button>`:''}`;
-    const acts=`<div class="acts">
-      <button class="act yes" data-ate="${m.si}" type="button">${SVGI.check}<span>Ate it</span></button>
-      ${m.free?'':`<button class="act" data-log="${m.si}" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg><span>Different amount</span></button>`}
-      <button class="act no" data-skip="${m.si}" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Skipped</span></button></div>`;
-    const undo=`<button class="lnk" data-undo="${m.si}" type="button">Undo</button>`;
-    if(m.skipped){
-      h+=`<div class="meal skipped" id="meal-${m.si}"><div class="mini"><span class="lbl">${m.slot}</span><span class="mt">Skipped${m.name?' · '+esc(m.name):''}</span>${undo}</div></div>`;return;
-    }
-    if(on){
-      h+=`<div class="meal done" id="meal-${m.si}"><div class="mini"><span class="ok">${SVGI.check}</span><span class="lbl">${m.slot}</span>
-        <span class="mt">${m.free?'Free meal':esc(m.name)}${m.free?'':` <span class="num" style="color:var(--firooze);font-weight:700">${Math.round(m.t.p)}g</span>`}</span>${m.free?'':`<button class="lnk" data-log="${m.si}" type="button">Edit</button>`}${undo}</div>
-        ${m.free?'':`<div class="ate">${shortList(m,-1)||'Nothing logged'}</div>`}</div>`;
-      return;
-    }
-    if(m.free){
-      h+=`<div class="meal${isNext?' next':''}" id="meal-${m.si}">${isNext?'<div class="nextbar">Up next</div>':''}<div class="mhead">${icon('free')}<div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag free">Free meal</span></div><h3>Eat what you want</h3></div></div>
-      <div class="freebox">One plate, no counting. Kabab, pizza, your mum's tahdig, anything.</div>${acts}<div class="links">${change}</div></div>`;return;
-    }
-    let tag='';
-    if(m.si===1&&role==='cook') tag='<span class="tag cook">Cook ×2 today</span>';
-    if(m.si===1&&role==='left') tag='<span class="tag left">Leftovers</span>';
-    if(m.mine) tag+=m.box?'<span class="tag left">From your batch</span>':'<span class="tag mine">Your meal</span>';
-    if(m.adjusted) tag+='<span class="tag adj">Resized for today</span>';
-    h+=`<div class="meal${isNext?' next':''}" id="meal-${m.si}">${isNext?'<div class="nextbar">Up next</div>':''}<div class="mhead">${icon(m.kind)}<div class="t">
-      <div class="slot"><span class="lbl">${m.slot}</span>${tag}</div>
-      <h3>${esc(m.name)}</h3>${m.fa?`<span class="fa">${m.fa}</span>`:''}
-      <div class="mac"><span class="badge p num">${Math.round(m.t.p)}g protein</span><span class="badge k num">${Math.round(m.t.k)} kcal</span>${m.min?`<span class="badge t num">${m.min} min</span>`:''}</div></div></div>`;
-    if(m.si===1&&role==='left') h+=`<div class="freebox">Reheat the box you made yesterday. Nothing to measure.</div>`;
-    else{
-      h+='<ul class="ings">';
-      m.items.forEach(([k,g])=>{const x=fmtItem(k,g);const o=(m.orig.find(r=>r[0]===k)||[k,g])[1];const ch=m.adjusted&&F[k].show(o)[0]!==x.how;
-        h+=`<li class="${x.free?'free':''}${ch?' chg':''}"><span class="food">${x.name}</span><span class="how">${x.how}</span>${(x.alt||ch)?`<span class="alt">${ch?`<span class="was">was ${F[k].show(o)[0]}</span> `:''}${x.alt||''}</span>`:''}</li>`});
-      if(!m.items.length) h+='<li><span class="food muted">Nothing added yet</span></li>';
-      h+='</ul>';
-    }
-    h+=acts+`<div class="links">${m.how?`<details><summary>How to make it</summary><div class="recipe">${m.how}${m.extra?`<div class="also">Also uses: ${m.extra}, plus spices.</div>`:''}</div></details>`:''}
-      ${m.tip?`<div class="note">${m.tip}</div>`:''}${change}${m.mine&&!m.box?`<button class="lnk" data-edit="${m.si}" type="button">Edit recipe</button>`:''}</div></div>`;
-  });
-  h+='</div>';
-
-  const ex=extrasOf(cur);
-  h+=`<div class="extras"><h3>Extras</h3><p class="small muted" style="margin:2px 0 0">A coffee with milk, a handful of nuts, a piece of cake at work. Add it so your protein and calories stay honest.</p>`;
-  if(ex.length){h+='<ul>';ex.forEach((x,j)=>{const t=calc(x.items);h+=`<li><span>${esc(x.n)} <span class="muted num">· ${Math.round(t.k)} kcal · ${Math.round(t.p)}g protein</span></span><button class="btn" data-delx="${j}" type="button" aria-label="Remove ${esc(x.n)}">Remove</button></li>`});h+='</ul>'}
-  h+=`<div style="margin-top:8px"><button class="btn primary" id="addExtra" type="button">+ Add something I ate</button></div></div>`;
-
-  const need=needList(cur), extras=extrasFor(cur), keys=Object.keys(need).filter(k=>!F[k].free);
-  h+=`<div class="section"><h2>What you need today</h2><p class="sub">Tick what you already have at home. Whatever is left: buy at Lidl.${role==='cook'?' Lunch is counted twice because you cook 2 portions.':''}</p><ul class="checklist">`;
-  keys.forEach(k=>{const x=fmtItem(k,need[k]);const key=cur+'-'+k;
-    h+=`<li><label><input type="checkbox" data-have="${key}" ${S.have[key]?'checked':''}><span>${x.name}${x.alt?`<span class="d">${x.alt}</span>`:''}</span><span class="q">${x.how}</span></label></li>`});
-  if(extras.length){const key=cur+'-extras';h+=`<li><label><input type="checkbox" data-have="${key}" ${S.have[key]?'checked':''}><span>Fresh veg, herbs & flavour<span class="d">${extras.join(' · ')}</span></span><span class="q"></span></label></li>`}
-  if(!keys.length&&!extras.length) h+='<li class="plain muted">Nothing to buy for today.</li>';
-  h+='</ul></div>';
-  if(!isToday) h+=`<div style="margin-top:16px"><button class="btn" id="gotoday" type="button">Back to today</button></div>`;
-
+  const meals=dayPlan(cur), T=dayTotals(cur), isToday=cur===todayIdx();
+  let h=dayHeader(meals,T)+tabsBar(meals);
+  h+=`<div class="tabbody">${tab==='sum'?summaryView(meals,T):mealView(meals[+tab])}</div>`;
+  if(tab!=='sum') h+=`<div style="margin-top:14px"><button class="btn" type="button" data-tab="sum">‹ Back to summary</button></div>`;
+  if(!isToday) h+=`<div style="margin-top:12px"><button class="btn" id="gotoday" type="button">Back to today</button></div>`;
   out.innerHTML=h;
+
+  out.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;renderDay();const tb=out.querySelector('.daytabs');if(tb&&tb.getBoundingClientRect().top<0)tb.scrollIntoView({block:'start'})});
+  out.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{tab=b.dataset.open;renderDay();const tb=out.querySelector('.daytabs');if(tb)tb.scrollIntoView({block:'start',behavior:'smooth'})});
   out.querySelectorAll('[data-ate]').forEach(b=>b.onclick=()=>{const si=+b.dataset.ate,k=cur+'-'+si,m=meals[si];
-    delete S.skip[k];S.done[k]=true;if(!m.free&&!S.actual[k])S.actual[k]=m.items;save();renderDay();openRestSheet(si)});
+    delete S.skip[k];S.done[k]=true;if(!m.free&&!S.actual[k])S.actual[k]=m.items;save();afterAction(si,'ate')});
   out.querySelectorAll('[data-skip]').forEach(b=>b.onclick=()=>{const si=+b.dataset.skip,k=cur+'-'+si;
-    S.skip[k]=true;delete S.done[k];delete S.actual[k];save();renderDay();openRestSheet(si)});
+    S.skip[k]=true;delete S.done[k];delete S.actual[k];save();afterAction(si,'skip')});
   out.querySelectorAll('[data-undo]').forEach(b=>b.onclick=()=>{const k=cur+'-'+b.dataset.undo;delete S.skip[k];delete S.done[k];delete S.actual[k];save();renderDay()});
   out.querySelectorAll('[data-log]').forEach(b=>b.onclick=()=>{const si=+b.dataset.log;openBuilder({mode:'log',si,init:meals[si].items})});
   out.querySelectorAll('[data-have]').forEach(c=>c.onchange=()=>{S.have[c.dataset.have]=c.checked;save()});
@@ -1229,14 +1345,17 @@ function renderDay(){
   out.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>openPicker(+b.dataset.pick));
   out.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const si=+b.dataset.edit,c=S.custom[cur+'-'+si];openBuilder({mode:'custom',si,init:c&&c.items,name:c&&c.n})});
   out.querySelectorAll('[data-delx]').forEach(b=>b.onclick=()=>{S.extras[cur].splice(+b.dataset.delx,1);save();renderDay()});
-  document.getElementById('addExtra').onclick=()=>openBuilder({mode:'extra'});
-  bindRest(out);
+  out.querySelectorAll('[data-top]').forEach(b=>b.onclick=()=>{const [k,g]=b.dataset.top.split(':');(S.extras[cur]=S.extras[cur]||[]).push({n:b.dataset.label,items:[[k,+g]]});save();renderDay();toast(`Added: ${esc(b.dataset.label)}`)});
+  const ax=document.getElementById('addExtra'); if(ax) ax.onclick=()=>openBuilder({mode:'extra'});
   const ae=document.getElementById('addEx'); if(ae) ae.onclick=openExercise;
-  document.getElementById('addWatch').onclick=openWatch;
+  const aw=document.getElementById('addWatch'); if(aw) aw.onclick=openWatch;
   const wd=document.getElementById('watchdel'); if(wd) wd.onclick=()=>{delete S.watch[cur];save();renderDay()};
   out.querySelectorAll('[data-exdel]').forEach(b=>b.onclick=()=>{S.ex[cur].splice(+b.dataset.exdel,1);save();renderDay()});
   const gs=out.querySelector('[data-gymskip]'); if(gs) gs.onclick=()=>{S.gymskip[cur]=!S.gymskip[cur];save();renderDay()};
-  const gt=document.getElementById('gotoday'); if(gt) gt.onclick=()=>{cur=todayIdx();renderDay();window.scrollTo({top:0})};
+  const wi=document.getElementById('watchIn'), ws=document.getElementById('watchSave');
+  const saveWatch=()=>{const v=parseInt(wi.value,10);if(v>0){S.watch[cur]={a:v,t:Date.now()}}else delete S.watch[cur];save();renderDay();const a=exAdj(cur);if(v>0)toast(a>0?`Watch saved: you can eat <b>${a} kcal more</b> today`:a<0?`Watch saved: ${-a} kcal less today`:'Watch saved: a normal day')};
+  ws.onclick=saveWatch; wi.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();saveWatch()}};
+  const gt=document.getElementById('gotoday'); if(gt) gt.onclick=()=>{cur=todayIdx();tab='sum';renderDay();window.scrollTo({top:0})};
 }
 
 /* ---------- sheet ---------- */
@@ -1349,7 +1468,7 @@ function openBuilder({mode,si=null,init=null,name=''}){
   sBody.querySelectorAll('.brow output').forEach(o=>o.style.minWidth='88px');
   document.getElementById('bsave').onclick=()=>{
     const its=items(); const key=cur+'-'+si;
-    if(mode==='log'){S.actual[key]=[...its,...keepFree];S.done[key]=true;delete S.skip[key];save();renderDay();openRestSheet(si);return}
+    if(mode==='log'){S.actual[key]=[...its,...keepFree];S.done[key]=true;delete S.skip[key];save();closeSheet();afterAction(si,'ate');return}
     if(!its.length){closeSheet();return}
     const n=(document.getElementById('bname').value||'').trim()||(mode==='extra'?'Extra':'My '+SLOTS[si].toLowerCase());
     if(isB){const bt={id:Date.now(),n:(document.getElementById('bname').value||'').trim()||'My batch',items:its,boxes,made:iso(new Date())};S.batches.push(bt);save();useBatch(bt.id,si,1);return}
@@ -1488,7 +1607,7 @@ const TABS=['today','week','lidl','hands','me'];
 function showTab(id){
   document.querySelectorAll('.tabbar button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));
   TABS.forEach(t=>document.getElementById(t).classList.toggle('hide',t!==id));
-  if(id==='today')renderDay(); if(id==='hands')renderBatches(); if(id==='week')renderWeek(); if(id==='lidl')renderShop(); if(id==='me')renderMe();
+  if(id==='today'){tab='sum';renderDay();} if(id==='hands')renderBatches(); if(id==='week')renderWeek(); if(id==='lidl')renderShop(); if(id==='me')renderMe();
   try{history.replaceState(null,'',id==='today'?location.pathname:'#'+id)}catch(e){}
   window.scrollTo({top:0});
 }
