@@ -566,7 +566,7 @@ code.url{font-size:12px;word-break:break-all;background:var(--sunk);padding:1px 
     </div>
   </section>
 
-  <footer>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
+  <footer><b style="color:var(--ink)">Version 9 · 15 Nov 2026</b> · Garmin calories, exercise and batch cooking included.<br>Calories are estimates from typical Lidl products and hand-size portions, close enough to work week to week. General guidance, not medical advice.</footer>
 </div>
 
 <nav class="tabbar" role="tablist" aria-label="Sections"><div class="in">
@@ -1499,7 +1499,7 @@ const h0=location.hash.slice(1); if(TABS.includes(h0)) showTab(h0);
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(TABS.includes(h))showTab(h)});
 
 if('serviceWorker' in navigator && /github\.io$|^localhost$/.test(location.hostname)){
-  try{navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
+  try{navigator.serviceWorker.register('sw.js').then(r=>{try{r.update()}catch(e){}}).catch(()=>{})}catch(e){}
 }
 </script>
 
