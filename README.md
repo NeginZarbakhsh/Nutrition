@@ -41,6 +41,8 @@ Calories are estimates. This is general guidance, not medical advice.
 ## Languages, shops and cuisines
 
 - **English / فارسی**: switch in the header, at setup, or in Me. Farsi turns the app right-to-left with Persian numbers and dish names. Translations live in `FA_EXACT` (whole sentences), `FA_TOK` (words inside changing text) and `FA_FOOD` in `index.html`.
+- **Scan a label (on the phone, no cloud)**: Products → Add a product → *Scan the nutrition table* (built-in Tesseract OCR in `vendor/ocr/`, Apache-2.0) or *Paste label text* from iPhone Live Text. The app finds kcal, protein, fat, pack size and pieces; you check and save. Optional photo of the front of the pack.
+- **Product photos**: built-in products have a photo in `products/`.
 - **Any shop**: each product has a store (Lidl, Aldi, Tesco, SPAR, Dunnes, Persian shop…), shown in meals and the shopping list.
 - **Cuisines**: Persian now; the structure is ready for more.
 
