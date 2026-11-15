@@ -1,0 +1,799 @@
+<title>Sofreh Meal Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A 28-day Persian meal plan for gentle fat loss and muscle definition. Hand measures instead of a scale, and a Lidl list for every day.">
+<meta name="theme-color" content="#0E8C88">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&family=Vazirmatn:wght@400;600&display=swap">
+<style>
+/* Layout: one phone-width column, sticky tab bar, cards only for meals. Turquoise tile + saffron, from Persian ceramics and rice. */
+:root{
+  --bg:#F2F7F6; --surface:#FFFFFF; --sunk:#E6EFEE; --ink:#12302F; --muted:#587170; --line:#D3E1DF;
+  --firooze:#0B8682; --firooze-soft:#D5EEEC; --saffron:#B97800; --saffron-soft:#FBEFD6; --anar:#B3304A; --anar-soft:#F7E0E5;
+  --font-display:'Outfit',system-ui,sans-serif; --font-body:'Inter',system-ui,-apple-system,sans-serif; --font-fa:'Vazirmatn',Tahoma,sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1717; --surface:#132222; --sunk:#0F1D1D; --ink:#E4EFEE; --muted:#8EA7A5; --line:#233B3A;
+  --firooze:#41C4BD; --firooze-soft:#143533; --saffron:#F0B13C; --saffron-soft:#33280F; --anar:#EC6F88; --anar-soft:#3A1A22; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C1717; --surface:#132222; --sunk:#0F1D1D; --ink:#E4EFEE; --muted:#8EA7A5; --line:#233B3A;
+  --firooze:#41C4BD; --firooze-soft:#143533; --saffron:#F0B13C; --saffron-soft:#33280F; --anar:#EC6F88; --anar-soft:#3A1A22; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;line-height:1.15}
+.fa{font-family:var(--font-fa);direction:rtl;unicode-bidi:isolate}
+.lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.num{font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--firooze);outline-offset:2px}
+.hide{display:none!important}
+
+/* header */
+header{padding-block:18px 10px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.brand h1{font-size:26px;letter-spacing:-.01em}
+.brand h1 .fa{font-size:20px;color:var(--firooze);margin-inline-start:6px;font-weight:600}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.target{text-align:right;font-size:12px;color:var(--muted);line-height:1.35}
+.target b{color:var(--ink);font-size:14px}
+
+/* tabs */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;padding-block:8px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:1 0 auto;border:0;background:none;padding:8px 12px;border-radius:999px;font-weight:600;font-size:14px;color:var(--muted);white-space:nowrap}
+nav button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+
+/* day strip */
+.strip{display:flex;gap:6px;overflow-x:auto;padding-block:14px 6px;scrollbar-width:none;scroll-snap-type:x proximity}
+.strip::-webkit-scrollbar{display:none}
+.chip{flex:0 0 46px;scroll-snap-align:center;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:6px 0 5px;display:flex;flex-direction:column;align-items:center;font-size:11px;color:var(--muted);position:relative}
+.chip b{font-family:var(--font-display);font-size:17px;color:var(--ink);font-weight:600}
+.chip.gym::after{content:"";position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--saffron)}
+.chip.today{border-color:var(--firooze)}
+.chip.today b{color:var(--firooze)}
+.chip[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chip[aria-current="true"] b{color:var(--bg)}
+.weeklbl{display:flex;justify-content:space-between;align-items:center;margin-top:2px}
+.linkbtn{border:0;background:none;color:var(--firooze);font-weight:600;font-size:13px;padding:4px 0}
+
+/* day head */
+.dayhead{margin-top:14px;display:grid;gap:12px}
+.dayhead h2{font-size:24px}
+.dayhead .sub{color:var(--muted);font-size:14px;margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
+.pill.gym{background:var(--saffron-soft);color:var(--saffron)}
+.pill.rest{background:var(--firooze-soft);color:var(--firooze)}
+.pill.free{background:var(--anar-soft);color:var(--anar)}
+
+.totals{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tot{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.tot .big{font-family:var(--font-display);font-size:26px;font-weight:600;line-height:1.1;margin-top:2px}
+.tot .big small{font-size:13px;color:var(--muted);font-weight:500}
+.bar{height:6px;border-radius:3px;background:var(--sunk);margin-top:8px;overflow:hidden;position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:3px}
+.bar i.plan{opacity:.3}
+.k .big{color:var(--saffron)} .k .bar i{background:var(--saffron)}
+.p .big{color:var(--firooze)} .p .bar i{background:var(--firooze)}
+.tot .eaten{font-size:12px;color:var(--muted);margin-top:6px}
+
+.callout{border-radius:var(--r);padding:12px 14px;font-size:14px;background:var(--sunk);border:1px solid var(--line)}
+.callout b{font-weight:600}
+.callout.cook{background:var(--saffron-soft);border-color:transparent}
+.callout .lbl{display:block;margin-bottom:3px}
+.callout p{margin:0}
+.callout p+p{margin-top:6px}
+
+/* meals */
+.meals{display:grid;gap:12px;margin-top:16px}
+.meal{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.meal.done{opacity:.6}
+.mhead{display:flex;gap:10px;align-items:flex-start;padding:14px 14px 10px}
+.mhead .t{flex:1;min-width:0}
+.mhead h3{font-size:18px;font-weight:600}
+.mhead .fa{display:block;color:var(--muted);font-size:14px;margin-top:2px;text-align:right}
+.mhead .slot{display:flex;gap:8px;align-items:center;margin-bottom:4px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:600;border-radius:6px;padding:1px 7px;background:var(--saffron-soft);color:var(--saffron)}
+.tag.left{background:var(--firooze-soft);color:var(--firooze)}
+.mac{font-size:13px;color:var(--muted);margin-top:4px}
+.mac b{color:var(--saffron);font-weight:600} .mac b.pp{color:var(--firooze)}
+.tick{flex:0 0 40px;height:40px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font-size:18px;color:transparent;display:grid;place-items:center}
+.tick[aria-pressed="true"]{background:var(--firooze);border-color:var(--firooze);color:var(--surface)}
+.ings{list-style:none;margin:0;padding:0 14px 6px}
+.ings li{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:8px 0;border-top:1px dashed var(--line);align-items:baseline}
+.ings .food{min-width:0}
+.ings .how{font-weight:600;text-align:right}
+.ings .alt{grid-column:1/-1;font-size:12px;color:var(--muted)}
+.ings li.free .how{color:var(--firooze);font-weight:500}
+.mfoot{display:flex;flex-wrap:wrap;gap:8px;padding:6px 14px 14px;align-items:center}
+.mfoot details{flex:1 1 100%}
+.mfoot summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--firooze);list-style:none;padding:4px 0}
+.mfoot summary::-webkit-details-marker{display:none}
+.mfoot summary::before{content:"+ "}
+details[open]>summary::before{content:"− "}
+.recipe{font-size:14px;color:var(--ink);margin:6px 0 0;padding:10px 12px;background:var(--sunk);border-radius:10px}
+.recipe .also{color:var(--muted);font-size:13px;margin-top:6px}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+.swapbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.swapsel{width:100%;margin-top:6px;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:14px}
+.freebox{padding:0 14px 14px;color:var(--muted);font-size:14px}
+
+/* lists with checkboxes */
+.section{margin-top:26px}
+.section>h2{font-size:20px;margin-bottom:4px}
+.section>.sub{color:var(--muted);font-size:14px;margin:0 0 10px}
+.checklist{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.checklist li{border-top:1px solid var(--line)}
+.checklist li:first-child{border-top:0}
+.checklist label{display:grid;grid-template-columns:22px 1fr auto;gap:10px;padding:11px 14px;align-items:start;cursor:pointer}
+.checklist input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--firooze)}
+.checklist .q{font-weight:600;text-align:right;font-size:14px}
+.checklist .d{font-size:12px;color:var(--muted);display:block}
+.checklist input:checked~span{text-decoration:line-through;color:var(--muted)}
+.checklist .grp{padding:10px 14px 4px;background:var(--sunk)}
+.checklist li.grp+li{border-top:0}
+
+/* week view */
+.weekgrid{display:grid;gap:8px;margin-top:14px}
+.wday{display:grid;grid-template-columns:52px 1fr;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;text-align:left;width:100%}
+.wday .d{font-family:var(--font-display);font-weight:600;font-size:18px;line-height:1.1}
+.wday .d small{display:block;font-family:var(--font-body);font-size:11px;color:var(--muted);font-weight:500}
+.wday ul{list-style:none;margin:0;padding:0;font-size:13px;min-width:0}
+.wday li{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wday li span{color:var(--muted);display:inline-block;width:62px}
+.wday.today{border-color:var(--firooze)}
+.seg{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-weight:600;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--firooze);border-color:var(--firooze);color:var(--surface)}
+
+/* hand guide */
+.hands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.hand{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:6px;align-content:start}
+.hand svg{width:44px;height:44px}
+.hand h3{font-size:17px}
+.hand p{margin:0;font-size:13px;color:var(--muted)}
+.hand .eq{font-size:13px;color:var(--ink)}
+.rules{display:grid;gap:10px}
+.rule{display:grid;grid-template-columns:30px 1fr;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.rule .n{font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--firooze);line-height:1.2}
+.rule h3{font-size:16px}
+.rule p{margin:3px 0 0;font-size:14px;color:var(--muted)}
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+thead th{border-top:0;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.r,th.r{text-align:right}
+
+/* progress */
+.form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end}
+.form label{display:grid;gap:4px;font-size:12px;color:var(--muted);font-weight:600}
+.form input{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:15px;color:var(--ink)}
+.primary{border:0;background:var(--firooze);color:var(--surface);border-radius:10px;padding:10px 14px;font-weight:600}
+.ghost{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;font-weight:600;font-size:13px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+p.lead{margin:6px 0 0;color:var(--muted);font-size:14px;max-width:62ch}
+footer{margin-top:36px;font-size:12px;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+@media (max-width:380px){.hands{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>Sofreh<span class="fa">سفره</span></h1>
+      <p>Persian food, no scale, 28-day cycle</p>
+    </div>
+    <div class="target" id="targetbox"></div>
+  </header>
+
+  <nav role="tablist" aria-label="Sections">
+    <button role="tab" data-tab="today" aria-selected="true">Today</button>
+    <button role="tab" data-tab="week" aria-selected="false">Week</button>
+    <button role="tab" data-tab="lidl" aria-selected="false">Lidl list</button>
+    <button role="tab" data-tab="hands" aria-selected="false">No-scale guide</button>
+    <button role="tab" data-tab="me" aria-selected="false">Me</button>
+  </nav>
+
+  <!-- TODAY -->
+  <section id="today">
+    <div class="strip" id="strip" aria-label="Days in the 28-day cycle"></div>
+    <div class="weeklbl"><span class="lbl" id="weeklbl"></span><button class="linkbtn" id="gotoday" type="button">Jump to today</button></div>
+    <div id="dayout"></div>
+  </section>
+
+  <!-- WEEK -->
+  <section id="week" class="hide">
+    <div class="seg" id="weekseg"></div>
+    <div class="weekgrid" id="weekgrid"></div>
+    <div class="section">
+      <h2>Your cooking rhythm</h2>
+      <p class="sub">Lunch is cooked once and eaten twice. Dinners take 15–20 minutes.</p>
+      <div class="rules">
+        <div class="rule"><span class="n">1</span><div><h3>Sunday, about an hour</h3><p>Boil 6 eggs. Wash and dry herbs. Chop cucumber, tomato and onion into boxes. Mix a jar of garlic yogurt (yogurt, crushed garlic, lemon, salt, dried mint). Cook Monday's lunch.</p></div></div>
+        <div class="rule"><span class="n">2</span><div><h3>Tuesday and Thursday evening</h3><p>Cook the next lunch, two portions. Split the pot straight into two equal boxes. That split is your measuring.</p></div></div>
+        <div class="rule"><span class="n">3</span><div><h3>Every other night</h3><p>Dinner is a quick pan or oven dish. If you are too tired, use the fallback list in the No-scale guide.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIDL -->
+  <section id="lidl" class="hide">
+    <div class="seg" id="shopseg"></div>
+    <p class="lead" id="shoplead"></p>
+    <div id="shopout"></div>
+    <div class="section">
+      <h2>Reading the label at Lidl</h2>
+      <p class="sub">Own-brand stock changes. Check the "per 100g" column on the back.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Product</th><th>Pick one with</th></tr></thead>
+        <tbody>
+          <tr><td>Greek yogurt / skyr</td><td>10g+ protein, under 5g fat</td></tr>
+          <tr><td>Cottage cheese</td><td>11g+ protein</td></tr>
+          <tr><td>Beef mince</td><td>5% fat, never 20%</td></tr>
+          <tr><td>Cheddar</td><td>The reduced-fat one</td></tr>
+          <tr><td>Almond milk</td><td>Says "unsweetened"</td></tr>
+          <tr><td>"High protein" puddings</td><td>Usually a bad deal. Skip.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="section">
+      <h2>Persian shop, once every couple of months</h2>
+      <p class="sub">Saffron · dried limes (limoo amani) · barberries (zereshk) · dried fenugreek · dried plums (alu) · reshteh noodles · pomegranate molasses · advieh · sumac · dried mint · vine leaves · torshi</p>
+    </div>
+  </section>
+
+  <!-- HAND GUIDE -->
+  <section id="hands" class="hide">
+    <div class="section" style="margin-top:18px">
+      <h2>Your hand is the scale</h2>
+      <p class="sub">Your hand matches your body size, so these portions scale to you. Every amount in the app uses one of these.</p>
+      <div class="hands" id="handcards"></div>
+    </div>
+    <div class="section">
+      <h2>Tricks that replace weighing</h2>
+      <div class="rules">
+        <div class="rule"><span class="n">1</span><div><h3>Split the pot, not the portion</h3><p>Cook the khoresh for exactly 2 portions using the amounts shown, then pour it into 2 equal boxes. No weighing, ever.</p></div></div>
+        <div class="rule"><span class="n">2</span><div><h3>One mug of raw rice is 4 portions</h3><p>A normal 250ml mug holds about 200g raw rice. For 2 portions use half a mug. Cooked, one portion is about the size of your fist.</p></div></div>
+        <div class="rule"><span class="n">3</span><div><h3>Oil with a teaspoon only</h3><p>Never pour from the bottle. 1 teaspoon = 45 kcal. Four glugs into a pot is about 400 kcal you will not notice. A spray bottle is even better.</p></div></div>
+        <div class="rule"><span class="n">4</span><div><h3>Count what comes in units</h3><p>Eggs, pittas, bread slices, salmon fillets, walnuts, pistachios. Counting is as accurate as weighing.</p></div></div>
+        <div class="rule"><span class="n">5</span><div><h3>Use the pack as the measure</h3><p>"Half a tin of chickpeas", "a third of the yogurt tub". Open, split, done.</p></div></div>
+        <div class="rule"><span class="n">6</span><div><h3>The plate rule when eating out</h3><p>Half the plate vegetables or salad, a palm or two of protein, one fist of rice or one piece of bread. Ask for the oil or sauce on the side.</p></div></div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Free foods, eat as much as you like</h2>
+      <p class="sub">Cucumber, tomato, lettuce, herbs and sabzi, radish, spring onion, cabbage, peppers, mushrooms, courgette, aubergine (baked, not fried), torshi, khiar shoor, lemon, sumac, dried mint, spices. Salt-heavy pickles can push the scale up by water overnight. That is not fat.</p>
+    </div>
+    <div class="section">
+      <h2>Too tired to cook</h2>
+      <p class="sub">Each of these is about 400 kcal and 30–40g protein.</p>
+      <div class="checklist" style="padding:4px 0">
+        <div style="padding:8px 14px">2 boiled eggs + 4 heaped tbsp cottage cheese + cucumber + 1 pitta</div>
+        <div style="padding:8px 14px;border-top:1px solid var(--line)">6 heaped tbsp Greek yogurt + 2 walnuts + 1 fruit + 1 scoop whey stirred in</div>
+        <div style="padding:8px 14px;border-top:1px solid var(--line)">3-egg omelette with a matchbox of feta and any veg</div>
+        <div style="padding:8px 14px;border-top:1px solid var(--line)">½ tin chickpeas + a matchbox of feta + salad shirazi + 2 boiled eggs</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ME -->
+  <section id="me" class="hide">
+    <div class="section" style="margin-top:18px">
+      <h2>Your numbers</h2>
+      <p class="sub">155 cm. Goal: lose a little fat and keep or build muscle, so the shape gets more defined.</p>
+      <div class="form">
+        <label for="wIn">Weight (kg)<input id="wIn" type="number" step="0.1" inputmode="decimal"></label>
+        <label for="startIn">Cycle started<input id="startIn" type="date"></label>
+        <button class="primary" id="saveMe" type="button">Save</button>
+      </div>
+      <p class="lead" id="mytargets"></p>
+    </div>
+    <div class="section">
+      <h2>Saturday check-in</h2>
+      <p class="sub">Morning, after the bathroom, before breakfast. Compare week to week, never day to day.</p>
+      <div class="form">
+        <label for="logW">Weight (kg)<input id="logW" type="number" step="0.1" inputmode="decimal"></label>
+        <label for="logWaist">Waist (cm)<input id="logWaist" type="number" step="0.5" inputmode="decimal"></label>
+        <button class="primary" id="addLog" type="button">Add</button>
+      </div>
+      <div id="logout" style="margin-top:12px"></div>
+    </div>
+    <div class="section">
+      <h2>What the numbers mean</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>After 3–4 weeks you see</th><th>Do this</th></tr></thead>
+        <tbody>
+          <tr><td>Weight down 0.2–0.5 kg a week</td><td>Nothing. This is ideal.</td></tr>
+          <tr><td>Weight flat, waist smaller</td><td>Nothing. Muscle up, fat down. Best case.</td></tr>
+          <tr><td>Weight and waist both flat for 3 weeks</td><td>Add 1,500 steps a day first.</td></tr>
+          <tr><td>Losing 0.7 kg+ a week, lifts getting weaker</td><td>Add 1 fist of rice or 1 potato a day.</td></tr>
+          <tr><td>Weight up, lifts up</td><td>Nothing. Muscle and water.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="section">
+      <h2>What builds the shape</h2>
+      <div class="rules">
+        <div class="rule"><span class="n">1</span><div><h3>Lift heavier over time</h3><p>Write down weight and reps. Beat one number each session: one more rep, or a little more weight.</p></div></div>
+        <div class="rule"><span class="n">2</span><div><h3>Protein at every meal</h3><p>Every meal here carries 25–45g. That spread matters more than a big shake.</p></div></div>
+        <div class="rule"><span class="n">3</span><div><h3>A small deficit, not a crash</h3><p>About 1,550 kcal. Eating 1,200 would take muscle with the fat.</p></div></div>
+        <div class="rule"><span class="n">4</span><div><h3>Sleep 7–8 hours</h3><p>Short sleep makes you lose more muscle on the same food.</p></div></div>
+        <div class="rule"><span class="n">5</span><div><h3>Creatine, 3–5g daily</h3><p>Cheap and well studied. Expect 1–2 kg of water weight in the first two weeks. That is inside the muscle, not fat.</p></div></div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Your training week</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Day</th><th>Session</th><th class="r">Steps</th></tr></thead>
+        <tbody id="trainbody"></tbody>
+      </table></div>
+      <p class="lead">Rest days are where the walking happens. Do not eat less on rest days: muscle is built while you rest.</p>
+    </div>
+    <div class="section">
+      <button class="ghost" id="resetTicks" type="button">Clear all ticks and swaps</button>
+      <span class="small muted" id="resetMsg"></span>
+    </div>
+  </section>
+
+  <footer>Calories are estimates from typical Lidl products and hand-size portions. They are close enough to work week to week. This is general guidance, not medical advice.</footer>
+</div>
+
+<script id="data">
+/* ---------- FOODS: per 100g [kcal, protein]. show(g) returns [hand measure, extra hint] ---------- */
+const FR=x=>{ // nearest quarter as a nice fraction
+  const q=Math.round(x*4)/4, w=Math.floor(q), r=q-w;
+  const f=r===0.25?'¼':r===0.5?'½':r===0.75?'¾':'';
+  if(!w&&!f) return '¼';
+  return (w?String(w):'')+f;
+};
+const PL=(x,s,p)=>`${FR(x)} ${Math.round(x*4)/4>1?p:s}`;
+const CNT=(x,s,p)=>{const n=Math.max(1,Math.round(x));return `${n} ${n===1?s:p}`};
+const HALF=(x,s,p)=>{const n=Math.max(.5,Math.round(x*2)/2);const t=Number.isInteger(n)?String(n):(n===.5?'½':Math.floor(n)+'½');return `${t} ${n<=1?s:p}`};
+
+const F={
+ chicken:{n:'Chicken breast',k:110,p:23,show:g=>[PL(g/100,'palm','palms'),`raw · about ${FR(g/170)==='1'?'1 fillet':FR(g/170)+' of a fillet'}`],shop:'meat',pack:[500,'pack (~500g)']},
+ beef:{n:'Lean diced beef',k:150,p:22,show:g=>[PL(g/100,'palm','palms'),'raw, trimmed'],shop:'meat',pack:[400,'pack (~400g)']},
+ mince:{n:'Beef mince 5%',k:137,p:21,show:g=>[PL(g/100,'palm','palms'),`raw · ${FR(g/500)} of a 500g pack`],shop:'meat',pack:[500,'pack (500g)']},
+ lamb:{n:'Lean lamb, diced',k:170,p:21,show:g=>[PL(g/100,'palm','palms'),'raw, fat trimmed off'],shop:'meat',pack:[400,'pack (~400g)']},
+ salmon:{n:'Salmon fillet',k:208,p:20,show:g=>[HALF(g/120,'fillet','fillets'),'Lidl packs of 2'],shop:'meat',pack:[240,'pack of 2 fillets']},
+ egg:{n:'Eggs',k:143,p:12.6,show:g=>[g<50?'1 egg (use half)':HALF(g/50,'egg','eggs'),''],shop:'dairy',pack:[600,'box of 12'],unitg:50},
+ yog:{n:'Greek yogurt 0% or skyr',k:60,p:10,show:g=>[CNT(g/30,'heaped tbsp','heaped tbsp'),g>=100?`about ${FR(g/500)} of a 500g tub`:''],shop:'dairy',pack:[500,'tub (500g)']},
+ cottage:{n:'Cottage cheese',k:75,p:11.5,show:g=>[CNT(g/30,'heaped tbsp','heaped tbsp'),`about ${FR(g/300)} of a 300g tub`],shop:'dairy',pack:[300,'tub (300g)']},
+ feta:{n:'Feta (light)',k:200,p:17,show:g=>[PL(g/30,'matchbox-size piece','matchbox-size pieces'),''],shop:'dairy',pack:[200,'block (200g)']},
+ cheddar:{n:'Reduced-fat cheddar, grated',k:310,p:27,show:g=>[PL(g/25,'small handful','small handfuls'),'loosely in one hand'],shop:'dairy',pack:[200,'bag (200g)']},
+ rice:{n:'Basmati rice',k:350,p:7.5,show:g=>[PL(g/50,'fist cooked','fists cooked'),`= ${FR(g/200)} mug raw`],shop:'pantry',pack:[1000,'bag (1kg)']},
+ lentils:{n:'Red or green lentils',k:340,p:24,show:g=>[`${FR(g/200)} mug raw`,`about ${Math.max(1,Math.round(g/15))} heaped tbsp`],shop:'pantry',pack:[500,'bag (500g)']},
+ split:{n:'Yellow split peas',k:340,p:23,show:g=>[`${Math.max(1,Math.round(g/15))} heaped tbsp raw`,''],shop:'pantry',pack:[500,'bag (500g)']},
+ chickpea:{n:'Chickpeas, tinned',k:130,p:7,show:g=>[`${FR(g/240)} tin`,'drained'],shop:'tins',pack:[240,'tin (400g)']},
+ beans:{n:'Kidney beans, tinned',k:110,p:7.5,show:g=>[`${FR(g/240)} tin`,'drained'],shop:'tins',pack:[240,'tin (400g)']},
+ broad:{n:'Broad beans, frozen',k:80,p:7.5,show:g=>[PL(g/100,'fist','fists'),''],shop:'frozen',pack:[750,'bag']},
+ barley:{n:'Pearl barley',k:350,p:10,show:g=>[`${Math.max(1,Math.round(g/15))} heaped tbsp raw`,''],shop:'pantry',pack:[500,'bag (500g)']},
+ pitta:{n:'Wholemeal pitta',k:250,p:10,show:g=>[HALF(g/60,'pitta','pittas'),''],shop:'bakery',pack:[360,'pack of 6']},
+ bread:{n:'Wholemeal bread',k:240,p:10,show:g=>[CNT(g/40,'slice','slices'),''],shop:'bakery',pack:[800,'loaf']},
+ flour:{n:'Plain flour',k:350,p:10,show:g=>[`${Math.max(1,Math.round(g/15))} heaped tbsp`,''],shop:'pantry',pack:[1000,'bag (1kg)']},
+ noodle:{n:'Reshteh noodles (or linguine)',k:350,p:12,show:g=>[`a small bundle, ${FR(g/30)} fist`,'dry'],shop:'pantry',pack:[500,'pack']},
+ oats:{n:'Oats',k:375,p:13,show:g=>[`${FR(g/90)} mug`,`about ${Math.round(g/10)} heaped tbsp`],shop:'pantry',pack:[1000,'bag (1kg)']},
+ milk:{n:'Semi-skimmed milk',k:47,p:3.5,show:g=>[`${FR(g/250)} mug`,`${g} ml`],shop:'dairy',pack:[1000,'carton (1L)']},
+ almond:{n:'Almond milk, unsweetened',k:13,p:0.4,show:g=>[`${FR(g/250)} mug`,`${g} ml`],shop:'dairy',pack:[1000,'carton (1L)']},
+ chia:{n:'Chia seeds',k:486,p:17,show:g=>[CNT(g/12,'tbsp','tbsp'),''],shop:'pantry',pack:[200,'bag']},
+ whey:{n:'Whey protein',k:400,p:78,show:g=>[CNT(g/30,'scoop','scoops'),''],shop:'pantry',pack:[900,'tub']},
+ oil:{n:'Olive oil',k:900,p:0,show:g=>[CNT(g/5,'tsp','tsp'),'measured with a spoon'],shop:'pantry',pack:[750,'bottle']},
+ sesame:{n:'Sesame oil',k:900,p:0,show:g=>[CNT(g/5,'tsp','tsp'),''],shop:'pantry',pack:[250,'bottle']},
+ walnut:{n:'Walnuts',k:654,p:15,show:g=>[CNT(g/2.5,'walnut half','walnut halves'),''],shop:'pantry',pack:[200,'bag (200g)']},
+ pist:{n:'Pistachios, shelled',k:570,p:20,show:g=>[`about ${Math.round(g/0.6/5)*5} nuts`,'count them'],shop:'pantry',pack:[200,'bag']},
+ plum:{n:'Dried plums (alu)',k:240,p:2.5,show:g=>[CNT(g/8,'dried plum','dried plums'),''],shop:'persian',pack:[250,'bag']},
+ molasses:{n:'Pomegranate molasses',k:260,p:0,show:g=>[CNT(g/20,'tbsp','tbsp'),''],shop:'persian',pack:[300,'bottle']},
+ potato:{n:'Potato',k:77,p:2,show:g=>[PL(g/150,'fist-size potato','fist-size potatoes'),''],shop:'veg',pack:[2000,'bag (2kg)']},
+ pea:{n:'Green peas, frozen',k:75,p:5.5,show:g=>[PL(g/100,'fist','fists'),''],shop:'frozen',pack:[1000,'bag (1kg)']},
+ edamame:{n:'Edamame, frozen',k:125,p:11.5,show:g=>[PL(g/100,'fist','fists'),''],shop:'frozen',pack:[400,'bag']},
+ pineapple:{n:'Pineapple',k:50,p:0.5,show:g=>[PL(g/100,'fist of chunks','fists of chunks'),'fresh or tinned in juice'],shop:'fruit',pack:[400,'tin or 1 fresh']},
+ avocado:{n:'Avocado',k:160,p:2,show:g=>[`${FR(g/140)} avocado`,''],shop:'fruit',pack:[140,'avocado']},
+ fruit:{n:'Fruit',k:55,p:0.7,show:g=>[PL(g/110,'piece','pieces'),'apple, orange, pear, or a fist of berries'],shop:'fruit',pack:[110,'piece']},
+ veg:{n:'Vegetables & herbs',k:25,p:1.5,free:true,show:()=>['as much as you like','']}
+};
+
+/* ---------- MEALS: [english, farsi, items [food,grams], how-to, extras for shopping, tip] ---------- */
+const M={
+/* breakfast */
+ b_oatseggs:['Protein oats + 2 eggs','جو دوسر و تخم‌مرغ',[['oats',45],['almond',200],['chia',12],['yog',100],['egg',100]],'Soak oats, almond milk and chia overnight. In the morning stir the yogurt in cold. Boil or fry 2 eggs alongside.','cinnamon','Gym-day breakfast: carbs plus protein before you train.'],
+ b_protoats:['Protein oats','جو دوسر پروتئینی',[['oats',50],['almond',200],['chia',12],['yog',150],['fruit',100]],'Soak oats, almond milk and chia overnight. Stir the yogurt in cold in the morning, fruit on top, cinnamon.','cinnamon'],
+ b_omelette:['Omlet-e gojeh with feta','املت گوجه',[['egg',150],['tomato',0],['feta',30],['veg',150],['oil',5],['pitta',30]],'Fry chopped onion and 2 tomatoes in 1 tsp oil with turmeric until soft. Pour in 3 beaten eggs, stir gently, crumble feta over.','tomatoes, onion'],
+ b_nan:['Nan-o-panir-o-sabzi + eggs','نان و پنیر و سبزی',[['pitta',60],['feta',40],['egg',100],['veg',80],['walnut',10]],'No cooking. Pitta, feta, a big pile of herbs, 2 boiled eggs from the Sunday batch, 2 walnuts.','mint, basil, tarragon, radish, spring onion'],
+ b_kuku:['Kuku sabzi slice + cottage cheese','کوکو سبزی',[['egg',100],['veg',120],['oil',5],['cottage',100],['pitta',30]],'Cut from a kuku made the night before (see Kuku sabzi dinner). Cottage cheese on the side.','parsley, coriander, dill'],
+ b_haleem:['Quick haleem','حلیم',[['oats',45],['chicken',75],['milk',200]],'Shred cooked chicken (from the Sunday batch) very fine. Simmer with oats and milk 5 min, mash with a fork until stretchy. Cinnamon on top, a tiny bit of sugar or honey if you want.','cinnamon','The Persian breakfast that happens to be high protein.'],
+ b_mast:['Mast-o-khiar breakfast','ماست و خیار',[['yog',200],['veg',100],['walnut',10],['pitta',30],['egg',50]],'Grated cucumber, dried mint, walnuts and a pinch of salt into the yogurt. 1 boiled egg and half a pitta.','cucumbers, dried mint'],
+ b_pancake:['Cottage cheese pancakes','پنکیک پنیری',[['egg',50],['flour',30],['cottage',100],['yog',80],['fruit',100]],'Blend egg, flour, cottage cheese and a pinch of baking powder. Fry 4 small pancakes on medium. Yogurt and fruit on top.','baking powder'],
+ b_turkish:['Eggs on garlic yogurt','نیمرو با ماست',[['yog',150],['egg',100],['oil',5],['pitta',30],['veg',50]],'Yogurt with crushed garlic, lemon and salt on the plate. Chilli flakes or chilli crisp over it. 2 fried eggs on top.','garlic, chilli flakes'],
+
+/* lunch: cooked for 2 portions */
+ l_joojeh:['Joojeh kabab with rice','جوجه کباب',[['chicken',150],['rice',50],['veg',150],['oil',5],['yog',30]],'Marinate chicken pieces in yogurt, grated onion, saffron water and lemon (2 hours or overnight). Bake at 200°C for 22 min or grill. Serve with rice and grilled tomato.','saffron, onion, lemon, tomatoes'],
+ l_ghormeh:['Ghormeh sabzi','قورمه سبزی',[['beef',130],['veg',150],['beans',60],['rice',50],['oil',5]],'Fry the herbs slowly in 1 tsp oil until very dark. Brown onion and beef with turmeric. Add herbs, beans, pierced dried limes and water. Simmer 2 hours.','parsley, coriander, fenugreek, onions, dried limes'],
+ l_adasi:['Adasi with eggs','عدسی',[['lentils',70],['veg',150],['egg',100],['pitta',30],['oil',5]],'Fry onion and garlic with turmeric and cumin. Add lentils and water, simmer 30 min until soft. 2 eggs on top of each portion.','onions, garlic, cumin'],
+ l_zereshk:['Zereshk polo ba morgh','زرشک پلو با مرغ',[['chicken',150],['rice',60],['veg',50],['oil',5]],'Braise chicken with onion, turmeric and saffron 40 min. Rinse barberries and warm them 1 min with a pinch of sugar. Pile over the rice.','saffron, barberries, onion'],
+ l_gheymeh:['Gheymeh','قیمه',[['beef',120],['split',35],['rice',50],['veg',100],['oil',5]],'Brown onion and beef with turmeric and tomato paste. Add split peas, dried limes and water. Simmer 1.5 hours. Skip the fried potato on top, or bake a few chips.','onions, tomato paste, dried limes'],
+ l_stew:['Khoresh-e morgh','خورش مرغ',[['chicken',150],['veg',200],['rice',55],['oil',5]],'Everything in one pot: chicken, onion, garlic, tomato, turmeric, a bay leaf. Simmer 40 min. Rice on the side.','onions, garlic, tomatoes'],
+ l_karafs:['Khoresh karafs','خورش کرفس',[['lamb',120],['veg',200],['rice',50],['oil',5]],'Fry celery and herbs separately until fragrant. Brown the lamb with onion and turmeric, combine, add dried limes and water. Simmer 1.5 hours.','celery (1 head), parsley, mint, onions, dried limes'],
+ l_loobia:['Loobia polo','لوبیا پلو',[['mince',130],['veg',150],['rice',50],['oil',5]],'Fry mince with onion, turmeric and cinnamon. Add chopped green beans and tomato paste, cook 20 min. Layer with rice and steam.','green beans (frozen is fine), onions, tomato paste'],
+ l_tahchin:['Tahchin ba morgh','ته‌چین مرغ',[['chicken',150],['rice',55],['yog',60],['egg',25],['oil',5]],'Mix yogurt, saffron and 1 egg yolk into part-cooked rice. Layer with cooked chicken in an ovenproof dish. Bake at 200°C for 45 min until the crust forms.','saffron, onion, barberries'],
+ l_abgoosht:['Abgoosht','آبگوشت',[['lamb',110],['chickpea',100],['potato',100],['veg',100],['pitta',30]],'Everything in one pot with water, turmeric, dried limes and tomato paste. Simmer 2.5 hours. Let it cool a little and skim the fat off the top. Strain the broth, mash the rest.','onions, dried limes, tomato paste'],
+ l_bademjan:['Khoresh bademjan','خورش بادمجان',[['beef',120],['veg',250],['rice',45],['oil',5]],'Bake the aubergine slices at 200°C instead of frying (saves about 200 kcal). Brown beef with onion, add tomato and dried limes, simmer 1 hour. Aubergine on top for the last 20 min.','aubergines x2, tomatoes, onions, dried limes'],
+ l_fesenjan:['Fesenjan','فسنجان',[['chicken',160],['walnut',20],['molasses',20],['rice',50],['veg',50],['oil',3]],'Toast and blitz the walnuts. Simmer with pomegranate molasses and water 45 min until dark. Add the chicken for the last 25 min. Half the usual walnuts, still tastes right.','onion, cinnamon'],
+ l_baghali:['Baghali polo ba morgh','باقالی پلو با مرغ',[['chicken',150],['rice',50],['broad',100],['veg',80],['oil',5]],'Chicken braised with onion, turmeric and saffron. Rice steamed in layers with lots of dill and broad beans.','dill (big bunch), saffron, onion'],
+ l_alu:['Khoresh alu esfenaj','خورش آلو اسفناج',[['lamb',120],['veg',250],['plum',30],['rice',50],['oil',5]],'Brown lamb and onion with turmeric. Add the dried plums and water, simmer 1 hour. Spinach in for the last 15 min, lemon at the end.','spinach (big bag), onions, lemon'],
+ l_soupjo:['Soup-e jo with chicken','سوپ جو',[['chicken',140],['barley',40],['veg',200],['milk',100],['pitta',30]],'Barley, carrot, celery and onion simmered 45 min. Shredded chicken in, then a splash of milk and lemon juice at the end.','carrots, celery, onion, parsley, lemon'],
+ l_dolmeh:['Dolmeh barg','دلمه برگ',[['mince',120],['lentils',25],['rice',30],['veg',200],['oil',5],['yog',60]],'Mix raw mince, lentils, rice and chopped herbs. Roll in vine leaves, pack tight in a pot, cover with water, lemon and a little sugar. Simmer 1 hour. Yogurt on the side.','vine leaves, parsley, mint, tarragon, onion, lemon'],
+ l_ash:['Ash reshteh','آش رشته',[['lentils',30],['chickpea',80],['beans',60],['veg',200],['noodle',30],['yog',100],['oil',5]],'Simmer lentils, beans and a mountain of herbs 1 hour. Add the noodles for the last 10 min. Thick yogurt on top instead of most of the kashk. Fried mint and onion with 1 tsp oil.','spinach, parsley, coriander, dill, onions, dried mint'],
+
+/* dinner */
+ d_joojeh:['Joojeh with grilled veg, no rice','جوجه کباب بدون برنج',[['chicken',150],['veg',250],['oil',5],['yog',60]],'Same saffron-yogurt marinade as joojeh kabab. Oven 200°C, 22 min, on a tray with peppers, onion and tomatoes. Garlic yogurt on the side.','peppers, onion, tomatoes'],
+ d_koobideh:['Oven koobideh','کباب کوبیده',[['mince',130],['veg',150],['rice',40],['oil',3],['yog',60]],'Mix mince with grated onion (squeezed dry), salt, pepper and turmeric. Shape on a tray, bake 200°C for 15 min with halved tomatoes. Sumac on top.','onion, tomatoes, sumac'],
+ d_kotlet:['Baked kotlet','کتلت',[['mince',120],['potato',80],['egg',25],['veg',150],['oil',5],['pitta',30]],'Grate the potato and onion, squeeze dry. Mix with mince, 1 egg (shared over 2 portions), turmeric. Shape flat ovals, brush with 1 tsp oil, bake 200°C for 20 min, flip once. With pickles and tomatoes.','onion, khiar shoor (pickles), tomatoes'],
+ d_mirza:['Mirza ghasemi with feta','میرزا قاسمی',[['veg',300],['egg',150],['oil',8],['feta',30],['pitta',30]],'Bake 2 aubergines whole at 220°C for 40 min, peel. Fry garlic and tomato in the oil, add the aubergine, mash, then stir in 3 eggs. Feta on the side.','aubergines x2, tomatoes, garlic'],
+ d_kashk:['Kashk-e bademjan with eggs','کشک بادمجان',[['veg',300],['egg',150],['yog',100],['walnut',10],['oil',8]],'Bake aubergine slices, then mash with fried onion, garlic and dried mint. Stir thick yogurt in for most of the kashk. Walnuts on top, 3 eggs on the side.','aubergines x2, onion, garlic, dried mint'],
+ d_kuku:['Kuku sabzi with mast','کوکو سبزی',[['egg',150],['veg',150],['oil',5],['yog',100],['pitta',30]],'Chop herbs very fine, mix with 3 eggs, turmeric and a pinch of baking powder. Fry thick and slow with the lid on, both sides. Make a double batch: tomorrow\'s breakfast is a slice of this.','parsley, coriander, dill, spring onion'],
+ d_kadoo:['Kuku kadoo','کوکو کدو',[['egg',150],['veg',250],['cottage',100],['oil',8]],'Grate 2 courgettes and squeeze the water out hard. Mix with 3 eggs, onion and turmeric. Fry thick, lid on. Cottage cheese on the side.','courgettes x2, onion'],
+ d_kukusib:['Kuku sibzamini','کوکو سیب‌زمینی',[['potato',150],['egg',150],['veg',100],['yog',100],['oil',5]],'Grate potato and onion, squeeze the water out. Mix with 3 eggs and turmeric. Fry thick, covered, both sides. Garlic yogurt on top.','onion, garlic'],
+ d_potatoegg:['Potato & egg pan','سیب‌زمینی و تخم‌مرغ',[['potato',150],['egg',150],['veg',150],['cheddar',25],['oil',5]],'Cube the potato and fry with turmeric until soft (12 min, lid on). Crack 3 eggs over, cheese on top, lid on 4 min.','spring onion, peppers'],
+ d_adasi:['Adasi bowl with eggs','عدسی با تخم‌مرغ',[['lentils',50],['egg',100],['yog',100],['veg',150],['oil',5]],'Lentils cooked with onion, garlic and cumin (make a double pot, it keeps 3 days). 2 fried eggs on top, garlic yogurt.','onion, garlic, cumin'],
+ d_nokhod:['Chicken & chickpea khoresh','خوراک مرغ و نخود',[['chicken',140],['chickpea',120],['veg',200],['oil',5]],'Fry onion, garlic and turmeric. Add chicken, half a tin of chickpeas, chopped tomatoes and cinnamon. Simmer 15 min.','onion, tinned tomatoes'],
+ d_sabzipolo:['Sabzi polo ba mahi','سبزی پلو با ماهی',[['salmon',120],['rice',45],['veg',150],['oil',3],['yog',60]],'Cook the rice with a big handful of chopped dill, parsley and coriander. Salmon skin-side down in a hot pan 4 min, flip 2 min. Lemon and garlic yogurt.','dill, parsley, coriander, lemon'],
+ d_salmonpotato:['Salmon with roast potatoes','ماهی و سیب‌زمینی',[['salmon',120],['potato',200],['veg',200],['yog',60],['oil',5]],'Potato wedges with 1 tsp oil at 200°C for 30 min. Add salmon for the last 12 min. Garlic yogurt with dill.','dill, lemon, green beans or broccoli'],
+ d_olivieh:['Salad olivieh, light','سالاد الویه',[['chicken',120],['potato',100],['egg',50],['yog',80],['veg',100],['pitta',30]],'Boiled chicken, potato and egg chopped small with pickles, peas and carrot. Greek yogurt with a little mustard and lemon instead of mayo. Keeps 2 days.','khiar shoor (pickles), carrots, mustard'],
+ d_shirazi:['Chicken with salad shirazi','مرغ و سالاد شیرازی',[['chicken',150],['veg',250],['yog',60],['pitta',30]],'Pan-fry the chicken with turmeric and pepper (or use the Sunday batch). Big salad shirazi: cucumber, tomato, red onion, lemon, dried mint. Garlic yogurt.','cucumbers, tomatoes, red onion, lemons'],
+ d_poke:['Chicken poke bowl','پوکه مرغ',[['chicken',130],['rice',40],['pineapple',60],['edamame',60],['veg',100],['avocado',30],['yog',40],['sesame',3]],'Marinate chicken in soy, garlic and chopped pineapple 20 min, sear hard 6 min. Rice served cool. Spicy yogurt sauce (yogurt, sriracha, lime).','soy sauce, sriracha, lime, spring onion','Your non-Persian favourite, once a week.'],
+ d_peapolo:['Chicken & pea polo, quick','نخودفرنگی پلو با مرغ',[['chicken',140],['pea',120],['rice',45],['oil',5]],'Fry chicken with turmeric and garlic. Frozen peas straight in for the last 3 min. Over rice with lemon.','garlic, lemon'],
+
+/* snacks */
+ s_whey:['Whey shake + fruit','شیک پروتئین',[['whey',30],['fruit',100]],'One scoop in water or almond milk, any time on a gym day.','','Only on gym days. On rest days your food already covers it.'],
+ s_yog:['Mast with fruit','ماست و میوه',[['yog',170],['fruit',100]],'Cinnamon, or a teaspoon of honey if you want it.',''],
+ s_yogpist:['Yogurt, pistachio & fruit','ماست و پسته',[['yog',150],['pist',10],['fruit',110]],'',''],
+ s_cottage:['Cottage cheese & fruit','پنیر کاتیج و میوه',[['cottage',150],['fruit',100]],'Black pepper with apple, or cinnamon with berries.',''],
+ s_eggs:['2 boiled eggs & cucumber','دو تخم‌مرغ آب‌پز',[['egg',100],['veg',100]],'From the Sunday batch. Salt, pepper, cucumber.','']
+};
+// drop placeholder rows (grams 0) and unknown foods
+Object.values(M).forEach(m=>{m[2]=m[2].filter(([k,g])=>F[k]&&g>0)});
+
+const FREE={free:true};
+const W=[
+ ['b_oatseggs','l_joojeh','s_whey','d_kukusib'],
+ ['b_omelette','l_joojeh','s_yog','d_adasi'],
+ ['b_protoats','l_ghormeh','s_whey','d_salmonpotato'],
+ ['b_nan','l_ghormeh','s_cottage','d_kuku'],
+ ['b_oatseggs','l_adasi','s_whey','d_poke'],
+ ['b_kuku','l_adasi','s_yogpist','d_shirazi'],
+ ['b_mast','l_zereshk','s_yog',FREE],
+
+ ['b_oatseggs','l_karafs','s_whey','d_koobideh'],
+ ['b_haleem','l_karafs','s_yog','d_mirza'],
+ ['b_protoats','l_loobia','s_whey','d_peapolo'],
+ ['b_omelette','l_loobia','s_cottage','d_olivieh'],
+ ['b_oatseggs','l_gheymeh','s_whey','d_sabzipolo'],
+ ['b_nan','l_gheymeh','s_yogpist','d_kadoo'],
+ ['b_turkish','l_stew','s_yog',FREE],
+
+ ['b_oatseggs','l_fesenjan','s_whey','d_joojeh'],
+ ['b_mast','l_fesenjan','s_yog','d_kukusib'],
+ ['b_protoats','l_bademjan','s_whey','d_nokhod'],
+ ['b_omelette','l_bademjan','s_cottage','d_kashk'],
+ ['b_oatseggs','l_abgoosht','s_whey','d_poke'],
+ ['b_haleem','l_abgoosht','s_yogpist','d_adasi'],
+ ['b_nan','l_tahchin','s_yog',FREE],
+
+ ['b_oatseggs','l_alu','s_whey','d_kotlet'],
+ ['b_kuku','l_alu','s_yog','d_potatoegg'],
+ ['b_protoats','l_baghali','s_whey','d_sabzipolo'],
+ ['b_pancake','l_baghali','s_cottage','d_shirazi'],
+ ['b_oatseggs','l_soupjo','s_whey','d_peapolo'],
+ ['b_omelette','l_soupjo','s_yogpist','d_olivieh'],
+ ['b_mast','l_dolmeh','s_yog',FREE]
+];
+const SLOTS=['Breakfast','Lunch','Snack','Dinner'];
+const SLOTKEY=['b_','l_','s_','d_'];
+const DOW=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const TRAIN=[
+ {gym:1,name:'Upper body',steps:'6–7k',note:'Eat your lunch rice before or after the session. Carbs around training are what let you lift harder.'},
+ {gym:0,name:'Rest',steps:'9–10k',note:'Your legs may ache. A walk helps them recover faster than sitting.'},
+ {gym:1,name:'Lower body',steps:'6–7k',note:'Hardest session of the week. Do not skip food before it.'},
+ {gym:0,name:'Rest',steps:'9–10k',note:'Best day for one long 40–50 minute walk.'},
+ {gym:1,name:'Total body',steps:'6–7k',note:'Full session. Make sure the snack (whey) happens today.'},
+ {gym:0,name:'Rest · check-in',steps:'10k+',note:'Weigh and measure your waist this morning before breakfast, then log it in Me.'},
+ {gym:0,name:'Rest · free meal',steps:'8–9k',note:'Free dinner tonight. One plate, enjoy it, no counting. A walk after helps.'}
+];
+const SHOPCAT=[['meat','Meat & fish'],['dairy','Dairy & eggs'],['frozen','Frozen'],['tins','Tins'],['bakery','Bread'],['fruit','Fruit'],['veg','Potatoes'],['persian','Persian shop'],['pantry','Pantry: check, buy only if low']];
+</script>
+
+<script id="app">
+const KT=1550;
+const LS='sofreh-v1';
+let S={};
+try{S=JSON.parse(localStorage.getItem(LS)||'{}')||{}}catch(e){S={}}
+S.done=S.done||{}; S.swaps=S.swaps||{}; S.have=S.have||{}; S.shop=S.shop||{}; S.log=S.log||[];
+if(!S.weight) S.weight=54.5;
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}};
+
+const DAY=864e5;
+const midnight=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x};
+const mondayOf=d=>{const x=midnight(d);const w=(x.getDay()+6)%7;return new Date(x-w*DAY)};
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+if(!S.anchor){S.anchor=iso(mondayOf(new Date()));save()}
+const anchor=()=>{const [y,m,d]=S.anchor.split('-').map(Number);return new Date(y,m-1,d)};
+const todayIdx=()=>{const n=Math.round((midnight(new Date())-anchor())/DAY);return ((n%28)+28)%28};
+const dateOf=i=>{const n=Math.round((midnight(new Date())-anchor())/DAY);const base=n-todayIdx();return new Date(anchor().getTime()+(base+i)*DAY)};
+const PT=()=>Math.round(S.weight*1.9/5)*5;
+
+const mealId=(i,si)=>{const sw=S.swaps[i+'-'+si];return sw||W[i][si]};
+const isFree=(i,si)=>!S.swaps[i+'-'+si]&&W[i][si]===FREE;
+const calc=items=>items.reduce((a,[k,g])=>{a.k+=F[k].k*g/100;a.p+=F[k].p*g/100;return a},{k:0,p:0});
+/* lunch pairing: cook day / leftover day */
+const lunchRole=i=>{
+  const id=mealId(i,1), dw=i%7;
+  if(dw>0&&mealId(i-1,1)===id&&lunchRole(i-1)==='cook') return 'left';
+  if(dw<6&&mealId(i+1,1)===id) return 'cook';
+  return 'single';
+};
+const dayMeals=i=>SLOTS.map((slot,si)=>{
+  if(isFree(i,si)) return {slot,si,free:true};
+  const id=mealId(i,si), m=M[id];
+  return {slot,si,id,name:m[0],fa:m[1],items:m[2],how:m[3],extra:m[4],tip:m[5],t:calc(m[2])};
+});
+const dayTotal=i=>dayMeals(i).reduce((a,m)=>{if(!m.free){a.k+=m.t.k;a.p+=m.t.p}return a},{k:0,p:0});
+
+/* ---------- header ---------- */
+function renderTarget(){
+  document.getElementById('targetbox').innerHTML=`<span class="lbl">Daily target</span><br><b class="num">${KT.toLocaleString()} kcal</b> · <b class="num">${PT()}g</b> protein`;
+}
+
+/* ---------- TODAY ---------- */
+const strip=document.getElementById('strip'), out=document.getElementById('dayout');
+let cur=todayIdx();
+function buildStrip(){
+  strip.innerHTML='';
+  W.forEach((_,i)=>{
+    const b=document.createElement('button'); b.type='button';
+    b.className='chip'+(TRAIN[i%7].gym?' gym':'')+(i===todayIdx()?' today':'');
+    const d=dateOf(i);
+    b.innerHTML=`${DOW[i%7]}<b class="num">${d.getDate()}</b>`;
+    b.setAttribute('aria-label',`Day ${i+1}, ${DOW[i%7]} ${d.getDate()}`);
+    b.onclick=()=>{cur=i;renderDay()};
+    strip.appendChild(b);
+  });
+}
+const fmtItem=(k,g)=>{const f=F[k];const [how,alt]=f.show(g);return {name:f.n,how,alt,free:f.free}};
+
+function needList(i){
+  const need={}; const role=lunchRole(i);
+  dayMeals(i).forEach(m=>{
+    if(m.free) return;
+    if(m.si===1&&role==='left') return;
+    const mult=(m.si===1&&role==='cook')?2:1;
+    m.items.forEach(([k,g])=>{need[k]=(need[k]||0)+g*mult});
+  });
+  return need;
+}
+const extrasFor=i=>{
+  const role=lunchRole(i), set=[];
+  dayMeals(i).forEach(m=>{if(m.free||!m.extra)return; if(m.si===1&&role==='left')return; m.extra.split(',').map(s=>s.trim()).filter(Boolean).forEach(x=>{if(!set.includes(x))set.push(x)})});
+  return set;
+};
+
+function renderDay(){
+  [...strip.children].forEach((c,i)=>c.setAttribute('aria-current',i===cur));
+  const chip=strip.children[cur]; if(chip) chip.scrollIntoView({block:'nearest',inline:'center'});
+  document.getElementById('weeklbl').textContent=`Week ${Math.floor(cur/7)+1} of 4 · Day ${cur+1}`;
+  document.getElementById('gotoday').classList.toggle('hide',cur===todayIdx());
+
+  const tr=TRAIN[cur%7], meals=dayMeals(cur), tot=dayTotal(cur), role=lunchRole(cur);
+  let ek=0,ep=0,any=false;
+  meals.forEach(m=>{if(S.done[cur+'-'+m.si]){any=true;if(!m.free){ek+=m.t.k;ep+=m.t.p}}});
+  const d=dateOf(cur), isToday=cur===todayIdx();
+  const hasFree=meals.some(m=>m.free);
+  const pct=(v,t)=>Math.min(100,v/t*100);
+
+  let h=`<div class="dayhead">
+    <div>
+      <h2>${isToday?'Today':d.toLocaleDateString(undefined,{weekday:'long'})}, ${d.toLocaleDateString(undefined,{day:'numeric',month:'long'})}</h2>
+      <div class="sub"><span class="pill ${tr.gym?'gym':hasFree?'free':'rest'}">${tr.gym?'Gym · '+tr.name:tr.name}</span> &nbsp;${tr.steps} steps</div>
+    </div>
+    <div class="totals">
+      <div class="tot k"><span class="lbl">Calories planned</span><div class="big num">${Math.round(tot.k)}<small> / ${KT}${hasFree?' + free meal':''}</small></div>
+        <div class="bar"><i class="plan" style="width:${pct(tot.k,KT)}%"></i><i style="width:${pct(ek,KT)}%"></i></div>
+        <div class="eaten num">${any?`Eaten: ${Math.round(ek)} kcal`:'Tick meals as you eat them'}</div></div>
+      <div class="tot p"><span class="lbl">Protein planned</span><div class="big num">${Math.round(tot.p)}<small>g / ${PT()}g</small></div>
+        <div class="bar"><i class="plan" style="width:${pct(tot.p,PT())}%"></i><i style="width:${pct(ep,PT())}%"></i></div>
+        <div class="eaten num">${any?`Eaten: ${Math.round(ep)}g`:' '}</div></div>
+    </div>
+    <div class="callout"><p>${tr.note}</p></div>`;
+
+  const L=meals[1];
+  if(role==='cook') h+=`<div class="callout cook"><span class="lbl">Cook today</span><p><b>${L.name}</b>, 2 portions: use double the amounts shown. Eat one, put one in a box for tomorrow.</p></div>`;
+  if(cur%7===6) h+=`<div class="callout cook"><span class="lbl">Sunday prep</span><p>Boil 6 eggs. Wash herbs, dry them, wrap in kitchen paper. Chop cucumber, tomato, onion. Make a jar of garlic yogurt. Then cook tomorrow's lunch: <b>${M[mealId((cur+1)%28,1)][0]}</b>.</p></div>`;
+  h+='</div><div class="meals">';
+
+  meals.forEach(m=>{
+    const on=!!S.done[cur+'-'+m.si];
+    const tick=`<button class="tick" type="button" aria-pressed="${on}" data-si="${m.si}" aria-label="Mark ${m.slot.toLowerCase()} as eaten">✓</button>`;
+    if(m.free){
+      h+=`<div class="meal${on?' done':''}"><div class="mhead"><div class="t"><div class="slot"><span class="lbl">${m.slot}</span><span class="tag" style="background:var(--anar-soft);color:var(--anar)">Free meal</span></div><h3>Eat what you want</h3></div>${tick}</div>
+      <div class="freebox">One plate, no counting. Planned, not a slip. It is what makes the other 27 meals of the week easy to keep. Kabab, pizza, your mum's tahdig, anything.</div>
+      <div class="mfoot"><button class="swapbtn" data-swap="${m.si}" type="button">Swap for a planned dinner</button></div></div>`;
+      return;
+    }
+    const lunchTag=m.si===1?(role==='cook'?'<span class="tag">Cook ×2 today</span>':role==='left'?'<span class="tag left">Leftovers from yesterday</span>':''):'';
+    h+=`<div class="meal${on?' done':''}"><div class="mhead"><div class="t">
+      <div class="slot"><span class="lbl">${m.slot}</span>${lunchTag}</div>
+      <h3>${m.name}</h3><span class="fa">${m.fa}</span>
+      <div class="mac num"><b>${Math.round(m.t.k)} kcal</b> · <b class="pp">${Math.round(m.t.p)}g protein</b></div></div>${tick}</div>`;
+    if(m.si===1&&role==='left'){
+      h+=`<div class="freebox">Reheat the box you made yesterday. Nothing to measure.</div>`;
+    }else{
+      h+='<ul class="ings">';
+      m.items.forEach(([k,g])=>{const x=fmtItem(k,g);
+        h+=`<li class="${x.free?'free':''}"><span class="food">${x.name}</span><span class="how">${x.how}</span>${x.alt?`<span class="alt">${x.alt}</span>`:''}</li>`});
+      h+='</ul>';
+    }
+    h+=`<div class="mfoot"><details><summary>How to make it</summary><div class="recipe">${m.how}${m.extra?`<div class="also">Also uses: ${m.extra}, plus spices.</div>`:''}</div></details>
+      ${m.tip?`<div class="note" style="flex-basis:100%">${m.tip}</div>`:''}
+      <button class="swapbtn" data-swap="${m.si}" type="button">Swap</button>${S.swaps[cur+'-'+m.si]?`<button class="swapbtn" data-unswap="${m.si}" type="button">Back to plan</button>`:''}
+      <div class="swaphost" data-host="${m.si}" style="flex-basis:100%"></div></div></div>`;
+  });
+  h+='</div>';
+
+  /* what you need today */
+  const need=needList(cur), extras=extrasFor(cur);
+  const keys=Object.keys(need).filter(k=>!F[k].free);
+  h+=`<div class="section"><h2>What you need today</h2><p class="sub">Tick what you already have. Anything left unticked: buy at Lidl${role==='cook'?' (the lunch is counted twice because you cook 2 portions)':''}.</p><ul class="checklist">`;
+  keys.forEach(k=>{const x=fmtItem(k,need[k]); const key=cur+'-'+k; const chk=S.have[key]?'checked':'';
+    h+=`<li><label><input type="checkbox" data-have="${key}" ${chk}><span>${x.name}${x.alt?`<span class="d">${x.alt}</span>`:''}</span><span class="q">${x.how}</span></label></li>`});
+  if(extras.length){const key=cur+'-extras';const chk=S.have[key]?'checked':'';
+    h+=`<li><label><input type="checkbox" data-have="${key}" ${chk}><span>Fresh veg, herbs & flavour<span class="d">${extras.join(' · ')}</span></span><span class="q"></span></label></li>`}
+  h+='</ul></div>';
+
+  out.innerHTML=h;
+  out.querySelectorAll('.tick').forEach(b=>b.onclick=()=>{const k=cur+'-'+b.dataset.si;S.done[k]=!S.done[k];save();renderDay()});
+  out.querySelectorAll('[data-have]').forEach(c=>c.onchange=()=>{S.have[c.dataset.have]=c.checked;save()});
+  out.querySelectorAll('[data-unswap]').forEach(b=>b.onclick=()=>{delete S.swaps[cur+'-'+b.dataset.unswap];save();renderDay()});
+  out.querySelectorAll('[data-swap]').forEach(b=>b.onclick=()=>{
+    const si=+b.dataset.swap, host=out.querySelector(`[data-host="${si}"]`)||b.parentElement;
+    const opts=Object.keys(M).filter(id=>id.startsWith(SLOTKEY[si])).map(id=>{const t=calc(M[id][2]);return `<option value="${id}">${M[id][0]} · ${Math.round(t.k)} kcal, ${Math.round(t.p)}g protein</option>`}).join('');
+    const sel=document.createElement('select'); sel.className='swapsel'; sel.id='swap-'+cur+'-'+si;
+    sel.setAttribute('aria-label','Choose another '+SLOTS[si].toLowerCase());
+    sel.innerHTML=`<option value="">Pick a ${SLOTS[si].toLowerCase()}…</option>`+opts;
+    sel.onchange=()=>{if(!sel.value)return;S.swaps[cur+'-'+si]=sel.value;save();renderDay()};
+    host.innerHTML='';host.appendChild(sel);sel.focus();
+  });
+}
+document.getElementById('gotoday').onclick=()=>{cur=todayIdx();renderDay()};
+
+/* ---------- WEEK ---------- */
+let wsel=Math.floor(todayIdx()/7);
+function renderWeek(){
+  const seg=document.getElementById('weekseg');
+  seg.innerHTML=[0,1,2,3].map(w=>`<button type="button" aria-pressed="${w===wsel}" data-w="${w}">Week ${w+1}</button>`).join('');
+  seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{wsel=+b.dataset.w;renderWeek()});
+  let h='';
+  for(let i=wsel*7;i<wsel*7+7;i++){
+    const ms=dayMeals(i), t=dayTotal(i), d=dateOf(i);
+    h+=`<button type="button" class="wday${i===todayIdx()?' today':''}" data-day="${i}"><div class="d">${DOW[i%7]}<small class="num">${d.getDate()} ${d.toLocaleDateString(undefined,{month:'short'})}</small><small class="num">${TRAIN[i%7].gym?'Gym':'Rest'}</small></div><ul>
+      ${ms.map(m=>`<li><span>${m.slot}</span>${m.free?'Free meal':m.name}${m.si===1&&lunchRole(i)==='left'?' <em class="muted">(leftovers)</em>':''}</li>`).join('')}
+      <li class="muted num"><span></span>${Math.round(t.k)} kcal · ${Math.round(t.p)}g protein</li></ul></button>`;
+  }
+  const g=document.getElementById('weekgrid'); g.innerHTML=h;
+  g.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{cur=+b.dataset.day;showTab('today');renderDay()});
+}
+
+/* ---------- LIDL ---------- */
+let ssel=Math.floor(todayIdx()/7);
+function renderShop(){
+  const seg=document.getElementById('shopseg');
+  seg.innerHTML=[0,1,2,3].map(w=>`<button type="button" aria-pressed="${w===ssel}" data-w="${w}">Week ${w+1}</button>`).join('');
+  seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ssel=+b.dataset.w;renderShop()});
+  const d0=dateOf(ssel*7), d6=dateOf(ssel*7+6);
+  document.getElementById('shoplead').textContent=`One big shop for ${d0.toLocaleDateString(undefined,{day:'numeric',month:'short'})} – ${d6.toLocaleDateString(undefined,{day:'numeric',month:'short'})}. Do it on Saturday or Sunday. Fruit, herbs and salad top-ups midweek. The Today tab shows what each single day needs.`;
+  const need={}, extras={};
+  for(let i=ssel*7;i<ssel*7+7;i++){
+    const n=needList(i); Object.keys(n).forEach(k=>need[k]=(need[k]||0)+n[k]);
+    extrasFor(i).forEach(x=>{const k=x.toLowerCase();extras[k]=(extras[k]||0)+1});
+  }
+  let h='<ul class="checklist">';
+  SHOPCAT.forEach(([cat,label])=>{
+    const ks=Object.keys(need).filter(k=>F[k].shop===cat);
+    if(!ks.length) return;
+    h+=`<li class="grp"><span class="lbl">${label}</span></li>`;
+    ks.sort((a,b)=>need[b]-need[a]).forEach(k=>{
+      const f=F[k], g=need[k], key=ssel+'-'+k, chk=S.shop[key]?'checked':'';
+      let q, d='';
+      if(cat==='pantry'||cat==='persian'){q='check';d=`Uses about ${f.show(g)[0]} this week`}
+      else if(k==='egg'){const n=Math.ceil(g/50)+6,b=Math.ceil(n/12);q=`${b} × box of 12`;d=`${n} eggs: meals plus 6 to boil on Sunday`}
+      else if(k==='fruit'){const n=Math.ceil(g/110);q=`${n} pieces`;d='apples, oranges, pears, bananas, berries: mix them'}
+      else if(k==='avocado'){q='1 avocado';d=''}
+      else{const n=Math.max(1,Math.ceil(g/f.pack[0]-0.15));q=`${n} × ${f.pack[1]}`;d=`You will use about ${g>=1000?(g/1000).toFixed(1)+' kg':Math.round(g/10)*10+' g'}${cat==='meat'?'. Freeze in 2-portion bags the day you buy':''}`}
+      h+=`<li><label><input type="checkbox" data-shop="${key}" ${chk}><span>${f.n}${d?`<span class="d">${d}</span>`:''}</span><span class="q">${q}</span></label></li>`;
+    });
+  });
+  // fresh veg
+  const base=['onions (1 net)','tomatoes (1 kg)','cucumbers (4–6)','lemons (4)','garlic (1 bulb)','herbs: parsley, coriander, mint, dill'];
+  const ex=Object.keys(extras).filter(x=>!/^(onions?|tomatoes|cucumbers|lemons?|garlic|parsley|coriander|mint|dill|cinnamon|cumin|baking powder|saffron|dried limes|barberries|dried plums|dried mint|sumac|dried fenugreek|fenugreek|vine leaves|mustard|soy sauce|sriracha|tomato paste|tinned tomatoes|chilli flakes)$/.test(x));
+  h+=`<li class="grp"><span class="lbl">Fresh vegetables & herbs</span></li>`;
+  [...base,...ex].forEach((x,j)=>{const key=ssel+'-veg'+x;const chk=S.shop[key]?'checked':'';
+    h+=`<li><label><input type="checkbox" data-shop="${key}" ${chk}><span>${x.charAt(0).toUpperCase()+x.slice(1)}</span><span class="q"></span></label></li>`});
+  const pantryEx=Object.keys(extras).filter(x=>/^(saffron|dried limes|barberries|dried plums|dried mint|sumac|fenugreek|dried fenugreek|vine leaves|mustard|soy sauce|sriracha|tomato paste|tinned tomatoes|cinnamon|cumin|baking powder|chilli flakes)$/.test(x));
+  if(pantryEx.length){
+    h+=`<li class="grp"><span class="lbl">Spices & jars this week needs</span></li>`;
+    pantryEx.forEach(x=>{const key=ssel+'-sp'+x;const chk=S.shop[key]?'checked':'';
+      h+=`<li><label><input type="checkbox" data-shop="${key}" ${chk}><span>${x.charAt(0).toUpperCase()+x.slice(1)}</span><span class="q">check</span></label></li>`});
+  }
+  h+='</ul><div style="margin-top:10px"><button class="ghost" type="button" id="clearShop">Untick this week</button></div>';
+  const o=document.getElementById('shopout'); o.innerHTML=h;
+  o.querySelectorAll('[data-shop]').forEach(c=>c.onchange=()=>{S.shop[c.dataset.shop]=c.checked;save()});
+  document.getElementById('clearShop').onclick=()=>{Object.keys(S.shop).filter(k=>k.startsWith(ssel+'-')).forEach(k=>delete S.shop[k]);save();renderShop()};
+}
+
+/* ---------- HAND GUIDE ---------- */
+const svg=p=>`<svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="var(--firooze)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const HANDS=[
+ ['Palm',svg('<rect x="11" y="14" width="26" height="28" rx="9" fill="var(--firooze-soft)"/><path d="M15 14V7M21 14V5M27 14V5M33 14V8"/>'),'Size and thickness of your palm, no fingers.','= about 100g raw chicken, beef, lamb or mince. 23g protein for chicken.'],
+ ['Fist',svg('<rect x="10" y="12" width="28" height="26" rx="11" fill="var(--firooze-soft)"/><path d="M16 12v8M22 12v8M28 12v8"/>'),'Your closed fist.','= 1 portion of cooked rice (50g raw, 175 kcal). Also 1 potato, or frozen peas, edamame, broad beans.'],
+ ['Matchbox',svg('<rect x="8" y="16" width="32" height="18" rx="3" fill="var(--firooze-soft)"/><path d="M8 22h32"/>'),'A piece of cheese the size of a matchbox, or two thumbs.','= 30g feta (60 kcal).'],
+ ['Teaspoon',svg('<ellipse cx="17" cy="17" rx="8" ry="10" fill="var(--firooze-soft)"/><path d="M22 25l14 15"/>'),'A normal teaspoon, level.','= 5g oil (45 kcal). The only thing you must measure. Never pour.'],
+ ['Heaped tablespoon',svg('<ellipse cx="17" cy="18" rx="10" ry="12" fill="var(--firooze-soft)"/><path d="M23 28l14 13"/>'),'A dinner spoon, heaped.','= 30g yogurt or cottage cheese (3g protein). 6 heaped = a snack bowl.'],
+ ['Mug',svg('<path d="M10 12h24v22a6 6 0 0 1-6 6H16a6 6 0 0 1-6-6z" fill="var(--firooze-soft)"/><path d="M34 18h3a5 5 0 0 1 0 10h-3"/>'),'A standard 250ml mug.','= 200g raw rice (4 portions) or 90g oats. ½ mug rice for 2 lunches.']
+];
+function renderHands(){
+  document.getElementById('handcards').innerHTML=HANDS.map(([t,ic,d,e])=>`<div class="hand">${ic}<h3>${t}</h3><p>${d}</p><div class="eq">${e}</div></div>`).join('');
+}
+
+/* ---------- ME ---------- */
+function renderMe(){
+  document.getElementById('wIn').value=S.weight;
+  document.getElementById('startIn').value=iso(dateOf(0));
+  document.getElementById('mytargets').innerHTML=`At ${S.weight} kg: about <b>${KT.toLocaleString()} kcal</b> and <b>${PT()}g protein</b> a day (1.9g per kg). That is a gentle deficit of roughly 300 kcal, enough to lose 0.2–0.4 kg a week while keeping muscle.`;
+  document.getElementById('trainbody').innerHTML=TRAIN.map((t,i)=>`<tr><td>${DOW[i]}</td><td>${t.gym?'Gym · ':''}${t.name}</td><td class="r num">${t.steps}</td></tr>`).join('');
+  const lo=document.getElementById('logout');
+  if(!S.log.length){lo.innerHTML='<p class="small muted">No check-ins yet. Your first Saturday entry will appear here, with the change from the week before.</p>';return}
+  let h='<div class="table-wrap"><table><thead><tr><th>Date</th><th class="r">Weight</th><th class="r">Waist</th><th class="r">Change</th><th></th></tr></thead><tbody>';
+  S.log.forEach((e,j)=>{const p=S.log[j-1];const dw=p&&e.w&&p.w?(e.w-p.w):null;
+    h+=`<tr><td class="num">${e.d}</td><td class="r num">${e.w||'–'} kg</td><td class="r num">${e.waist||'–'} cm</td><td class="r num">${dw===null?'':(dw>0?'+':'')+dw.toFixed(1)+' kg'}</td><td class="r"><button class="linkbtn" data-del="${j}" type="button" aria-label="Delete entry">Delete</button></td></tr>`});
+  h+='</tbody></table></div>';
+  lo.innerHTML=h;
+  lo.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{S.log.splice(+b.dataset.del,1);save();renderMe()});
+}
+document.getElementById('saveMe').onclick=()=>{
+  const w=parseFloat(document.getElementById('wIn').value); if(w>30&&w<200) S.weight=w;
+  const st=document.getElementById('startIn').value;
+  if(st){const [y,m,d]=st.split('-').map(Number);S.anchor=iso(mondayOf(new Date(y,m-1,d)))}
+  save(); renderTarget(); buildStrip(); cur=todayIdx(); renderDay(); renderMe();
+};
+document.getElementById('addLog').onclick=()=>{
+  const w=parseFloat(document.getElementById('logW').value), wa=parseFloat(document.getElementById('logWaist').value);
+  if(!w&&!wa) return;
+  S.log.push({d:iso(new Date()),w:w||null,waist:wa||null}); if(w) S.weight=w;
+  save(); document.getElementById('logW').value=''; document.getElementById('logWaist').value=''; renderTarget(); renderMe();
+};
+document.getElementById('resetTicks').onclick=()=>{S.done={};S.swaps={};S.have={};save();renderDay();document.getElementById('resetMsg').textContent='Cleared.'};
+
+/* ---------- tabs ---------- */
+const TABS=['today','week','lidl','hands','me'];
+function showTab(id){
+  document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));
+  TABS.forEach(t=>document.getElementById(t).classList.toggle('hide',t!==id));
+  if(id==='week')renderWeek(); if(id==='lidl')renderShop(); if(id==='me')renderMe();
+  try{history.replaceState(null,'',id==='today'?location.pathname:'#'+id)}catch(e){}
+  window.scrollTo({top:0});
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+renderTarget(); buildStrip(); renderHands(); renderDay();
+const h0=location.hash.slice(1); if(TABS.includes(h0)) showTab(h0);
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(TABS.includes(h))showTab(h)});
+
+/* installable on GitHub Pages (offline in the shop) */
+if('serviceWorker' in navigator && /github\.io$|^localhost$/.test(location.hostname)){
+  try{navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
+}
+</script>

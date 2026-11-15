@@ -1,0 +1,13 @@
+{
+  "name": "Sofreh Meal Plan",
+  "short_name": "Sofreh",
+  "description": "28-day Persian meal plan with hand measures and a Lidl list.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F2F7F6",
+  "theme_color": "#0B8682",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
